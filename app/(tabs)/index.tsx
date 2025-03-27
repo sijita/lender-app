@@ -1,74 +1,166 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import {
+  Animated,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import StatsCard from '../components/stats-card';
+import RecentTransactions from '../components/recent-transactions';
+import UpcomingPayments from '../components/upcoming-payments';
+import { useCallback } from 'react';
+import { Link, useNavigation } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function Index() {
+  const navigation = useNavigation();
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const offsetY = event.nativeEvent.contentOffset.y;
+      const velocity = event.nativeEvent.velocity?.y ?? 0;
 
-export default function HomeScreen() {
+      if (velocity > 0 && offsetY > 50) {
+        navigation.setOptions({
+          tabBarStyle: {
+            display: 'none',
+          },
+        });
+      } else {
+        navigation.setOptions({
+          tabBarStyle: {
+            display: 'flex',
+            backgroundColor: '#FAFAFA',
+            borderRadius: 50,
+            marginHorizontal: 20,
+            marginBottom: 35,
+            height: 50,
+            position: 'absolute',
+            overflow: 'hidden',
+          },
+        });
+      }
+    },
+    [navigation]
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <Animated.ScrollView
+      className="flex-1 p-5"
+      contentContainerStyle={{
+        minHeight: '100%',
+        paddingBottom: 50,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 20,
+      }}
+      onScroll={handleScroll}
+      scrollEventThrottle={15}
+    >
+      <View className="flex-row items-center justify-between pb-5 border-b border-gray-200">
+        <Text className="text-xl font-inter-black">$ LenderApp</Text>
+        <Link href="/" className="px-4 py-3 bg-black rounded-lg" asChild>
+          <TouchableOpacity className="flex-row items-center gap-1">
+            <Text className="text-center text-white font-inter-bold">
+              Nueva transacción
+            </Text>
+            <Ionicons name="add-outline" size={16} color="white" />
+          </TouchableOpacity>
+        </Link>
+      </View>
+      <Text className="text-2xl font-inter-bold">Inicio</Text>
+      <View className="flex-row flex-wrap gap-4">
+        <View className="flex-1 min-w-[160]">
+          <StatsCard
+            title="Total pendiente"
+            value="$12,450.00"
+            change={{ value: 2.5, period: 'Último mes' }}
+            icon="cash-outline"
+          />
+        </View>
+        <View className="flex-1 min-w-[160]">
+          <StatsCard
+            title="Clientes activos"
+            value="24"
+            subtitle="+3 Nuevos este mes"
+            icon="people-outline"
+          />
+        </View>
+        <View className="flex-1 min-w-[160]">
+          <StatsCard
+            title="Próximos pagos"
+            value="8"
+            subtitle="Esta semana"
+            icon="time-outline"
+          />
+        </View>
+        <View className="flex-1 min-w-[160]">
+          <StatsCard
+            title="Ingresos mensuales"
+            value="$1,890.00"
+            change={{ value: 12.3, period: 'Último mes' }}
+            icon="stats-chart-outline"
+          />
+        </View>
+      </View>
+      <View className="flex-col gap-5">
+        <RecentTransactions
+          transactions={[
+            {
+              name: 'John Smith',
+              type: 'payment_received',
+              amount: 500,
+              date: 'Today',
+            },
+            {
+              name: 'Sarah Johnson',
+              type: 'new_loan',
+              amount: 1200,
+              date: 'Yesterday',
+            },
+            {
+              name: 'Michael Brown',
+              type: 'payment_received',
+              amount: 350,
+              date: 'Mar 15, 2025',
+            },
+            {
+              name: 'Emily Davis',
+              type: 'new_loan',
+              amount: 800,
+              date: 'Mar 12, 2025',
+            },
+          ]}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <UpcomingPayments
+          payments={[
+            {
+              name: 'Robert Wilson',
+              amount: 250,
+              dueDate: 'Tomorrow',
+              status: 'on_time',
+            },
+            {
+              name: 'Jennifer Lee',
+              amount: 420,
+              dueDate: 'Mar 19, 2025',
+              status: 'on_time',
+            },
+            {
+              name: 'David Miller',
+              amount: 600,
+              dueDate: 'Mar 20, 2025',
+              status: 'at_risk',
+            },
+            {
+              name: 'Lisa Taylor',
+              amount: 180,
+              dueDate: 'Mar 22, 2025',
+              status: 'on_time',
+            },
+          ]}
+        />
+      </View>
+    </Animated.ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

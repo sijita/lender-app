@@ -1,5 +1,6 @@
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
 
 type Payment = {
   name: string;
@@ -14,9 +15,9 @@ type UpcomingPaymentsProps = {
 
 export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
   const formatAmount = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('es-CO', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'COP',
     }).format(amount);
   };
 
@@ -36,36 +37,38 @@ export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
   const getStatusText = (status: Payment['status']) => {
     switch (status) {
       case 'on_time':
-        return 'On Time';
+        return 'A tiempo';
       case 'at_risk':
-        return 'At Risk';
+        return 'Crítico';
       case 'overdue':
-        return 'Overdue';
+        return 'Vencido';
       default:
         return '';
     }
   };
 
   return (
-    <View className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
-      <View className="mb-4">
-        <Text className="text-xl font-bold">Upcoming Payments</Text>
-        <Text className="text-gray-500">Payments due in the next 7 days</Text>
+    <View className="flex-col gap-6 bg-white rounded-xl p-5 shadow-sm border border-gray-200">
+      <View className="flex-col">
+        <Text className="text-xl font-inter-bold">Pagos pendientes</Text>
+        <Text className="text-gray-500 font-inter-regular">
+          Pagos con vencimiento en los próximos 7 días
+        </Text>
       </View>
-
-      <View className="space-y-4">
+      <View className="flex-col gap-3">
         {payments.map((payment, index) => (
           <View key={index} className="flex-row justify-between items-center">
             <View className="flex-1">
-              <Text className="font-semibold text-gray-800">
+              <Text className="font-inter-semibold text-gray-800">
                 {payment.name}
               </Text>
-              <Text className="text-gray-500">Due: {payment.dueDate}</Text>
+              <Text className="font-inter-regular text-gray-500">
+                Due: {payment.dueDate}
+              </Text>
             </View>
-
             <View className="items-end">
               <View className="flex-row items-center gap-2">
-                <Text className="text-lg font-semibold">
+                <Text className="text-lg font-inter-semibold">
                   {formatAmount(payment.amount)}
                 </Text>
                 <Ionicons
@@ -74,19 +77,20 @@ export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
                   color={payment.status === 'on_time' ? '#22c55e' : '#ef4444'}
                 />
               </View>
-              <Text className={`${getStatusColor(payment.status)}`}>
+              <Text
+                className={`${getStatusColor(payment.status)} font-inter-light`}
+              >
                 {getStatusText(payment.status)}
               </Text>
             </View>
           </View>
         ))}
       </View>
-
-      <View className="mt-4 pt-4 border-t border-gray-200">
-        <Text className="text-center text-blue-600 font-semibold">
-          Send Reminders
-        </Text>
-      </View>
+      <Link href="/" className="p-4 border border-gray-200 rounded-lg" asChild>
+        <TouchableOpacity>
+          <Text className="text-center font-inter-bold">Ver todos</Text>
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 }
