@@ -46,7 +46,7 @@ export default function Index() {
 
   return (
     <Animated.ScrollView
-      className="flex-1"
+      className="flex-1 bg-gray-50"
       contentContainerStyle={{
         minHeight: '100%',
         paddingBottom: 10,
@@ -54,19 +54,19 @@ export default function Index() {
       onScroll={handleScroll}
       scrollEventThrottle={15}
     >
-      <View className="flex-row items-center justify-between p-4 border-b border-gray-200 bg-white">
-        <Text className="text-xl font-inter-black">$ LenderApp</Text>
-        <Link href="/" className="px-4 py-3 bg-black rounded-xl" asChild>
+      <View className="flex-row items-center justify-between px-4 py-6 border-b border-gray-200 bg-white">
+        <Text className="text-2xl font-geist-black">$ LenderApp</Text>
+        <Link href="/" className="px-4 py-2 bg-black rounded-full" asChild>
           <TouchableOpacity className="flex-row items-center gap-1">
-            <Ionicons name="add-outline" size={16} color="white" />
-            <Text className="text-center text-white font-inter-medium">
+            <Text className="text-white font-geist-medium">
               Nueva transacción
             </Text>
+            <Ionicons name="add-outline" size={20} color="white" />
           </TouchableOpacity>
         </Link>
       </View>
       <View className="p-5 flex-col gap-5">
-        <Text className="text-2xl font-inter-bold">Inicio</Text>
+        <Text className="text-2xl font-geist-bold">Inicio</Text>
         <View className="flex-row flex-wrap gap-4">
           <View className="flex-1 min-w-[160]">
             <StatsCard

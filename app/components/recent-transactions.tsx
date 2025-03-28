@@ -26,8 +26,8 @@ export default function RecentTransactions({
   return (
     <View className="flex-col gap-6 bg-white rounded-xl p-5 shadow-sm border border-gray-200">
       <View className="flex-col">
-        <Text className="text-xl font-inter-bold">Transacciones recientes</Text>
-        <Text className="text-gray-500 font-inter-regular">
+        <Text className="text-xl font-geist-bold">Transacciones recientes</Text>
+        <Text className="text-gray-500 font-geist-regular">
           Últimos movimientos financieros
         </Text>
       </View>
@@ -35,10 +35,10 @@ export default function RecentTransactions({
         {transactions.map((transaction, index) => (
           <View key={index} className="flex-row justify-between items-center">
             <View className="flex-1">
-              <Text className="font-inter-semibold text-gray-800">
+              <Text className="font-geist-semibold text-gray-800">
                 {transaction.name}
               </Text>
-              <Text className="text-gray-500 font-inter-regular">
+              <Text className="text-gray-500 font-geist-regular">
                 {transaction.type === 'payment_received'
                   ? 'Pago recibido'
                   : 'Nuevo préstamo'}
@@ -46,7 +46,7 @@ export default function RecentTransactions({
             </View>
             <View className="items-end">
               <View className="flex-row items-center gap-2">
-                <Text className="text-lg font-inter-semibold">
+                <Text className="text-lg font-geist-semibold">
                   {formatAmount(transaction.amount)}
                 </Text>
                 <Ionicons
@@ -63,7 +63,7 @@ export default function RecentTransactions({
                   }
                 />
               </View>
-              <Text className="text-gray-500 text-sm font-inter-light">
+              <Text className="text-gray-500 text-sm font-geist-light">
                 {transaction.date}
               </Text>
             </View>
@@ -76,7 +76,7 @@ export default function RecentTransactions({
         asChild
       >
         <TouchableOpacity>
-          <Text className="text-center font-inter-bold">Ver todos</Text>
+          <Text className="text-center font-geist-bold">Ver todos</Text>
         </TouchableOpacity>
       </Link>
     </View>

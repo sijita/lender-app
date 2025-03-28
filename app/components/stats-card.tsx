@@ -25,7 +25,7 @@ export default function StatsCard({
   return (
     <View className="h-[120px] flex-col justify-between bg-white rounded-xl p-4 shadow-sm border border-gray-200">
       <View className="flex-row justify-between items-start gap-2">
-        <Text className="text-gray-800 font-inter-semibold truncate flex-1">
+        <Text className="text-gray-800 font-geist-semibold truncate flex-1">
           {title}
         </Text>
         {icon && (
@@ -37,24 +37,24 @@ export default function StatsCard({
         )}
       </View>
       <View className="flex-col justify-end gap-[2px]">
-        <Text className="text-2xl font-inter-black">{value}</Text>
+        <Text className="text-2xl font-geist-black">{value}</Text>
         {change && (
           <View className="flex-row items-center">
             <Text
-              className={`font-inter-medium ${
+              className={`font-geist-medium ${
                 isPositiveChange ? 'text-green-600' : 'text-red-600'
               }`}
             >
               {isPositiveChange ? '+' : ''}
               {change.value}%
             </Text>
-            <Text className="text-gray-500 ml-1 font-inter-regular">
+            <Text className="text-gray-500 ml-1 font-geist-regular">
               {change.period}
             </Text>
           </View>
         )}
         {subtitle && (
-          <Text className="text-gray-500 font-inter-regular">{subtitle}</Text>
+          <Text className="text-gray-500 font-geist-regular">{subtitle}</Text>
         )}
       </View>
     </View>

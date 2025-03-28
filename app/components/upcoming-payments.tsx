@@ -50,8 +50,8 @@ export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
   return (
     <View className="flex-col gap-6 bg-white rounded-xl p-5 shadow-sm border border-gray-200">
       <View className="flex-col">
-        <Text className="text-xl font-inter-bold">Pagos pendientes</Text>
-        <Text className="text-gray-500 font-inter-regular">
+        <Text className="text-xl font-geist-bold">Pagos pendientes</Text>
+        <Text className="text-gray-500 font-geist-regular">
           Pagos con vencimiento en los próximos 7 días
         </Text>
       </View>
@@ -59,16 +59,16 @@ export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
         {payments.map((payment, index) => (
           <View key={index} className="flex-row justify-between items-center">
             <View className="flex-1">
-              <Text className="font-inter-semibold text-gray-800">
+              <Text className="font-geist-semibold text-gray-800">
                 {payment.name}
               </Text>
-              <Text className="font-inter-regular text-gray-500">
+              <Text className="font-geist-regular text-gray-500">
                 Due: {payment.dueDate}
               </Text>
             </View>
             <View className="items-end">
               <View className="flex-row items-center gap-2">
-                <Text className="text-lg font-inter-semibold">
+                <Text className="text-lg font-geist-semibold">
                   {formatAmount(payment.amount)}
                 </Text>
                 <Ionicons
@@ -78,7 +78,7 @@ export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
                 />
               </View>
               <Text
-                className={`${getStatusColor(payment.status)} font-inter-light`}
+                className={`${getStatusColor(payment.status)} font-geist-light`}
               >
                 {getStatusText(payment.status)}
               </Text>
@@ -88,7 +88,7 @@ export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
       </View>
       <Link href="/" className="p-4 border border-gray-200 rounded-lg" asChild>
         <TouchableOpacity>
-          <Text className="text-center font-inter-bold">Ver todos</Text>
+          <Text className="text-center font-geist-bold">Ver todos</Text>
         </TouchableOpacity>
       </Link>
     </View>

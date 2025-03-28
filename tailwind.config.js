@@ -6,12 +6,15 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'inter-light': ['InterLight'],
-        'inter-regular': ['InterRegular'],
-        'inter-medium': ['InterMedium'],
-        'inter-semibold': ['InterSemibold'],
-        'inter-bold': ['InterBold'],
-        'inter-black': ['InterBlack'],
+        'geist-thin': ['GeistThin'],
+        'geist-extralight': ['GeistExtraLight'],
+        'geist-light': ['GeistLight'],
+        'geist-regular': ['GeistRegular'],
+        'geist-medium': ['GeistMedium'],
+        'geist-semibold': ['GeistSemibold'],
+        'geist-bold': ['GeistBold'],
+        'geist-extrabold': ['GeistExtraBold'],
+        'geist-black': ['GeistBlack'],
       },
     },
   },
