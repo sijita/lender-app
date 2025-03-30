@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import TabIcon from '@/app/components/tab-icon';
+import TabIcon from '@/components/home/tab-icon';
 
 const _layout = () => {
   return (

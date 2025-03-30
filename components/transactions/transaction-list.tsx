@@ -24,7 +24,7 @@ export default function TransactionList({
   transactions,
 }: TransactionListProps) {
   return (
-    <View className="flex-1 p-5 flex-col gap-5">
+    <View className="p-5 flex-col gap-5">
       <View className="flex-row items-center gap-2">
         <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3">
           <Ionicons name="search" size={20} color="#6B7280" />
@@ -63,8 +63,9 @@ export default function TransactionList({
             </Text>
           </View>
           {transactions.map((transaction, index) => (
-            <View
+            <TouchableOpacity
               key={index}
+              onPress={() => {}}
               className="flex-row items-center px-4 py-3 border-b border-gray-100"
             >
               <Text className="w-36 font-geist-regular text-gray-600">
@@ -112,7 +113,7 @@ export default function TransactionList({
               <Text className="w-28 font-geist-semibold text-right">
                 ${transaction.balance.toLocaleString()}
               </Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>

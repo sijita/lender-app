@@ -1,6 +1,6 @@
 import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import ClientList from '../components/client-list';
+import ClientList from '@/components/clients/client-list';
 
 const mockClients = [
   {

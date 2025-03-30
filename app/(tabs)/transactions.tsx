@@ -1,6 +1,6 @@
-import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import TransactionList from '../components/transaction-list';
+import TransactionList from '@/components/transactions/transaction-list';
 
 const mockTransactions = [
   {
@@ -71,7 +71,7 @@ const mockTransactions = [
 
 export default function Transactions() {
   return (
-    <ScrollView className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-gray-50">
       <View className="flex-row justify-between items-center px-4 py-6 bg-white border-b border-gray-200">
         <Text className="text-2xl font-geist-bold">Transacciones</Text>
         <TouchableOpacity
@@ -85,6 +85,6 @@ export default function Transactions() {
         </TouchableOpacity>
       </View>
       <TransactionList transactions={mockTransactions} />
-    </ScrollView>
+    </View>
   );
 }

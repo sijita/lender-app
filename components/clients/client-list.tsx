@@ -25,7 +25,7 @@ export default function ClientList({
   onClientPress,
 }: ClientListProps) {
   return (
-    <View className="flex-1 p-5 flex-col gap-5">
+    <View className="p-5 flex-col gap-5">
       <View className="flex-row items-center gap-2">
         <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3">
           <Ionicons name="search" size={20} color="#6B7280" />
