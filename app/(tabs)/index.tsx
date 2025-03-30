@@ -3,7 +3,7 @@ import { memo } from 'react';
 import Header from '@/components/home/header';
 import StatsSection from '@/components/home/stats-section';
 import TransactionsSection from '@/components/home/transactions-section';
-import { useTabBarScroll } from '@/hooks/useTabBarScroll';
+import { useTabBarScroll } from '@/hooks/use-tab-bar-scroll';
 
 function Index() {
   const { handleScroll } = useTabBarScroll();
