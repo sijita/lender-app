@@ -27,5 +27,4 @@ function Index() {
   );
 }
 
-// Utilizamos memo para evitar renderizados innecesarios
 export default memo(Index);
