@@ -23,7 +23,7 @@ export default function StatsCard({
   const isPositiveChange = change && change.value > 0;
 
   return (
-    <View className="h-[120px] flex-col justify-between bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+    <View className="h-[120px] flex-col justify-between bg-white rounded-xl p-4 border border-gray-100">
       <View className="flex-row justify-between items-start gap-2">
         <Text className="text-gray-800 font-geist-semibold truncate flex-1">
           {title}
