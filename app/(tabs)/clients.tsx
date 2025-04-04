@@ -1,5 +1,6 @@
 import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import ClientList from '@/components/clients/client-list';
 
 const mockClients = [
@@ -41,6 +42,8 @@ const mockClients = [
 ];
 
 export default function Clients() {
+  const router = useRouter();
+
   const handleClientPress = (client: any) => {
     // Handle client selection
     console.log('Selected client:', client);
@@ -52,7 +55,7 @@ export default function Clients() {
         <Text className="text-2xl font-geist-bold">Clientes</Text>
         <TouchableOpacity
           className="flex-row items-center gap-1 bg-black px-4 py-2 rounded-full"
-          onPress={() => console.log('Add new client')}
+          onPress={() => router.push('/new-client')}
         >
           <Text className="text-white font-geist-medium">Añadir cliente</Text>
           <Ionicons name="add" size={20} color="white" />
