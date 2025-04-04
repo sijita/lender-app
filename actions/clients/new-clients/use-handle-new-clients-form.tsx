@@ -1,11 +1,7 @@
 import { useState } from 'react';
-import {
-  ClientFormData,
-  clientSchema,
-} from '@/app/new-client/_schemas/client-schema';
+import { ClientFormData, clientSchema } from '@/schemas/clients/client-schema';
 import { ZodError } from 'zod';
 import { supabase } from '@/lib/supabase';
-import { Alert } from 'react-native';
 import { router } from 'expo-router';
 import { useToast } from '@/components/ui/toast-context';
 
@@ -72,7 +68,6 @@ export default function useHandleNewClientsForm() {
     setIsSubmitting(true);
 
     try {
-      // Preparar datos para Supabase
       const clientData = {
         name: formData.name,
         last_name: formData.lastName,
@@ -85,8 +80,7 @@ export default function useHandleNewClientsForm() {
         notes: formData.notes,
       };
 
-      // Insertar en Supabase
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('clients')
         .insert(clientData)
         .select();
@@ -106,11 +100,13 @@ export default function useHandleNewClientsForm() {
         documentNumber: '',
         notes: '',
       });
-      router.push('/clients');
+
       showToast({
         message: 'Cliente guardado correctamente',
         type: 'success',
       });
+
+      router.push('/clients');
     } catch (error: any) {
       console.error('Error saving client:', error);
       showToast({

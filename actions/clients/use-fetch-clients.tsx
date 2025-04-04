@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { Client } from '@/types/client';
+import { Client } from '@/types/clients/client';
 import { useEffect, useState } from 'react';
 
 export default function useFetchClients() {

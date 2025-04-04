@@ -7,8 +7,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import useHandleNewClientsForm from '@/app/new-client/_hooks/use-handle-new-clients-form';
-import { documentTypes } from '@/app/new-client/_constants';
+import useHandleNewClientsForm from '@/actions/clients/new-clients/use-handle-new-clients-form';
+import { documentTypes } from '@/constants/clients';
 import Select from '@/components/ui/select';
 
 const NewClientForm = () => {
