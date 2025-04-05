@@ -4,34 +4,65 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import useFetchTransactions from '@/actions/transactions/use-fetch-transactions';
+import Error from '@/components/ui/error';
+import { formatCurrency } from '@/utils';
+import {
+  getTransactionTypeStyle,
+  getTransactionTypeText,
+} from '@/utils/transactions';
 
-type Transaction = {
-  date: string;
-  client: string;
-  description: string;
-  amount: number;
-  type: 'loan' | 'payment' | 'fee';
-  balance: number;
-};
+export default function TransactionList() {
+  const { transactions, loading, error, refetch } = useFetchTransactions();
+  const [searchQuery, setSearchQuery] = useState('');
 
-type TransactionListProps = {
-  transactions: Transaction[];
-};
+  const filteredTransactions = transactions.filter(
+    (transaction) =>
+      transaction.loan?.client?.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      transaction.amount.toString().includes(searchQuery) ||
+      transaction.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (transaction.notes &&
+        transaction.notes.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
-export default function TransactionList({
-  transactions,
-}: TransactionListProps) {
+  const getTransactionIcon = (type: string) => {
+    if (type === 'payment') {
+      return <Ionicons name="arrow-down-outline" size={15} color="#16a34a" />;
+    } else {
+      return <Ionicons name="arrow-up-outline" size={15} color="#2563eb" />;
+    }
+  };
+
+  if (loading) {
+    return (
+      <View className="min-h-screen flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#000" />
+        <Text className="mt-2 text-gray-500">Cargando transacciones...</Text>
+      </View>
+    );
+  }
+
+  if (error) <Error error={error} refetch={refetch} />;
+
   return (
     <View className="p-5 flex-col gap-5">
       <View className="flex-row items-center gap-2">
-        <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3">
+        <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3 border border-gray-100">
           <Ionicons name="search" size={20} color="#6B7280" />
           <TextInput
             placeholder="Buscar transacciones..."
-            className="flex-1 text-base"
+            className="flex-1 text-base placeholder:font-geist-light"
             placeholderTextColor="#6B7280"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
           />
         </View>
         <TouchableOpacity className="flex-row items-center gap-1 border border-gray-200 rounded-lg px-4 py-2">
@@ -46,75 +77,59 @@ export default function TransactionList({
         <View>
           <View className="flex-row px-4 py-2 border-b border-gray-200">
             <Text className="w-36 font-geist-medium text-gray-500">Fecha</Text>
-            <Text className="w-52 font-geist-medium text-gray-500">
+            <Text className="w-20 font-geist-medium text-gray-500">
               Cliente
             </Text>
-            <Text className="w-40 font-geist-medium text-gray-500">
-              Descripción
-            </Text>
-            <Text className="w-32 font-geist-medium text-gray-500 text-right">
+            <Text className="w-56 font-geist-medium text-gray-500 text-right">
               Monto
             </Text>
-            <Text className="w-60 font-geist-medium text-gray-500 text-center">
+            <Text className="w-48 font-geist-medium text-gray-500 text-center">
               Tipo
             </Text>
-            <Text className="w-28 font-geist-medium text-gray-500 text-right">
-              Balance
-            </Text>
+            <Text className="w-16 font-geist-medium text-gray-500 text-right"></Text>
           </View>
-          {transactions.map((transaction, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => {}}
-              className="flex-row items-center px-4 py-3 border-b border-gray-100"
-            >
-              <Text className="w-36 font-geist-regular text-gray-600">
-                {transaction.date}
+          {filteredTransactions.length === 0 ? (
+            <View className="py-8 items-center">
+              <Text className="text-gray-500">
+                No se encontraron transacciones
               </Text>
-              <Text className="w-52 font-geist-medium">
-                {transaction.client}
-              </Text>
-              <Text className="w-40 text-gray-600">
-                {transaction.description}
-              </Text>
-              <View className="w-32 flex-row items-center justify-end gap-1">
-                <Text className="font-geist-semibold">
-                  ${transaction.amount.toLocaleString()}
+            </View>
+          ) : (
+            filteredTransactions.map((transaction) => (
+              <TouchableOpacity
+                key={transaction.id}
+                onPress={() => {}}
+                className="flex-row items-center px-4 py-3 border-b border-gray-100"
+              >
+                <Text className="w-36 font-geist-regular text-gray-600">
+                  {format(new Date(transaction.created_at), 'dd/MM/yyyy', {
+                    locale: es,
+                  })}
                 </Text>
-                <Ionicons
-                  name="arrow-down-outline"
-                  size={15}
-                  color={
-                    transaction.type === 'loan'
-                      ? 'green'
-                      : transaction.type === 'payment'
-                      ? 'green'
-                      : 'orange'
-                  }
-                />
-              </View>
-              <View className="w-60 items-center">
-                <Text
-                  className={`px-3 py-1 rounded-full text-xs font-geist-medium ${
-                    transaction.type === 'loan'
-                      ? 'bg-blue-100 text-blue-800'
-                      : transaction.type === 'payment'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-orange-100 text-orange-800'
-                  }`}
-                >
-                  {transaction.type === 'loan'
-                    ? 'Préstamo'
-                    : transaction.type === 'payment'
-                    ? 'Pago'
-                    : 'Cargo'}
+                <Text className="w-20 font-geist-medium">
+                  {transaction.loan?.client?.name || 'Cliente desconocido'}
                 </Text>
-              </View>
-              <Text className="w-28 font-geist-semibold text-right">
-                ${transaction.balance.toLocaleString()}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <View className="w-56 flex-row items-center justify-end gap-1">
+                  <Text className="font-geist-semibold">
+                    {formatCurrency(Number(transaction.amount))}
+                  </Text>
+                  {getTransactionIcon(transaction.type)}
+                </View>
+                <View className="w-48 items-center">
+                  <Text
+                    className={`px-3 py-1 rounded-full text-xs font-geist-medium ${getTransactionTypeStyle(
+                      transaction.type
+                    )}`}
+                  >
+                    {getTransactionTypeText(transaction.type)}
+                  </Text>
+                </View>
+                <Text className="w-16 font-geist-regular text-gray-600 text-right">
+                  <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+                </Text>
+              </TouchableOpacity>
+            ))
+          )}
         </View>
       </ScrollView>
     </View>

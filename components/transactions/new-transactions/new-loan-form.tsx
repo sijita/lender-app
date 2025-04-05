@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useHandleNewLoans } from '@/actions/loans/use-handle-new-loans';
+import { useHandleNewLoans } from '@/actions/loans/new-transactions/use-handle-new-loans';
 import useFetchClients from '@/actions/clients/use-fetch-clients';
 import Select from '@/components/ui/select';
 import { format } from 'date-fns';

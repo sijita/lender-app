@@ -58,7 +58,7 @@ export function useHandleNewLoans() {
     setShowDatePicker(null);
   };
 
-  const calculateLoanDetails = useMemo(() => {
+  useMemo(() => {
     const amount = Number(formData.amount) || 0;
     const interestRate = Number(formData.interestRate) || 0;
     const term = Number(formData.term) || 1;

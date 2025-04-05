@@ -9,18 +9,20 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import useFetchClients from '@/actions/clients/use-fetch-clients';
+import Error from '@/components/ui/error';
+
 export default function ClientList() {
   const { clients, loading, error, refetch } = useFetchClients();
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter clients based on search query
   const filteredClients = clients.filter(
     (client) =>
       `${client.name} ${client.last_name}`
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
       client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      client.phone.includes(searchQuery)
+      client.phone.includes(searchQuery) ||
+      client.document_number.toString().includes(searchQuery)
   );
 
   if (loading) {
@@ -32,19 +34,7 @@ export default function ClientList() {
     );
   }
 
-  if (error) {
-    return (
-      <View className="flex-1 justify-center items-center p-5">
-        <Text className="text-red-500 mb-4">Error: {error}</Text>
-        <TouchableOpacity
-          className="bg-black py-2 px-4 rounded-lg"
-          onPress={refetch}
-        >
-          <Text className="text-white font-geist-medium">Reintentar</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+  if (error) <Error error={error} refetch={refetch} />;
 
   return (
     <View className="p-5 flex-col gap-5">
@@ -69,7 +59,8 @@ export default function ClientList() {
       <ScrollView horizontal className="w-full">
         <View>
           <View className="flex-row px-4 py-2 border-b border-gray-200">
-            <Text className="w-52 font-geist-medium text-gray-500">Nombre</Text>
+            <Text className="w-40 font-geist-medium text-gray-500">Cédula</Text>
+            <Text className="w-72 font-geist-medium text-gray-500">Nombre</Text>
             <Text className="w-48 font-geist-medium text-gray-500">
               Contacto
             </Text>
@@ -92,7 +83,10 @@ export default function ClientList() {
                 // onPress={() => onClientPress(client)}
                 className="flex-row items-center px-4 py-3 border-b border-gray-100"
               >
-                <Text className="w-52 font-geist-medium">
+                <Text className="w-40 font-geist-medium">
+                  {client.document_number}
+                </Text>
+                <Text className="w-72 font-geist-medium">
                   {client.name} {client.last_name}
                 </Text>
                 <View className="w-48">
@@ -104,17 +98,17 @@ export default function ClientList() {
                   </Text>
                 </View>
                 <Text className="w-40 font-geist-semibold text-right">
-                  ${client.outstanding.toLocaleString()}
+                  ${(client as any).outstanding?.toLocaleString() ?? '0'}
                 </Text>
                 <View className="w-28 items-end shrink-0">
                   <Text
                     className={`px-2 py-1 rounded-full text-xs font-geist-medium ${
-                      client.status === 'free'
+                      (client as any).status === 'free'
                         ? 'bg-green-100 text-green-800'
                         : 'bg-yellow-100 text-yellow-800'
                     }`}
                   >
-                    {client.status === 'free' ? 'Libre' : 'Pendiente'}
+                    {(client as any).status === 'free' ? 'Libre' : 'Pendiente'}
                   </Text>
                 </View>
                 <View className="w-16 items-end">
