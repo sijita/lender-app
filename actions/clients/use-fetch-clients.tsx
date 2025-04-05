@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { Client } from '@/types/clients/client';
+import { Client } from '@/schemas/clients/client-schema';
 import { useEffect, useState } from 'react';
 
 export default function useFetchClients() {
@@ -11,14 +11,12 @@ export default function useFetchClients() {
     try {
       setLoading(true);
 
-      // First, fetch all clients
       const { data: clientsData, error: clientsError } = await supabase
         .from('clients')
         .select('*');
 
       if (clientsError) throw clientsError;
 
-      // For each client, fetch their loans
       const clientsWithLoans = await Promise.all(
         clientsData.map(async (client) => {
           const { data: loans, error: loansError } = await supabase
@@ -28,13 +26,11 @@ export default function useFetchClients() {
 
           if (loansError) throw loansError;
 
-          // Calculate total outstanding amount
           const outstanding = loans.reduce(
             (total, loan) => total + parseFloat(loan.outstanding),
             0
           );
 
-          // Determine status based on loans
           const hasActiveLoans = loans.some(
             (loan) => loan.status === 'active' || loan.status === 'pending'
           );

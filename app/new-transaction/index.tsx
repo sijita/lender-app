@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import NewLoanForm from '../../components/transactions/new-transactions/new-loan-form';
-import NewPaymentForm from '../../components/transactions/new-transactions/new-payment-form';
+import NewLoanForm from '@/components/transactions/new-transactions/new-loan-form';
+import NewPaymentForm from '@/components/transactions/new-transactions/new-payment-form';
 
 type TabType = 'new-loan' | 'receive-payment';
 
@@ -24,7 +24,7 @@ export default function NewTransaction() {
         <Text className="text-2xl font-geist-bold">Nueva transacción</Text>
       </View>
       <View className="p-5 flex-col gap-5">
-        <View className="flex-row bg-gray-100 rounded-lg overflow-hidden shadow-sm">
+        <View className="flex-row bg-gray-100 rounded-lg overflow-hidden border border-gray-100">
           <TouchableOpacity
             className={`flex-1 py-3 px-4 ${
               activeTab === 'new-loan' ? 'bg-white' : ''
@@ -46,7 +46,7 @@ export default function NewTransaction() {
             onPress={() => setActiveTab('receive-payment')}
           >
             <Text
-              className={`text-center font-geist-medium ${
+              className={`text-center font-geist-semibold ${
                 activeTab === 'receive-payment' ? 'text-black' : 'text-gray-500'
               }`}
             >
@@ -54,7 +54,7 @@ export default function NewTransaction() {
             </Text>
           </TouchableOpacity>
         </View>
-        <View className="bg-white rounded-lg p-5 shadow-sm">
+        <View className="bg-white rounded-lg p-5 border border-gray-100">
           {activeTab === 'new-loan' ? <NewLoanForm /> : <NewPaymentForm />}
         </View>
       </View>

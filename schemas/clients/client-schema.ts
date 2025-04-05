@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const clientSchema = z.object({
+  id: z.number().optional(),
   name: z.string().min(1, { message: 'El nombre es requerido' }),
   lastName: z.string().min(1, { message: 'El apellido es requerido' }),
   email: z.string().email({ message: 'Email inválido' }),
@@ -19,4 +20,4 @@ export const clientSchema = z.object({
   notes: z.string().optional().or(z.literal('')),
 });
 
-export type ClientFormData = z.infer<typeof clientSchema>;
+export type Client = z.infer<typeof clientSchema>;

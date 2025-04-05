@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ClientFormData, clientSchema } from '@/schemas/clients/client-schema';
+import { Client, clientSchema } from '@/schemas/clients/client-schema';
 import { ZodError } from 'zod';
 import { supabase } from '@/lib/supabase';
 import { router } from 'expo-router';
@@ -8,10 +8,10 @@ import { useToast } from '@/components/ui/toast-context';
 export default function useHandleNewClientsForm() {
   const { showToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof ClientFormData, string>>
-  >({});
-  const [formData, setFormData] = useState<ClientFormData>({
+  const [errors, setErrors] = useState<Partial<Record<keyof Client, string>>>(
+    {}
+  );
+  const [formData, setFormData] = useState<Client>({
     name: '',
     lastName: '',
     email: '',
@@ -23,7 +23,7 @@ export default function useHandleNewClientsForm() {
     notes: '',
   });
 
-  const handleChange = (field: keyof ClientFormData, value: string) => {
+  const handleChange = (field: keyof Client, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -45,9 +45,9 @@ export default function useHandleNewClientsForm() {
       return true;
     } catch (error) {
       if (error instanceof ZodError) {
-        const newErrors: Partial<Record<keyof ClientFormData, string>> = {};
+        const newErrors: Partial<Record<keyof Client, string>> = {};
         error.errors.forEach((err) => {
-          const path = err.path[0] as keyof ClientFormData;
+          const path = err.path[0] as keyof Client;
           newErrors[path] = err.message;
         });
         setErrors(newErrors);

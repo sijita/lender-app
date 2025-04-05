@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import useHandleNewClientsForm from '@/actions/clients/new-clients/use-handle-new-clients-form';
 import { documentTypes } from '@/constants/clients';
@@ -161,7 +160,7 @@ const NewClientForm = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className={`py-3 px-6 rounded-lg flex-row items-center justify-center ${
-            isSubmitting ? 'bg-gray-300 text-black' : 'bg-black'
+            isSubmitting ? 'bg-gray-200 text-black' : 'bg-black'
           }`}
           onPress={saveClient}
           disabled={isSubmitting}
