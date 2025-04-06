@@ -59,15 +59,15 @@ export default function ClientList() {
       <ScrollView horizontal className="w-full">
         <View>
           <View className="flex-row px-4 py-2 border-b border-gray-200">
-            <Text className="w-40 font-geist-medium text-gray-500">Cédula</Text>
-            <Text className="w-72 font-geist-medium text-gray-500">Nombre</Text>
-            <Text className="w-48 font-geist-medium text-gray-500">
+            <Text className="w-36 font-geist-medium text-gray-500">Cédula</Text>
+            <Text className="w-40 font-geist-medium text-gray-500">Nombre</Text>
+            <Text className="w-52 font-geist-medium text-gray-500">
               Contacto
             </Text>
             <Text className="w-40 font-geist-medium text-gray-500 text-right">
               Pendiente
             </Text>
-            <Text className="w-28 font-geist-medium text-gray-500 text-right">
+            <Text className="w-40 font-geist-medium text-gray-500 text-right">
               Estado
             </Text>
             <View className="w-16" />
@@ -83,13 +83,13 @@ export default function ClientList() {
                 // onPress={() => onClientPress(client)}
                 className="flex-row items-center px-4 py-3 border-b border-gray-100"
               >
-                <Text className="w-40 font-geist-medium">
+                <Text className="w-36 font-geist-medium">
                   {client.document_number}
                 </Text>
-                <Text className="w-72 font-geist-medium">
+                <Text className="w-40 font-geist-medium">
                   {client.name} {client.last_name}
                 </Text>
-                <View className="w-48">
+                <View className="w-52">
                   <Text className="text-gray-600 font-geist-regular">
                     {client.email}
                   </Text>
@@ -100,7 +100,7 @@ export default function ClientList() {
                 <Text className="w-40 font-geist-semibold text-right">
                   ${(client as any).outstanding?.toLocaleString() ?? '0'}
                 </Text>
-                <View className="w-28 items-end shrink-0">
+                <View className="w-40 items-end shrink-0">
                   <Text
                     className={`px-2 py-1 rounded-full text-xs font-geist-medium ${
                       (client as any).status === 'free'

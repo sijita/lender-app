@@ -28,9 +28,6 @@ const statsData = [
   },
 ];
 
-/**
- * Componente que muestra la sección de estadísticas en la pantalla de inicio
- */
 export default function StatsSection() {
   return (
     <View className="flex-col gap-5">

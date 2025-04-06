@@ -2,7 +2,13 @@ import { Text, View } from 'react-native';
 import { ReactNode } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
-type StatsCardProps = {
+export default function StatsCard({
+  title,
+  value,
+  change,
+  subtitle,
+  icon,
+}: {
   title: string;
   value: string | number;
   change?: {
@@ -11,15 +17,7 @@ type StatsCardProps = {
   };
   subtitle?: string;
   icon?: ReactNode;
-};
-
-export default function StatsCard({
-  title,
-  value,
-  change,
-  subtitle,
-  icon,
-}: StatsCardProps) {
+}) {
   const isPositiveChange = change && change.value > 0;
 
   return (
@@ -37,24 +35,26 @@ export default function StatsCard({
         )}
       </View>
       <View className="flex-col justify-end gap-[2px]">
-        <Text className="text-2xl font-geist-black">{value}</Text>
+        <Text className="text-2xl font-geist-extrabold">{value}</Text>
         {change && (
           <View className="flex-row items-center">
             <Text
-              className={`font-geist-medium ${
+              className={`text-sm font-geist-medium ${
                 isPositiveChange ? 'text-green-600' : 'text-red-600'
               }`}
             >
               {isPositiveChange ? '+' : ''}
               {change.value}%
             </Text>
-            <Text className="text-gray-500 ml-1 font-geist-regular">
+            <Text className="text-sm text-gray-500 ml-1 font-geist-regular">
               {change.period}
             </Text>
           </View>
         )}
         {subtitle && (
-          <Text className="text-gray-500 font-geist-regular">{subtitle}</Text>
+          <Text className="text-gray-500 font-geist-regular text-sm">
+            {subtitle}
+          </Text>
         )}
       </View>
     </View>

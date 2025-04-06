@@ -33,8 +33,6 @@ export default function TransactionList() {
         transaction.notes.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  console.log(filteredTransactions);
-
   const getTransactionIcon = (type: string) => {
     if (type === 'payment') {
       return <Ionicons name="arrow-up-outline" size={15} color="#16a34a" />;
@@ -85,10 +83,10 @@ export default function TransactionList() {
             <Text className="w-40 font-geist-medium text-gray-500 text-right">
               Monto
             </Text>
-            <Text className="w-48 font-geist-medium text-gray-500 text-center">
+            <Text className="w-40 font-geist-medium text-gray-500 text-right">
               Tipo
             </Text>
-            <Text className="w-16 font-geist-medium text-gray-500 text-right"></Text>
+            <View className="w-16" />
           </View>
           {filteredTransactions.length === 0 ? (
             <View className="py-8 items-center">
@@ -112,13 +110,13 @@ export default function TransactionList() {
                   {`${transaction.loan?.client?.name} ${transaction?.loan?.client?.last_name}` ||
                     'Cliente desconocido'}
                 </Text>
-                <View className="w-40 flex-row items-center justify-end gap-1">
+                <View className="w-40 text-right flex-row items-center justify-end gap-1">
                   <Text className="font-geist-semibold">
                     {formatCurrency(Number(transaction.amount))}
                   </Text>
                   {getTransactionIcon(transaction.type)}
                 </View>
-                <View className="w-48 items-center">
+                <View className="w-40 items-end shrink-0">
                   <Text
                     className={`px-3 py-1 rounded-full text-xs font-geist-medium ${getTransactionTypeStyle(
                       transaction.type
@@ -127,9 +125,9 @@ export default function TransactionList() {
                     {getTransactionTypeText(transaction.type)}
                   </Text>
                 </View>
-                <Text className="w-16 font-geist-regular text-gray-600 text-right">
+                <View className="w-16 items-end">
                   <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-                </Text>
+                </View>
               </TouchableOpacity>
             ))
           )}

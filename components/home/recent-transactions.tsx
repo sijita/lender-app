@@ -1,21 +1,16 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
-
-type Transaction = {
-  name: string;
-  type: 'payment_received' | 'new_loan';
-  amount: number;
-  date: string;
-};
-
-type RecentTransactionsProps = {
-  transactions: Transaction[];
-};
 
 export default function RecentTransactions({
   transactions,
-}: RecentTransactionsProps) {
+}: {
+  transactions: {
+    name: string;
+    type: 'payment_received' | 'new_loan';
+    amount: number;
+    date: string;
+  }[];
+}) {
   const formatAmount = (amount: number) => {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -24,7 +19,7 @@ export default function RecentTransactions({
   };
 
   return (
-    <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
+    <View className="flex-col gap-6 bg-white rounded-xl rounded-b-none p-5 border border-gray-100">
       <View className="flex-col">
         <Text className="text-xl font-geist-bold">Transacciones recientes</Text>
         <Text className="text-gray-500 font-geist-regular">
@@ -70,15 +65,6 @@ export default function RecentTransactions({
           </View>
         ))}
       </View>
-      <Link
-        href="/transactions"
-        className="p-4 border border-gray-200 rounded-lg"
-        asChild
-      >
-        <TouchableOpacity>
-          <Text className="text-center font-geist-bold">Ver todos</Text>
-        </TouchableOpacity>
-      </Link>
     </View>
   );
 }

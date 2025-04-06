@@ -48,7 +48,7 @@ export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
   };
 
   return (
-    <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
+    <View className="flex-col gap-6 bg-white rounded-xl rounded-t-none p-5 border border-gray-100">
       <View className="flex-col">
         <Text className="text-xl font-geist-bold">Pagos pendientes</Text>
         <Text className="text-gray-500 font-geist-regular">

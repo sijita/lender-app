@@ -58,7 +58,7 @@ const paymentsData = [
 
 export default function TransactionsSection() {
   return (
-    <View className="flex-col gap-5">
+    <View className="flex-col">
       <RecentTransactions transactions={transactionsData} />
       <UpcomingPayments payments={paymentsData} />
     </View>
