@@ -19,7 +19,8 @@ export default function useFetchTransactions() {
           *,
           loan:loan_id (
             client:client_id (
-              name
+              name,
+              last_name
             )
           )
         `

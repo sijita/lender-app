@@ -1,11 +1,3 @@
-export const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    minimumFractionDigits: 0,
-  }).format(amount);
-};
-
 export const getTransactionTypeText = (type: string) => {
   switch (type) {
     case 'loan_disbursement':
@@ -24,7 +16,7 @@ export const getTransactionTypeText = (type: string) => {
 export const getTransactionTypeStyle = (type: string) => {
   switch (type) {
     case 'loan_disbursement':
-      return 'bg-blue-100 text-blue-800';
+      return 'bg-yellow-100 text-yellow-800';
     case 'payment':
       return 'bg-green-100 text-green-800';
     case 'fee':

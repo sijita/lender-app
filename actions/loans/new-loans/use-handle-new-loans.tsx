@@ -25,15 +25,33 @@ export function useHandleNewLoans() {
     totalPayment: 0,
     totalInterest: 0,
   });
+  const [formattedAmount, setFormattedAmount] = useState(
+    formData.amount
+      ? new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(
+          Number(formData.amount)
+        )
+      : ''
+  );
 
-  // Handle form field changes
+  const handleAmountChange = (text: string) => {
+    const numericValue = text.replace(/\D/g, '');
+
+    handleChange('amount', numericValue);
+
+    const formatted = numericValue
+      ? new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(
+          Number(numericValue)
+        )
+      : '';
+    setFormattedAmount(formatted);
+  };
+
   const handleChange = (field: keyof Loan, value: any) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
 
-    // Clear error when user types
     if (errors[field]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -43,7 +61,6 @@ export function useHandleNewLoans() {
     }
   };
 
-  // Select client
   const selectClient = (clientId: number) => {
     setSelectedClient(clientId);
     setFormData((prev) => ({
@@ -52,7 +69,6 @@ export function useHandleNewLoans() {
     }));
   };
 
-  // Handle date selection
   const handleDateSelect = (date: Date, type: 'start' | 'payment') => {
     handleChange(type === 'start' ? 'startDate' : 'paymentDate', date);
     setShowDatePicker(null);
@@ -89,10 +105,12 @@ export function useHandleNewLoans() {
       const totalPayment = amount + totalInterest;
       const paymentAmount = totalPayment / term;
 
+      const roundToThousand = (num: number) => Math.ceil(num / 1000) * 1000;
+
       setCalculatedValues({
-        monthlyPayment: paymentAmount,
-        totalPayment,
-        totalInterest,
+        monthlyPayment: roundToThousand(paymentAmount),
+        totalPayment: roundToThousand(totalPayment),
+        totalInterest: roundToThousand(totalInterest),
       });
     }
   }, [
@@ -102,10 +120,8 @@ export function useHandleNewLoans() {
     formData.paymentFrequency,
   ]);
 
-  // Validate form
   const validateForm = () => {
     try {
-      // Add clientId from selectedClient
       const dataToValidate = {
         ...formData,
         clientId: selectedClient,
@@ -127,7 +143,6 @@ export function useHandleNewLoans() {
     }
   };
 
-  // Save loan to database
   const saveLoan = async () => {
     if (!validateForm()) {
       showToast({
@@ -144,10 +159,8 @@ export function useHandleNewLoans() {
       const interestRate = Number(formData.interestRate);
       const term = Number(formData.term);
 
-      // Calculate loan details
       const { totalInterest, totalPayment, monthlyPayment } = calculatedValues;
 
-      // Prepare data for Supabase
       const loanData = {
         amount,
         interest: totalInterest,
@@ -165,7 +178,6 @@ export function useHandleNewLoans() {
         notes: formData.notes || null,
       };
 
-      // Insert into Supabase
       const { error } = await supabase.from('loans').insert(loanData).select();
 
       if (error) {
@@ -209,6 +221,8 @@ export function useHandleNewLoans() {
     errors,
     isSubmitting,
     calculatedValues,
+    formattedAmount,
+    handleAmountChange,
     handleChange,
     selectClient,
     handleDateSelect,

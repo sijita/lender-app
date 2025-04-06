@@ -9,6 +9,7 @@ export interface Transaction {
   loan?: {
     client: {
       name: string;
+      last_name: string;
     };
   };
 }

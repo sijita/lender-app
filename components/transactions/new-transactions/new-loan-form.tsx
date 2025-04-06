@@ -1,19 +1,15 @@
-import {
-  ActivityIndicator,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useHandleNewLoans } from '@/actions/loans/new-transactions/use-handle-new-loans';
+import { useHandleNewLoans } from '@/actions/loans/new-loans/use-handle-new-loans';
 import useFetchClients from '@/actions/clients/use-fetch-clients';
 import Select from '@/components/ui/select';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useState, useEffect } from 'react';
+import { formatCurrency } from '@/utils';
+import ActionButtons from '@/components/ui/action-buttons';
+import { frequencyOptions } from '@/constants/loans';
 
 const NewLoanForm = () => {
   const {
@@ -22,59 +18,15 @@ const NewLoanForm = () => {
     errors,
     isSubmitting,
     calculatedValues,
+    formattedAmount,
+    handleAmountChange,
     handleChange,
     handleDateSelect,
     setShowDatePicker,
     saveLoan,
     selectClient,
   } = useHandleNewLoans();
-  const { clients, loading: loadingClients } = useFetchClients();
-  const [formattedAmount, setFormattedAmount] = useState('');
-
-  // Format amount with thousands separators
-  useEffect(() => {
-    if (formData.amount) {
-      // Remove non-numeric characters for processing
-      const numericValue = formData.amount.replace(/\D/g, '');
-
-      // Format with thousands separators
-      if (numericValue) {
-        const formatted = new Intl.NumberFormat('es-CO', {
-          maximumFractionDigits: 0,
-        }).format(Number(numericValue));
-        setFormattedAmount(formatted);
-      } else {
-        setFormattedAmount('');
-      }
-    } else {
-      setFormattedAmount('');
-    }
-  }, [formData.amount]);
-
-  // Handle amount input change
-  const handleAmountChange = (text: string) => {
-    // Remove all non-numeric characters
-    const numericValue = text.replace(/\D/g, '');
-
-    // Update the actual form data with the numeric value
-    handleChange('amount', numericValue);
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  // Payment frequency options
-  const frequencyOptions = [
-    { id: 'daily', label: 'Diario' },
-    { id: 'weekly', label: 'Semanal' },
-    { id: 'biweekly', label: 'Quincenal' },
-    { id: 'monthly', label: 'Mensual' },
-  ];
+  const { clients } = useFetchClients();
 
   return (
     <View className="flex-col gap-5">
@@ -283,35 +235,12 @@ const NewLoanForm = () => {
           onChangeText={(text) => handleChange('notes', text)}
         />
       </View>
-      <View className="flex-row justify-between mt-4">
-        <TouchableOpacity
-          className="py-3 px-6 border border-gray-200 rounded-lg"
-          onPress={() => router.back()}
-          disabled={isSubmitting}
-        >
-          <Text className="font-geist-medium">Cancelar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          className={`py-3 px-6 rounded-lg flex-row items-center justify-center ${
-            isSubmitting ? 'bg-gray-200 text-black' : 'bg-black'
-          }`}
-          onPress={saveLoan}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <>
-              <ActivityIndicator size="small" color="white" />
-              <Text className="font-geist-medium text-white ml-2">
-                Guardando...
-              </Text>
-            </>
-          ) : (
-            <Text className="font-geist-medium text-white">
-              Registrar préstamo
-            </Text>
-          )}
-        </TouchableOpacity>
-      </View>
+      <ActionButtons
+        submitLabel="Registrar préstamo"
+        onCancel={() => router.back()}
+        onSubmit={saveLoan}
+        isSubmitting={isSubmitting}
+      />
       {showDatePicker && (
         <DateTimePicker
           value={

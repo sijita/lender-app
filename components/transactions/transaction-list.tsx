@@ -33,11 +33,13 @@ export default function TransactionList() {
         transaction.notes.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  console.log(filteredTransactions);
+
   const getTransactionIcon = (type: string) => {
     if (type === 'payment') {
-      return <Ionicons name="arrow-down-outline" size={15} color="#16a34a" />;
+      return <Ionicons name="arrow-up-outline" size={15} color="#16a34a" />;
     } else {
-      return <Ionicons name="arrow-up-outline" size={15} color="#2563eb" />;
+      return <Ionicons name="arrow-down-outline" size={15} color="#ca8a04" />;
     }
   };
 
@@ -77,7 +79,7 @@ export default function TransactionList() {
         <View>
           <View className="flex-row px-4 py-2 border-b border-gray-200">
             <Text className="w-36 font-geist-medium text-gray-500">Fecha</Text>
-            <Text className="w-20 font-geist-medium text-gray-500">
+            <Text className="w-40 font-geist-medium text-gray-500">
               Cliente
             </Text>
             <Text className="w-40 font-geist-medium text-gray-500 text-right">
@@ -106,8 +108,9 @@ export default function TransactionList() {
                     locale: es,
                   })}
                 </Text>
-                <Text className="w-20 font-geist-medium">
-                  {transaction.loan?.client?.name || 'Cliente desconocido'}
+                <Text className="w-40 font-geist-medium">
+                  {`${transaction.loan?.client?.name} ${transaction?.loan?.client?.last_name}` ||
+                    'Cliente desconocido'}
                 </Text>
                 <View className="w-40 flex-row items-center justify-end gap-1">
                   <Text className="font-geist-semibold">
