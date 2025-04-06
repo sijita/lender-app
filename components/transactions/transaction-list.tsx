@@ -80,7 +80,7 @@ export default function TransactionList() {
             <Text className="w-20 font-geist-medium text-gray-500">
               Cliente
             </Text>
-            <Text className="w-56 font-geist-medium text-gray-500 text-right">
+            <Text className="w-40 font-geist-medium text-gray-500 text-right">
               Monto
             </Text>
             <Text className="w-48 font-geist-medium text-gray-500 text-center">
@@ -109,7 +109,7 @@ export default function TransactionList() {
                 <Text className="w-20 font-geist-medium">
                   {transaction.loan?.client?.name || 'Cliente desconocido'}
                 </Text>
-                <View className="w-56 flex-row items-center justify-end gap-1">
+                <View className="w-40 flex-row items-center justify-end gap-1">
                   <Text className="font-geist-semibold">
                     {formatCurrency(Number(transaction.amount))}
                   </Text>

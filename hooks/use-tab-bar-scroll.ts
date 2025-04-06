@@ -22,7 +22,7 @@ export function useTabBarScroll() {
         navigation.setOptions({
           tabBarStyle: {
             display: 'flex',
-            backgroundColor: '#FAFAFA',
+            backgroundColor: '#000',
             borderRadius: 50,
             marginHorizontal: 20,
             marginBottom: 35,
