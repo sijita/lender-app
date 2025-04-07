@@ -105,16 +105,14 @@ const NewPaymentForm = () => {
         )}
       </View>
       <View className="flex-col gap-2">
-        <Text className="font-geist-medium">
-          Cuotas pagadas<Text className="text-red-500">*</Text>
-        </Text>
+        <Text className="font-geist-medium">Cuotas pagadas</Text>
         <View
           className={`border ${
             errors.quotas ? 'border-red-500' : 'border-gray-200'
           } rounded-lg flex-row items-center`}
         >
           <TextInput
-            placeholder="12"
+            placeholder="1"
             keyboardType="number-pad"
             className="flex-1 p-3"
             value={formData.quotas?.toString() ?? ''}

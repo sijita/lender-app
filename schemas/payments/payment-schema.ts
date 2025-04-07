@@ -33,10 +33,9 @@ export const paymentSchema = z.object({
     required_error: 'El método de pago es requerido',
   }),
   quotas: z
-    .number({
-      required_error: 'El número de cuotas es requerido',
-    })
-    .positive({ message: 'El número de cuotas debe ser mayor a 0' }),
+    .number()
+    .positive({ message: 'El número de cuotas debe ser mayor a 0' })
+    .optional(),
   notes: z.string().optional(),
 });
 
