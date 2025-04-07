@@ -27,13 +27,13 @@ export default function NewTransaction() {
         <View className="flex-row bg-gray-100 rounded-lg overflow-hidden border border-gray-100">
           <TouchableOpacity
             className={`flex-1 py-3 px-4 ${
-              activeTab === 'new-loan' ? 'bg-black' : ''
+              activeTab === 'new-loan' ? 'bg-white' : ''
             }`}
             onPress={() => setActiveTab('new-loan')}
           >
             <Text
               className={`text-center font-geist-semibold ${
-                activeTab === 'new-loan' ? 'text-white' : 'text-gray-500'
+                activeTab === 'new-loan' ? 'text-black' : 'text-gray-500'
               }`}
             >
               Préstamo
@@ -41,13 +41,13 @@ export default function NewTransaction() {
           </TouchableOpacity>
           <TouchableOpacity
             className={`flex-1 py-3 px-4 ${
-              activeTab === 'receive-payment' ? 'bg-black' : ''
+              activeTab === 'receive-payment' ? 'bg-white' : ''
             }`}
             onPress={() => setActiveTab('receive-payment')}
           >
             <Text
               className={`text-center font-geist-semibold ${
-                activeTab === 'receive-payment' ? 'text-white' : 'text-gray-500'
+                activeTab === 'receive-payment' ? 'text-black' : 'text-gray-500'
               }`}
             >
               Pago

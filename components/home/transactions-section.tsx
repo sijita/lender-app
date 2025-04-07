@@ -1,66 +1,55 @@
-import { View } from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import RecentTransactions from './recent-transactions';
 import UpcomingPayments from './upcoming-payments';
-
-const transactionsData = [
-  {
-    name: 'John Smith',
-    type: 'payment_received' as const,
-    amount: 500,
-    date: 'Today',
-  },
-  {
-    name: 'Sarah Johnson',
-    type: 'new_loan' as const,
-    amount: 1200,
-    date: 'Yesterday',
-  },
-  {
-    name: 'Michael Brown',
-    type: 'payment_received' as const,
-    amount: 350,
-    date: 'Mar 15, 2025',
-  },
-  {
-    name: 'Emily Davis',
-    type: 'new_loan' as const,
-    amount: 800,
-    date: 'Mar 12, 2025',
-  },
-];
-
-const paymentsData = [
-  {
-    name: 'Robert Wilson',
-    amount: 250,
-    dueDate: 'Tomorrow',
-    status: 'on_time' as const,
-  },
-  {
-    name: 'Jennifer Lee',
-    amount: 420,
-    dueDate: 'Mar 19, 2025',
-    status: 'on_time' as const,
-  },
-  {
-    name: 'David Miller',
-    amount: 600,
-    dueDate: 'Mar 20, 2025',
-    status: 'at_risk' as const,
-  },
-  {
-    name: 'Lisa Taylor',
-    amount: 180,
-    dueDate: 'Mar 22, 2025',
-    status: 'on_time' as const,
-  },
-];
+import useFetchRecentTransactions from '@/actions/transactions/use-fetch-recent-transactions';
+import useFetchUpcomingPayments from '@/actions/payments/use-fetch-upcoming-payments';
 
 export default function TransactionsSection() {
+  const {
+    recentTransactions,
+    loading: loadingTransactions,
+    error: transactionsError,
+  } = useFetchRecentTransactions();
+  const {
+    upcomingPayments,
+    loading: loadingPayments,
+    error: paymentsError,
+  } = useFetchUpcomingPayments();
+
+  // Mostrar indicador de carga mientras se obtienen los datos
+  if (loadingTransactions || loadingPayments) {
+    return (
+      <View className="flex-col items-center justify-center py-10">
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text className="mt-4 text-gray-500 font-geist-medium">
+          Cargando datos...
+        </Text>
+      </View>
+    );
+  }
+
+  // Mostrar mensaje de error si hay algún problema
+  if (transactionsError || paymentsError) {
+    return (
+      <View className="flex-col">
+        {transactionsError && (
+          <Text className="text-red-500 p-4">
+            Error al cargar transacciones: {transactionsError}
+          </Text>
+        )}
+        {paymentsError && (
+          <Text className="text-red-500 p-4">
+            Error al cargar pagos: {paymentsError}
+          </Text>
+        )}
+      </View>
+    );
+  }
+
   return (
     <View className="flex-col">
-      <RecentTransactions transactions={transactionsData} />
-      <UpcomingPayments payments={paymentsData} />
+      <RecentTransactions transactions={recentTransactions} />
+      <UpcomingPayments payments={upcomingPayments} />
     </View>
   );
 }

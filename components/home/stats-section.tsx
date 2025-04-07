@@ -1,34 +1,48 @@
 import { Text, View } from 'react-native';
 import StatsCard from './stats-card';
-
-const statsData = [
-  {
-    title: 'Total pendiente',
-    value: '$12,450.00',
-    change: { value: 2.5, period: 'Último mes' },
-    icon: 'cash-outline',
-  },
-  {
-    title: 'Clientes activos',
-    value: '24',
-    subtitle: '+3 Nuevos este mes',
-    icon: 'people-outline',
-  },
-  {
-    title: 'Próximos pagos',
-    value: '8',
-    subtitle: 'Esta semana',
-    icon: 'time-outline',
-  },
-  {
-    title: 'Ingresos mensuales',
-    value: '$1,890.00',
-    change: { value: 12.3, period: 'Último mes' },
-    icon: 'stats-chart-outline',
-  },
-];
+import useFetchStats from '@/actions/stats/use-fetch-stats';
+import { formatCurrency } from '@/utils';
 
 export default function StatsSection() {
+  const { stats, loading, error } = useFetchStats();
+
+  const statsData = [
+    {
+      title: 'Total pendiente',
+      value: loading ? '-' : formatCurrency(stats.totalOutstanding),
+      change: { value: stats.outstandingChange, period: 'Último mes' },
+      icon: 'cash-outline',
+    },
+    {
+      title: 'Clientes activos',
+      value: loading ? '-' : stats.activeClients.toString(),
+      subtitle: loading ? '-' : `+${stats.newClientsThisMonth} Nuevos este mes`,
+      icon: 'people-outline',
+    },
+    {
+      title: 'Próximos pagos',
+      value: loading ? '-' : stats.upcomingPayments.toString(),
+      subtitle: 'Esta semana',
+      icon: 'time-outline',
+    },
+    {
+      title: 'Ingresos mensuales',
+      value: loading ? '-' : formatCurrency(stats.monthlyIncome),
+      change: { value: stats.monthlyIncomeChange, period: 'Último mes' },
+      icon: 'stats-chart-outline',
+    },
+  ];
+
+  if (error) {
+    return (
+      <View className="flex-col gap-5">
+        <Text className="text-2xl font-geist-bold">Inicio</Text>
+        <Text className="text-red-500">
+          Error al cargar las estadísticas: {error}
+        </Text>
+      </View>
+    );
+  }
   return (
     <View className="flex-col gap-5">
       <Text className="text-2xl font-geist-bold">Inicio</Text>

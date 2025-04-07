@@ -35,9 +35,9 @@ export default function TransactionList() {
 
   const getTransactionIcon = (type: string) => {
     if (type === 'payment') {
-      return <Ionicons name="arrow-up-outline" size={15} color="#16a34a" />;
+      return <Ionicons name="arrow-down-outline" size={15} color="#16a34a" />;
     } else {
-      return <Ionicons name="arrow-down-outline" size={15} color="#ca8a04" />;
+      return <Ionicons name="arrow-up-outline" size={15} color="#2563eb" />;
     }
   };
 

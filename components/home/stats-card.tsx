@@ -35,7 +35,13 @@ export default function StatsCard({
         )}
       </View>
       <View className="flex-col justify-end gap-[2px]">
-        <Text className="text-2xl font-geist-extrabold">{value}</Text>
+        <Text
+          className={`${
+            value.toString().length > 5 ? 'text-xl' : 'text-2xl'
+          } font-geist-extrabold`}
+        >
+          {value}
+        </Text>
         {change && (
           <View className="flex-row items-center">
             <Text

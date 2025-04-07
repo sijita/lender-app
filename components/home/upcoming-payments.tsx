@@ -1,6 +1,7 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
+import { formatCurrency } from '@/utils';
 
 type Payment = {
   name: string;
@@ -9,18 +10,11 @@ type Payment = {
   status: 'on_time' | 'at_risk' | 'overdue';
 };
 
-type UpcomingPaymentsProps = {
+export default function UpcomingPayments({
+  payments,
+}: {
   payments: Payment[];
-};
-
-export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
-  const formatAmount = (amount: number) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-    }).format(amount);
-  };
-
+}) {
   const getStatusColor = (status: Payment['status']) => {
     switch (status) {
       case 'on_time':
@@ -57,19 +51,19 @@ export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
       </View>
       <View className="flex-col gap-3">
         {payments.map((payment, index) => (
-          <View key={index} className="flex-row justify-between items-center">
+          <View key={index} className="flex-row justify-between items-start">
             <View className="flex-1">
               <Text className="font-geist-semibold text-gray-800">
                 {payment.name}
               </Text>
               <Text className="font-geist-regular text-gray-500">
-                Due: {payment.dueDate}
+                Vencimiento: {payment.dueDate}
               </Text>
             </View>
             <View className="items-end">
               <View className="flex-row items-center gap-2">
                 <Text className="text-lg font-geist-semibold">
-                  {formatAmount(payment.amount)}
+                  {formatCurrency(payment.amount)}
                 </Text>
                 <Ionicons
                   name="notifications-outline"
@@ -78,7 +72,9 @@ export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
                 />
               </View>
               <Text
-                className={`${getStatusColor(payment.status)} font-geist-light`}
+                className={`${getStatusColor(
+                  payment.status
+                )} font-geist-regular text-sm`}
               >
                 {getStatusText(payment.status)}
               </Text>
@@ -86,7 +82,11 @@ export default function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
           </View>
         ))}
       </View>
-      <Link href="/" className="p-4 border border-gray-200 rounded-lg" asChild>
+      <Link
+        href="/(tabs)/transactions"
+        className="p-4 border border-gray-200 rounded-lg"
+        asChild
+      >
         <TouchableOpacity>
           <Text className="text-center font-geist-bold">Ver todos</Text>
         </TouchableOpacity>

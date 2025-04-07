@@ -12,7 +12,7 @@ import { Geist_900Black } from 'expo-google-fonts-geist/900Black';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
-import { ToastProvider } from '../components/ui/toast-context';
+import { ToastProvider } from '@/components/ui/toast-context';
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({

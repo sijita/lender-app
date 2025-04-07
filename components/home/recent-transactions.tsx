@@ -1,5 +1,6 @@
 import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { formatCurrency } from '@/utils';
 
 export default function RecentTransactions({
   transactions,
@@ -11,13 +12,6 @@ export default function RecentTransactions({
     date: string;
   }[];
 }) {
-  const formatAmount = (amount: number) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-    }).format(amount);
-  };
-
   return (
     <View className="flex-col gap-6 bg-white rounded-xl rounded-b-none p-5 border border-gray-100">
       <View className="flex-col">
@@ -28,7 +22,7 @@ export default function RecentTransactions({
       </View>
       <View className="flex-col gap-3">
         {transactions.map((transaction, index) => (
-          <View key={index} className="flex-row justify-between items-center">
+          <View key={index} className="flex-row justify-between items-start">
             <View className="flex-1">
               <Text className="font-geist-semibold text-gray-800">
                 {transaction.name}
@@ -42,7 +36,7 @@ export default function RecentTransactions({
             <View className="items-end">
               <View className="flex-row items-center gap-2">
                 <Text className="text-lg font-geist-semibold">
-                  {formatAmount(transaction.amount)}
+                  {formatCurrency(transaction.amount)}
                 </Text>
                 <Ionicons
                   name={
@@ -58,7 +52,7 @@ export default function RecentTransactions({
                   }
                 />
               </View>
-              <Text className="text-gray-500 text-sm font-geist-light">
+              <Text className="text-gray-500 text-sm font-geist-regular">
                 {transaction.date}
               </Text>
             </View>
