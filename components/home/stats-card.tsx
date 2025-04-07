@@ -37,7 +37,9 @@ export default function StatsCard({
       <View className="flex-col justify-end gap-[2px]">
         <Text
           className={`${
-            value.toString().length > 5 ? 'text-xl' : 'text-2xl'
+            value.toString().length > 5 && title !== 'Desembolsado en el mes'
+              ? 'text-xl'
+              : 'text-2xl'
           } font-geist-extrabold`}
         >
           {value}

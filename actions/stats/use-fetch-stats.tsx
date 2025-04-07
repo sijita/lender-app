@@ -9,6 +9,8 @@ interface StatsData {
   monthlyIncome: number;
   monthlyIncomeChange: number;
   outstandingChange: number;
+  monthlyLoanedAmount: number;
+  monthlyLoanedAmountChange: number;
 }
 
 export default function useFetchStats() {
@@ -20,6 +22,8 @@ export default function useFetchStats() {
     monthlyIncome: 0,
     monthlyIncomeChange: 0,
     outstandingChange: 0,
+    monthlyLoanedAmount: 0,
+    monthlyLoanedAmountChange: 0,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -171,6 +175,43 @@ export default function useFetchStats() {
           ? ((monthlyIncome - previousMonthIncome) / previousMonthIncome) * 100
           : 0;
 
+      // 5. Get monthly loaned amount (sum of loan amounts created this month)
+      const { data: currentMonthLoans, error: currentMonthLoansError } =
+        await supabase
+          .from('loans')
+          .select('amount')
+          .gte('created_at', firstDayOfMonth);
+
+      if (currentMonthLoansError) throw currentMonthLoansError;
+
+      const monthlyLoanedAmount = currentMonthLoans.reduce(
+        (sum, loan) => sum + parseFloat(loan.amount),
+        0
+      );
+
+      // Get previous month's loaned amount for comparison
+      const { data: previousMonthLoanedData, error: previousMonthLoansError } =
+        await supabase
+          .from('loans')
+          .select('amount')
+          .gte('created_at', firstDayOfPreviousMonth)
+          .lt('created_at', firstDayOfMonth);
+
+      if (previousMonthLoansError) throw previousMonthLoansError;
+
+      const previousMonthLoanedAmount = previousMonthLoanedData.reduce(
+        (sum, loan) => sum + parseFloat(loan.amount),
+        0
+      );
+
+      // Calculate percentage change in monthly loaned amount
+      const monthlyLoanedAmountChange =
+        previousMonthLoanedAmount > 0
+          ? ((monthlyLoanedAmount - previousMonthLoanedAmount) /
+              previousMonthLoanedAmount) *
+            100
+          : 0;
+
       setStats({
         totalOutstanding,
         activeClients,
@@ -179,6 +220,8 @@ export default function useFetchStats() {
         monthlyIncome,
         monthlyIncomeChange,
         outstandingChange,
+        monthlyLoanedAmount,
+        monthlyLoanedAmountChange,
       });
     } catch (err: any) {
       console.error('Error fetching stats:', err);

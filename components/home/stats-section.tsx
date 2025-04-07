@@ -6,7 +6,14 @@ import { formatCurrency } from '@/utils';
 export default function StatsSection() {
   const { stats, loading, error } = useFetchStats();
 
+  // Reorganizamos el orden de las tarjetas para que 'Desembolsado en el mes' sea la primera
   const statsData = [
+    {
+      title: 'Desembolsado en el mes',
+      value: loading ? '-' : formatCurrency(stats.monthlyLoanedAmount),
+      change: { value: stats.monthlyLoanedAmountChange, period: 'Último mes' },
+      icon: 'wallet-outline',
+    },
     {
       title: 'Total pendiente',
       value: loading ? '-' : formatCurrency(stats.totalOutstanding),
@@ -47,7 +54,16 @@ export default function StatsSection() {
     <View className="flex-col gap-5">
       <Text className="text-2xl font-geist-bold">Inicio</Text>
       <View className="flex-row flex-wrap gap-4">
-        {statsData.map((stat, index) => (
+        <View className="flex-1 basis-full min-w-[160]">
+          <StatsCard
+            title={statsData[0].title}
+            value={statsData[0].value}
+            change={statsData[0].change}
+            subtitle={statsData[0].subtitle}
+            icon={statsData[0].icon}
+          />
+        </View>
+        {statsData.slice(1).map((stat, index) => (
           <View key={index} className="flex-1 min-w-[160]">
             <StatsCard
               title={stat.title}
