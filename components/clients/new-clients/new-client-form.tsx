@@ -35,7 +35,7 @@ const NewClientForm = () => {
           className={`border ${
             errors.documentNumber ? 'border-red-500' : 'border-gray-200'
           } rounded-lg p-3`}
-          value={formData.documentNumber}
+          value={formData.documentNumber.toString() ?? ''}
           onChangeText={(text) => handleChange('documentNumber', text)}
           keyboardType="number-pad"
         />

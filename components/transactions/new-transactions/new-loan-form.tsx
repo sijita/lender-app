@@ -2,7 +2,6 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useHandleNewLoans } from '@/actions/loans/new-loans/use-handle-new-loans';
-import useFetchClients from '@/actions/clients/use-fetch-clients';
 import Select from '@/components/ui/select';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -10,6 +9,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { formatCurrency } from '@/utils';
 import ActionButtons from '@/components/ui/action-buttons';
 import { frequencyOptions } from '@/constants/loans';
+import SearchableSelect from '@/components/ui/searchable-select';
 
 const NewLoanForm = () => {
   const {
@@ -19,35 +19,68 @@ const NewLoanForm = () => {
     isSubmitting,
     calculatedValues,
     formattedAmount,
+    isSearching,
+    formattedSearchResults,
     handleAmountChange,
     handleChange,
     handleDateSelect,
     setShowDatePicker,
     saveLoan,
-    selectClient,
+    handleClientSelect,
+    searchClients,
   } = useHandleNewLoans();
-  const { clients } = useFetchClients();
+
+  const renderOptionItem = ({ item }: { item: any }) => {
+    console.log('item', item);
+    if (!item.documentNumber) {
+      return (
+        <View className="py-4 items-center justify-center">
+          <Text className="text-gray-500">No se encontraron resultados</Text>
+        </View>
+      );
+    }
+
+    return (
+      <View className="flex-col p-5 border-b border-gray-100">
+        <Text className="font-geist-medium">{item?.label}</Text>
+        <Text className="text-gray-600">CC: {item?.documentNumber}</Text>
+      </View>
+    );
+  };
 
   return (
     <View className="flex-col gap-5">
       <Text className="text-xl font-geist-bold">Registrar nuevo préstamo</Text>
       <View className="flex-col gap-2">
-        <Select
+        <SearchableSelect
           label="Cliente"
           placeholder="Seleccionar cliente"
-          options={clients?.map((client) => ({
-            id: client.id?.toString() ?? '',
-            label: client.name,
-          }))}
-          value={formData.clientId?.toString() ?? ''}
-          onChange={(value) => selectClient(Number(value))}
-          error={errors.clientId}
+          searchPlaceholder="Buscar cliente..."
+          options={[]}
+          value={formData?.clientId?.toString() ?? null}
+          onChange={handleClientSelect}
+          onSearch={searchClients}
+          isSearching={isSearching}
+          searchResults={formattedSearchResults}
+          error={errors?.clientId}
+          renderItem={renderOptionItem}
+          maxHeight={250}
           required
         />
+        {formData?.clientId && (
+          <View className="flex-col items-center justify-between mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <Text className="font-geist-medium text-lg">
+              {formData?.name} {formData?.lastName}
+            </Text>
+            <Text className="text-gray-600 font-geist-regular">
+              CC: {formData?.documentNumber}
+            </Text>
+          </View>
+        )}
       </View>
       <View className="flex-col gap-2">
         <Text className="font-geist-medium">
-          Monto del préstamo <Text className="text-red-500">*</Text>
+          Monto del préstamo<Text className="text-red-500">*</Text>
         </Text>
         <View className="border border-gray-200 rounded-lg flex-row items-center">
           <Text className="text-gray-500 pl-3 pr-1">$</Text>
@@ -65,7 +98,7 @@ const NewLoanForm = () => {
       </View>
       <View className="flex-col gap-2">
         <Text className="font-geist-medium">
-          Fecha de inicio <Text className="text-red-500">*</Text>
+          Fecha de inicio<Text className="text-red-500">*</Text>
         </Text>
         <TouchableOpacity
           className={`border ${
@@ -103,7 +136,7 @@ const NewLoanForm = () => {
       </View>
       <View className="flex-col gap-2">
         <Text className="font-geist-medium">
-          Frecuencia de pago <Text className="text-red-500">*</Text>
+          Frecuencia de pago<Text className="text-red-500">*</Text>
         </Text>
         <Select
           placeholder="Seleccionar frecuencia"
@@ -124,7 +157,7 @@ const NewLoanForm = () => {
             : formData.paymentFrequency === 'daily'
             ? 'Días'
             : 'Semanas'}
-          ) <Text className="text-red-500">*</Text>
+          )<Text className="text-red-500">*</Text>
         </Text>
         <View
           className={`border ${
@@ -169,7 +202,7 @@ const NewLoanForm = () => {
       </View>
       <View className="flex-col gap-2">
         <Text className="font-geist-medium">
-          Fecha de pago <Text className="text-red-500">*</Text>
+          Fecha de pago<Text className="text-red-500">*</Text>
         </Text>
         <TouchableOpacity
           className={`border ${

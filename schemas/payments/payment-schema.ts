@@ -10,7 +10,6 @@ export const paymentSchema = z.object({
     .refine((val) => val !== null, {
       message: 'Debe seleccionar un cliente',
     }),
-  clientName: z.string().optional(),
   loanId: z
     .number({
       required_error: 'Debe seleccionar un préstamo',
@@ -33,6 +32,11 @@ export const paymentSchema = z.object({
   method: z.enum(['cash', 'transfer', 'other'], {
     required_error: 'El método de pago es requerido',
   }),
+  quotas: z
+    .number({
+      required_error: 'El número de cuotas es requerido',
+    })
+    .positive({ message: 'El número de cuotas debe ser mayor a 0' }),
   notes: z.string().optional(),
 });
 

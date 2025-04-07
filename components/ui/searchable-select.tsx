@@ -143,8 +143,6 @@ const SearchableSelect = ({
                 {label || 'Seleccionar opción'}
               </Text>
             </View>
-
-            {/* Campo de búsqueda */}
             <View className="px-4 py-2 border-b border-gray-100">
               <View className="border border-gray-200 rounded-lg flex-row items-center">
                 {showSearchIcon && (
@@ -164,16 +162,12 @@ const SearchableSelect = ({
                 />
               </View>
             </View>
-
-            {/* Indicador de carga */}
             {isSearching && (
               <View className="py-4 flex-row items-center justify-center">
                 <ActivityIndicator size="small" color="#000" />
                 <Text className="ml-2 text-gray-500">Buscando...</Text>
               </View>
             )}
-
-            {/* Lista de opciones */}
             {!isSearching && (
               <FlatList
                 data={displayOptions}
@@ -215,7 +209,6 @@ const SearchableSelect = ({
                 }
               />
             )}
-
             <View className="border-t border-gray-100 p-2">
               <TouchableOpacity
                 className="py-2 items-center"

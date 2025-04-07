@@ -16,7 +16,6 @@ const NewPaymentForm = () => {
     isSubmitting,
     showDatePicker,
     isSearching,
-    clientOutstanding,
     formattedAmount,
     formattedSearchResults,
     handleChange,
@@ -38,7 +37,7 @@ const NewPaymentForm = () => {
     }
 
     return (
-      <View className="p-3 border-b border-gray-100">
+      <View className="p-5 border-b border-gray-100">
         <Text className="font-geist-medium">{item?.label}</Text>
         {item?.metadata && (
           <View className="flex-row justify-between mt-1">
@@ -74,10 +73,15 @@ const NewPaymentForm = () => {
           required
         />
         {formData?.clientId && (
-          <View className="flex-row items-center justify-between mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-            <Text className="font-geist-medium">{formData?.clientName}</Text>
-            <Text className="text-gray-600">
-              {formatCurrency(clientOutstanding)}
+          <View className="flex-col items-center justify-between mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <Text className="font-geist-medium text-lg">
+              {formData?.name} {formData?.lastName}
+            </Text>
+            <Text className="text-gray-600 font-geist-regular">
+              CC: {formData?.documentNumber}
+            </Text>
+            <Text className="mt-2 font-geist-medium text-lg">
+              {formatCurrency(formData.outstanding)}
             </Text>
           </View>
         )}
@@ -98,6 +102,51 @@ const NewPaymentForm = () => {
         </View>
         {errors.amount && (
           <Text className="text-red-500 text-sm">{errors.amount}</Text>
+        )}
+      </View>
+      <View className="flex-col gap-2">
+        <Text className="font-geist-medium">
+          Cuotas pagadas<Text className="text-red-500">*</Text>
+        </Text>
+        <View
+          className={`border ${
+            errors.quotas ? 'border-red-500' : 'border-gray-200'
+          } rounded-lg flex-row items-center`}
+        >
+          <TextInput
+            placeholder="12"
+            keyboardType="number-pad"
+            className="flex-1 p-3"
+            value={formData.quotas?.toString() ?? ''}
+            onChangeText={(text) => handleChange('quotas', text)}
+          />
+          <View className="flex-col gap-0">
+            <TouchableOpacity
+              className="px-3 py-1"
+              onPress={() => {
+                const currentTerm = Number(formData.quotas) || 0;
+                if (currentTerm < 60) {
+                  handleChange('quotas', String(currentTerm + 1));
+                }
+              }}
+            >
+              <Ionicons name="chevron-up-outline" size={20} color="#6B7280" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="px-3 py-1"
+              onPress={() => {
+                const currentTerm = Number(formData.quotas) || 0;
+                if (currentTerm > 1) {
+                  handleChange('quotas', String(currentTerm - 1));
+                }
+              }}
+            >
+              <Ionicons name="chevron-down-outline" size={20} color="#6B7280" />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {errors.quotas && (
+          <Text className="text-red-500 text-sm">{errors.quotas}</Text>
         )}
       </View>
       <View className="flex-col gap-2">

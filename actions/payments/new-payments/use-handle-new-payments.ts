@@ -7,14 +7,25 @@ import { useToast } from '@/components/ui/toast-context';
 
 export default function useHandleNewPayments() {
   const { showToast } = useToast();
-  const [formData, setFormData] = useState<Partial<Payment>>({
+  const [formData, setFormData] = useState<
+    Partial<Payment> & {
+      name: string;
+      lastName: string;
+      documentNumber: string;
+      outstanding: number;
+    }
+  >({
     clientId: undefined,
-    clientName: '',
+    name: '',
+    lastName: '',
+    documentNumber: '',
     loanId: undefined,
     amount: '',
     date: new Date(),
     method: 'cash',
+    quotas: 1,
     notes: '',
+    outstanding: 0,
   });
   const [errors, setErrors] = useState<Partial<Record<keyof Payment, string>>>(
     {}
@@ -24,7 +35,6 @@ export default function useHandleNewPayments() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [clientOutstanding, setClientOutstanding] = useState(0);
   const [formattedAmount, setFormattedAmount] = useState(
     formData.amount
       ? new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(
@@ -71,7 +81,6 @@ export default function useHandleNewPayments() {
     );
     if (selectedItem) {
       selectClient(selectedItem.client, selectedItem);
-      setClientOutstanding(selectedItem.outstanding);
     }
   };
 
@@ -79,7 +88,10 @@ export default function useHandleNewPayments() {
     setFormData((prev) => ({
       ...prev,
       clientId: client.id,
-      clientName: `${client.name} ${client.last_name || ''}`,
+      name: client.name,
+      lastName: client.last_name,
+      documentNumber: client.document_number,
+      outstanding: loan.outstanding,
       loanId: loan.id,
     }));
     setSearchQuery('');
@@ -178,6 +190,7 @@ export default function useHandleNewPayments() {
         amount: Number(formData.amount),
         method: formData.method,
         notes: formData.notes,
+        quotas: formData.quotas,
         status: 'completed',
       };
 
@@ -191,12 +204,15 @@ export default function useHandleNewPayments() {
 
       setFormData({
         clientId: undefined,
-        clientName: '',
+        name: '',
+        lastName: '',
+        documentNumber: '',
         loanId: undefined,
         amount: '',
         date: new Date(),
         method: 'cash',
         notes: '',
+        outstanding: 0,
       });
 
       showToast({
@@ -224,7 +240,6 @@ export default function useHandleNewPayments() {
     searchQuery,
     searchResults,
     isSearching,
-    clientOutstanding,
     formattedAmount,
     formattedSearchResults,
     handleChange,

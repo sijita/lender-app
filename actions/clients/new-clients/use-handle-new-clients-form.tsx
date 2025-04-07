@@ -13,13 +13,13 @@ export default function useHandleNewClientsForm() {
   );
   const [formData, setFormData] = useState<Client>({
     name: '',
-    last_name: '',
+    lastName: '',
     email: '',
     phone: '',
     address: '',
-    sub_address: '',
-    document_type: '',
-    document_number: 0,
+    subAddress: '',
+    documentType: '',
+    documentNumber: '',
     notes: '',
   });
 
@@ -70,13 +70,13 @@ export default function useHandleNewClientsForm() {
     try {
       const clientData = {
         name: formData.name,
-        last_name: formData.last_name,
+        last_name: formData.lastName,
         email: formData.email,
         phone: formData.phone,
         address: formData.address,
-        sub_address: formData.sub_address,
-        document_type: formData.document_type,
-        document_number: formData.document_number,
+        sub_address: formData.subAddress,
+        document_type: formData.documentType,
+        document_number: Number(formData.documentNumber),
         notes: formData.notes,
       };
 
@@ -91,13 +91,13 @@ export default function useHandleNewClientsForm() {
 
       setFormData({
         name: '',
-        last_name: '',
+        lastName: '',
         email: '',
         phone: '',
         address: '',
-        sub_address: '',
-        document_type: '',
-        document_number: 0,
+        subAddress: '',
+        documentType: '',
+        documentNumber: '',
         notes: '',
       });
 

@@ -4,17 +4,26 @@ import { ZodError } from 'zod';
 import { loanSchema, Loan } from '@/schemas/loans/loan-schema';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/toast-context';
+import { useDebouncedCallback } from 'use-debounce';
 
 export function useHandleNewLoans() {
   const { showToast } = useToast();
-  const [formData, setFormData] = useState<Partial<Loan>>({
+  const [formData, setFormData] = useState<
+    Partial<Loan> & {
+      name?: string;
+      lastName?: string;
+      documentNumber?: string;
+    }
+  >({
+    name: '',
+    lastName: '',
+    documentNumber: '',
     amount: '',
     interestRate: '',
     term: '',
     notes: '',
     paymentFrequency: 'weekly', // Default to weekly
   });
-  const [selectedClient, setSelectedClient] = useState<number | null>(null);
   const [showDatePicker, setShowDatePicker] = useState<
     'start' | 'payment' | null
   >(null);
@@ -32,6 +41,9 @@ export function useHandleNewLoans() {
         )
       : ''
   );
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
 
   const handleAmountChange = (text: string) => {
     const numericValue = text.replace(/\D/g, '');
@@ -59,14 +71,6 @@ export function useHandleNewLoans() {
         return newErrors;
       });
     }
-  };
-
-  const selectClient = (clientId: number) => {
-    setSelectedClient(clientId);
-    setFormData((prev) => ({
-      ...prev,
-      clientId: Number(clientId),
-    }));
   };
 
   const handleDateSelect = (date: Date, type: 'start' | 'payment') => {
@@ -124,7 +128,6 @@ export function useHandleNewLoans() {
     try {
       const dataToValidate = {
         ...formData,
-        clientId: selectedClient,
       };
 
       loanSchema.parse(dataToValidate);
@@ -142,6 +145,77 @@ export function useHandleNewLoans() {
       return false;
     }
   };
+
+  const handleClientSelect = (value: string) => {
+    const selectedItem = searchResults.find(
+      (item) => item.id.toString() === value
+    );
+    if (selectedItem) {
+      selectClient(selectedItem);
+    }
+  };
+
+  const selectClient = (client: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      clientId: client.id,
+      name: client.name,
+      lastName: client.last_name || '',
+      documentNumber: client.document_number,
+    }));
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
+  const searchClients = useDebouncedCallback(async (query: string) => {
+    setSearchQuery(query);
+
+    if (query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      setIsSearching(true);
+
+      const isNumeric = /^\d+$/.test(query);
+
+      let queryFilter;
+      if (isNumeric) {
+        queryFilter = `document_number.eq.${query}`;
+      } else {
+        queryFilter = `name.ilike.%${query}%,last_name.ilike.%${query}%`;
+      }
+
+      const { data, error } = await supabase
+        .from('clients')
+        .select(
+          `
+            id,
+            name,
+            last_name,
+            document_number
+          `
+        )
+        .or(queryFilter)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+
+      setSearchResults(data || []);
+    } catch (error) {
+      console.error('Error searching clients:', error);
+    } finally {
+      setIsSearching(false);
+    }
+  }, 500);
+
+  const formattedSearchResults = searchResults.map((item) => ({
+    id: item?.id?.toString(),
+    label: `${item?.name} ${item?.last_name || ''}`,
+    documentNumber: item?.document_number,
+  }));
 
   const saveLoan = async () => {
     if (!validateForm()) {
@@ -166,11 +240,12 @@ export function useHandleNewLoans() {
         interest: totalInterest,
         interest_rate: interestRate,
         quota: monthlyPayment,
-        pending_quotas: term,
+        term: term,
+        pending_quotas: formData.term,
         payment_date: formData.paymentDate?.toISOString().split('T')[0],
         due_date: formData.startDate?.toISOString(),
         status: 'active',
-        client_id: selectedClient,
+        client_id: formData.clientId,
         total_amount: totalPayment,
         outstanding: totalPayment,
         payment_frequency: formData.paymentFrequency || 'weekly',
@@ -185,6 +260,9 @@ export function useHandleNewLoans() {
       }
 
       setFormData({
+        name: '',
+        lastName: '',
+        documentNumber: '',
         amount: '',
         interestRate: '',
         term: '',
@@ -216,17 +294,22 @@ export function useHandleNewLoans() {
 
   return {
     formData,
-    selectedClient,
     showDatePicker,
     errors,
     isSubmitting,
     calculatedValues,
     formattedAmount,
+    isSearching,
+    searchQuery,
+    searchResults,
+    formattedSearchResults,
     handleAmountChange,
     handleChange,
     selectClient,
     handleDateSelect,
     setShowDatePicker,
     saveLoan,
+    handleClientSelect,
+    searchClients,
   };
 }
