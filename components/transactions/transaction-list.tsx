@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { useRouter } from 'expo-router';
 import useFetchTransactions from '@/actions/transactions/use-fetch-transactions';
 import Error from '@/components/ui/error';
 import { formatCurrency } from '@/utils';
@@ -19,6 +20,7 @@ import {
 } from '@/utils/transactions';
 
 export default function TransactionList() {
+  const router = useRouter();
   const { transactions, loading, error, refetch } = useFetchTransactions();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -98,7 +100,7 @@ export default function TransactionList() {
             filteredTransactions.map((transaction) => (
               <TouchableOpacity
                 key={transaction.id}
-                onPress={() => {}}
+                onPress={() => router.push(`/transaction/${transaction.id}`)}
                 className="flex-row items-center px-4 py-3 border-b border-gray-100"
               >
                 <Text className="w-36 font-geist-regular text-gray-600">

@@ -20,7 +20,7 @@ export default function TransactionsSection() {
   if (loadingTransactions || loadingPayments) {
     return (
       <View className="flex-col items-center justify-center py-10">
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#000" />
         <Text className="mt-4 text-gray-500 font-geist-medium">
           Cargando datos...
         </Text>
