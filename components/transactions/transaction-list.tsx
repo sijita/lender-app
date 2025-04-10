@@ -104,7 +104,7 @@ export default function TransactionList() {
           }`}
         >
           <Text
-            className={`text-center font-geist-medium ${
+            className={`text-center font-geist-semibold ${
               activeTab === 'loans' ? 'text-black' : 'text-gray-500'
             }`}
           >
@@ -118,7 +118,7 @@ export default function TransactionList() {
           }`}
         >
           <Text
-            className={`text-center font-geist-medium ${
+            className={`text-center font-geist-semibold ${
               activeTab === 'payments' ? 'text-black' : 'text-gray-500'
             }`}
           >
@@ -138,7 +138,7 @@ export default function TransactionList() {
           />
         </View>
         <TouchableOpacity
-          className="flex-row items-center gap-1 bg-black rounded-lg px-4 py-2"
+          className="flex-row items-center gap-1 bg-white rounded-lg px-4 py-2 border border-gray-100"
           onPress={() => {
             const newOrderBy =
               orderBy === 'created_at' ? 'amount' : 'created_at';
@@ -151,13 +151,13 @@ export default function TransactionList() {
             });
           }}
         >
-          <Text className="text-white font-geist-medium">
+          <Text className="text-black font-geist-medium">
             {orderBy === 'created_at' ? 'Fecha' : 'Monto'}
           </Text>
-          <Ionicons name="chevron-down" size={16} color="#fff" />
+          <Ionicons name="chevron-down" size={16} color="#000" />
         </TouchableOpacity>
         <TouchableOpacity
-          className="bg-black rounded-lg px-[8px] py-[8px]"
+          className="bg-white rounded-lg px-[8px] py-[8px] border border-gray-100"
           onPress={() => {
             const newDirection = orderDirection === 'desc' ? 'asc' : 'desc';
             setOrderDirection(newDirection);
@@ -176,7 +176,7 @@ export default function TransactionList() {
                 : 'arrow-up-outline'
             }
             size={15}
-            color="#fff"
+            color="#000"
           />
         </TouchableOpacity>
       </View>

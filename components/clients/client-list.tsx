@@ -57,8 +57,8 @@ export default function ClientList() {
         </TouchableOpacity>
       </View>
       <ScrollView horizontal className="w-full">
-        <View>
-          <View className="flex-row px-4 py-2 border-b border-gray-200">
+        <View className="bg-white rounded-xl p-4 border border-gray-100">
+          <View className="flex-row px-4 pb-4 border-b border-gray-200">
             <Text className="w-36 font-geist-medium text-gray-500">Cédula</Text>
             <Text className="w-40 font-geist-medium text-gray-500">Nombre</Text>
             <Text className="w-52 font-geist-medium text-gray-500">
