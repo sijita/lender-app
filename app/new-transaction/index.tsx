@@ -15,9 +15,9 @@ export default function NewTransaction() {
       <Stack.Screen options={{ headerShown: false }} />
       <BackButton title="Nueva transacción" />
       <View className="p-5 flex-col gap-5">
-        <View className="flex-row bg-gray-100 rounded-lg overflow-hidden border border-gray-100">
+        <View className="flex-row bg-gray-100 rounded-lg p-1">
           <TouchableOpacity
-            className={`flex-1 py-3 px-4 ${
+            className={`flex-1 py-3 rounded-lg ${
               activeTab === 'new-loan' ? 'bg-white' : ''
             }`}
             onPress={() => setActiveTab('new-loan')}
@@ -31,7 +31,7 @@ export default function NewTransaction() {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            className={`flex-1 py-3 px-4 ${
+            className={`flex-1 py-3 rounded-lg ${
               activeTab === 'receive-payment' ? 'bg-white' : ''
             }`}
             onPress={() => setActiveTab('receive-payment')}
