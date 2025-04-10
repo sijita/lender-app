@@ -28,30 +28,26 @@ const NewPaymentForm = () => {
   } = useHandleNewPayments();
 
   const renderOptionItem = ({ item }: { item: any }) => {
-    if (!item.metadata.client) {
-      return (
-        <View className="py-4 items-center justify-center">
-          <Text className="text-gray-500">No se encontraron resultados</Text>
-        </View>
-      );
+    if (!item || !item.label || !item.metadata || !item.metadata.client) {
+      return null;
     }
 
     return (
       <View className="p-5 border-b border-gray-100">
-        <Text className="font-geist-medium">{item?.label}</Text>
-        {item?.metadata && (
-          <View className="flex-row justify-between mt-1">
-            <Text className="text-gray-600">
-              CC: {item.metadata.client?.document_number}
-            </Text>
-            <Text className="text-gray-600">
-              Saldo: {formatCurrency(item.metadata?.outstanding)}
-            </Text>
-          </View>
-        )}
+        <Text className="font-geist-medium">{item.label}</Text>
+        <View className="flex-row justify-between mt-1">
+          <Text className="text-gray-600">
+            CC: {item.metadata.client.document_number || 'N/A'}
+          </Text>
+          <Text className="text-gray-600">
+            Saldo: {formatCurrency(item.metadata.outstanding || 0)}
+          </Text>
+        </View>
       </View>
     );
   };
+
+  console.log(formData);
 
   return (
     <View className="flex-col gap-5">
@@ -68,7 +64,7 @@ const NewPaymentForm = () => {
           isSearching={isSearching}
           searchResults={formattedSearchResults}
           error={errors?.clientId}
-          renderItem={renderOptionItem}
+          renderItem={renderOptionItem as any}
           maxHeight={250}
           required
         />
@@ -90,59 +86,87 @@ const NewPaymentForm = () => {
         <Text className="font-geist-medium">
           Monto del pago<Text className="text-red-500">*</Text>
         </Text>
-        <View className="border border-gray-200 rounded-lg flex-row items-center">
-          <Text className="text-gray-500 pl-3 pr-1">$</Text>
-          <TextInput
-            placeholder="0"
-            keyboardType="decimal-pad"
-            className="flex-1 p-3"
-            value={formattedAmount}
-            onChangeText={handleAmountChange}
-          />
+        <View className="flex-row gap-3 items-center">
+          <View className="flex-1 border border-gray-200 rounded-lg flex-row items-center">
+            <Text className="text-gray-500 pl-3 pr-1">$</Text>
+            <TextInput
+              placeholder="0"
+              keyboardType="decimal-pad"
+              className="flex-1 p-3"
+              value={formattedAmount}
+              onChangeText={handleAmountChange}
+            />
+          </View>
+          {formData.clientId && (
+            <TouchableOpacity
+              className="bg-black py-3 px-4 rounded-lg"
+              onPress={() => {
+                if (formData.outstanding) {
+                  handleAmountChange(formData.outstanding.toString());
+                }
+              }}
+            >
+              <Text className="font-geist-medium text-sm text-white">
+                Pago total
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
         {errors.amount && (
           <Text className="text-red-500 text-sm">{errors.amount}</Text>
         )}
       </View>
       <View className="flex-col gap-2">
-        <Text className="font-geist-medium">Cuotas pagadas</Text>
-        <View
-          className={`border ${
-            errors.quotas ? 'border-red-500' : 'border-gray-200'
-          } rounded-lg flex-row items-center`}
-        >
+        <Text className="font-geist-medium">Cuotas a pagar</Text>
+        {formData.amount === formData.outstanding.toString() ? (
           <TextInput
-            placeholder="1"
-            keyboardType="number-pad"
-            className="flex-1 p-3"
-            value={formData.quotas?.toString() ?? ''}
-            onChangeText={(text) => handleChange('quotas', text)}
+            className="border border-gray-200 rounded-lg p-3 flex-1"
+            editable={false}
+            value={formData.pending_quotas.toString()}
           />
-          <View className="flex-col gap-0">
-            <TouchableOpacity
-              className="px-3 py-1"
-              onPress={() => {
-                const currentTerm = Number(formData.quotas) || 0;
-                if (currentTerm < 60) {
-                  handleChange('quotas', String(currentTerm + 1));
-                }
-              }}
-            >
-              <Ionicons name="chevron-up-outline" size={20} color="#6B7280" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="px-3 py-1"
-              onPress={() => {
-                const currentTerm = Number(formData.quotas) || 0;
-                if (currentTerm > 1) {
-                  handleChange('quotas', String(currentTerm - 1));
-                }
-              }}
-            >
-              <Ionicons name="chevron-down-outline" size={20} color="#6B7280" />
-            </TouchableOpacity>
+        ) : (
+          <View
+            className={`border ${
+              errors.quotas ? 'border-red-500' : 'border-gray-200'
+            } rounded-lg flex-row items-center`}
+          >
+            <TextInput
+              placeholder="1"
+              keyboardType="number-pad"
+              className="flex-1 p-3"
+              value={formData.quotas?.toString() ?? ''}
+              onChangeText={(text) => handleChange('quotas', text)}
+            />
+            <View className="flex-col gap-0">
+              <TouchableOpacity
+                className="px-3 py-1"
+                onPress={() => {
+                  const currentTerm = Number(formData.quotas) || 0;
+                  if (currentTerm < formData.pending_quotas) {
+                    handleChange('quotas', String(currentTerm + 1));
+                  }
+                }}
+              >
+                <Ionicons name="chevron-up-outline" size={20} color="#6B7280" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="px-3 py-1"
+                onPress={() => {
+                  const currentTerm = Number(formData.quotas) || 0;
+                  if (currentTerm > 1) {
+                    handleChange('quotas', String(currentTerm - 1));
+                  }
+                }}
+              >
+                <Ionicons
+                  name="chevron-down-outline"
+                  size={20}
+                  color="#6B7280"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        )}
         {errors.quotas && (
           <Text className="text-red-500 text-sm">{errors.quotas}</Text>
         )}

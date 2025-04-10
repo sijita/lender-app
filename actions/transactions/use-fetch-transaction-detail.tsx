@@ -15,6 +15,8 @@ interface TransactionDetail extends Transaction {
     outstanding: number;
     paid_amount: number;
     pending_quotas: number;
+    quota: number;
+    payment_date: string;
     client: {
       id: number;
       name: string;

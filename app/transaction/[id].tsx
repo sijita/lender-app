@@ -15,7 +15,6 @@ import BackButton from '@/components/ui/back-button';
 import ClientInfo from '@/components/transactions/transaction-detail/client-info';
 import TransactionInfo from '@/components/transactions/transaction-detail/transaction-info';
 import LoanInfo from '@/components/transactions/transaction-detail/loan-info';
-import LoanPayments from '@/components/transactions/transaction-detail/loan-payments';
 import QuickActions from '@/components/transactions/transaction-detail/quick-actions';
 
 export default function TransactionDetail() {
@@ -73,18 +72,10 @@ export default function TransactionDetail() {
           </Text>
         </View>
         {transaction?.loan?.client && (
-          <ClientInfo
-            client={transaction.loan.client}
-            loanStatus={transaction.loan.status}
-          />
+          <ClientInfo client={transaction.loan.client} />
         )}
         <TransactionInfo transaction={transaction} />
-        {transaction?.loan && (
-          <>
-            <LoanInfo loan={transaction.loan} />
-            <LoanPayments loanId={transaction.loan.id} />
-          </>
-        )}
+        {transaction?.loan && <LoanInfo loan={transaction.loan} />}
         <QuickActions />
       </View>
     </ScrollView>

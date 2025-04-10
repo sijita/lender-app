@@ -5,9 +5,11 @@ import { loanSchema, Loan } from '@/schemas/loans/loan-schema';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/toast-context';
 import { useDebouncedCallback } from 'use-debounce';
+import useCalculateDueDate from '@/hooks/use-calculate-due-date';
 
 export function useHandleNewLoans() {
   const { showToast } = useToast();
+  const { dueDate } = useCalculateDueDate();
   const [formData, setFormData] = useState<
     Partial<Loan> & {
       name?: string;
@@ -232,6 +234,11 @@ export function useHandleNewLoans() {
       const amount = Number(formData.amount);
       const interestRate = Number(formData.interestRate);
       const term = Number(formData.term);
+      const dueDateResult = dueDate({
+        startDate: formData.startDate?.toISOString() ?? '',
+        term: term,
+        paymentFrequency: formData.paymentFrequency ?? '',
+      });
 
       const { totalInterest, totalPayment, monthlyPayment } = calculatedValues;
 
@@ -243,7 +250,7 @@ export function useHandleNewLoans() {
         term: term,
         pending_quotas: formData.term,
         payment_date: formData.paymentDate?.toISOString().split('T')[0],
-        due_date: formData.startDate?.toISOString(),
+        due_date: dueDateResult?.dateObject,
         status: 'active',
         client_id: formData.clientId,
         total_amount: totalPayment,

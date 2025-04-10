@@ -2,7 +2,9 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 
-interface ClientInfoProps {
+export default function ClientInfo({
+  client,
+}: {
   client: {
     name: string;
     last_name: string;
@@ -13,10 +15,7 @@ interface ClientInfoProps {
     document_type: string;
     document_number: number;
   };
-  loanStatus: string;
-}
-
-export default function ClientInfo({ client, loanStatus }: ClientInfoProps) {
+}) {
   return (
     <View className="flex-col gap-6 bg-white p-5 border border-gray-100 rounded-xl">
       <Text className="text-xl font-geist-bold">Información del cliente</Text>
@@ -27,22 +26,9 @@ export default function ClientInfo({ client, loanStatus }: ClientInfoProps) {
             {client?.last_name.charAt(0)}
           </Text>
         </View>
-        <View className="flex-col">
-          <Text className="font-geist-bold text-lg">
-            {client?.name} {client?.last_name}
-          </Text>
-          <View className="w-40 items-start shrink-0">
-            <Text
-              className={`px-2 py-1 rounded-full text-xs font-geist-medium ${
-                loanStatus === 'active'
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-yellow-100 text-yellow-800'
-              }`}
-            >
-              {loanStatus === 'active' ? 'Crédito activo' : 'Crédito pendiente'}
-            </Text>
-          </View>
-        </View>
+        <Text className="font-geist-bold text-lg">
+          {client?.name} {client?.last_name}
+        </Text>
       </View>
       <View className="flex-col gap-3">
         <View className="flex-row items-center gap-2">

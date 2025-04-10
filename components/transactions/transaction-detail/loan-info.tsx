@@ -1,8 +1,14 @@
 import { View, Text } from 'react-native';
 import { formatCurrency } from '@/utils';
+import LoanPayments from './loan-payments';
+import NextPayment from './next-payment';
+import { getPaymentFrequencyText } from '@/utils/loans';
 
-interface LoanInfoProps {
+export default function LoanInfo({
+  loan,
+}: {
   loan: {
+    id: number;
     amount: number;
     interest_rate: number;
     term: number;
@@ -11,33 +17,39 @@ interface LoanInfoProps {
     outstanding: number;
     paid_amount: number;
     pending_quotas: number;
+    status: string;
+    due_date: string;
+    quota: number;
+    payment_date: string;
   };
-}
-
-export default function LoanInfo({ loan }: LoanInfoProps) {
-  const getPaymentFrequencyText = (frequency: string) => {
-    switch (frequency) {
-      case 'monthly':
-        return 'Mensual';
-      case 'biweekly':
-        return 'Quincenal';
-      case 'weekly':
-        return 'Semanal';
-      case 'daily':
-        return 'Diario';
-      default:
-        return frequency;
-    }
-  };
-
+}) {
   const progressPercentage =
     loan?.total_amount && loan?.paid_amount
       ? Math.round((loan.paid_amount / loan.total_amount) * 100)
       : 0;
 
   return (
-    <View className="flex-col gap-6 bg-white p-5 border border-gray-100 rounded-xl">
-      <Text className="text-xl font-geist-bold">Detalles del Préstamo</Text>
+    <View className="flex-col gap-8 bg-white p-5 border border-gray-100 rounded-xl">
+      <View className="flex-row justify-between items-center">
+        <Text className="text-xl font-geist-bold">Detalles del préstamo</Text>
+        <View className="flex items-end shrink-0">
+          <Text
+            className={`px-2 py-1 rounded-full text-xs font-geist-medium ${
+              loan.status === 'completed'
+                ? 'bg-green-100 text-green-800'
+                : loan.status === 'defaulted'
+                ? 'bg-red-100 text-red-800'
+                : 'bg-yellow-100 text-yellow-800'
+            }`}
+          >
+            {loan.status === 'completed'
+              ? 'Libre'
+              : loan.status === 'defaulted'
+              ? 'En Mora'
+              : 'Pendiente'}
+          </Text>
+        </View>
+      </View>
       <View className="flex-row justify-between items-center">
         <Text className="text-gray-500 font-geist-medium text-lg">
           Total a Pagar
@@ -138,6 +150,10 @@ export default function LoanInfo({ loan }: LoanInfoProps) {
           </View>
         </View>
       </View>
+      {loan?.status !== 'completed' && (
+        <NextPayment nextPaymentDate={loan?.payment_date} amount={loan?.quota} />
+      )}
+      <LoanPayments loanId={loan.id} />
     </View>
   );
 }

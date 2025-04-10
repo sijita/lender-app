@@ -1,9 +1,15 @@
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { formatCurrency } from '@/utils';
-import { getTransactionTypeText } from '@/utils/transactions';
+import {
+  getTransactionTypeStyle,
+  getTransactionTypeText,
+} from '@/utils/transactions';
+import { getPaymentMethodText } from '@/utils/loans';
 
-interface TransactionInfoProps {
+export default function TransactionInfo({
+  transaction,
+}: {
   transaction: {
     type: string;
     amount: number;
@@ -11,22 +17,7 @@ interface TransactionInfoProps {
       method: string;
     };
   };
-}
-
-export default function TransactionInfo({ transaction }: TransactionInfoProps) {
-  const getPaymentMethodText = (method: string) => {
-    switch (method) {
-      case 'cash':
-        return 'Efectivo';
-      case 'transfer':
-        return 'Transferencia';
-      case 'other':
-        return 'Otro';
-      default:
-        return method;
-    }
-  };
-
+}) {
   return (
     <View className="flex-col gap-6 bg-white p-5 border border-gray-100 rounded-xl">
       <Text className="text-xl font-geist-bold">
@@ -38,8 +29,12 @@ export default function TransactionInfo({ transaction }: TransactionInfoProps) {
             <Text className="text-gray-500 font-geist-medium text-lg">
               Tipo
             </Text>
-            <View className="px-3 py-1 rounded-full bg-gray-100">
-              <Text className="font-geist-medium text-sm">
+            <View>
+              <Text
+                className={`px-3 py-1 rounded-full text-xs font-geist-medium ${getTransactionTypeStyle(
+                  transaction?.type
+                )}`}
+              >
                 {getTransactionTypeText(transaction?.type)}
               </Text>
             </View>

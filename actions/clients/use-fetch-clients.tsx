@@ -31,19 +31,42 @@ export default function useFetchClients() {
             0
           );
 
-          const hasActiveLoans = loans.some(
-            (loan) => loan.status === 'active' || loan.status === 'pending'
+          const hasActiveLoansWithoutDefaulted = loans.some(
+            (loan) => loan.status === 'active'
+          );
+          const hasActiveLoansWithDefaulted = loans.some(
+            (loan) => loan.status === 'defaulted'
           );
 
           return {
             ...client,
             outstanding,
-            status: hasActiveLoans ? 'pending' : 'free',
+            status: hasActiveLoansWithoutDefaulted
+              ? 'pendiente'
+              : hasActiveLoansWithDefaulted
+              ? 'defaulted'
+              : 'completed',
           };
         })
       );
 
-      setClients(clientsWithLoans);
+      // Transform snake_case to camelCase for client properties
+      setClients(
+        clientsWithLoans.map((client) => ({
+          id: client.id,
+          name: client.name,
+          lastName: client.last_name,
+          email: client.email,
+          phone: client.phone,
+          address: client.address,
+          subAddress: client.sub_address,
+          documentType: client.document_type,
+          documentNumber: client.document_number,
+          notes: client.notes,
+          outstanding: client.outstanding,
+          status: client.status,
+        }))
+      );
     } catch (err: any) {
       console.error('Error fetching clients:', err);
       setError(err.message);

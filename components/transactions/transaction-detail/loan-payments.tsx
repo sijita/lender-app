@@ -46,7 +46,7 @@ export default function LoanPayments({ loanId }: LoanPaymentsProps) {
     <View>
       <TouchableOpacity
         onPress={togglePaymentsView}
-        className="mt-4 p-4 border border-gray-200 rounded-lg flex-row items-center justify-center gap-2"
+        className="p-4 border border-gray-200 rounded-lg flex-row items-center justify-center gap-2"
       >
         <Ionicons
           name={showPayments ? 'chevron-up' : 'chevron-down'}
@@ -57,7 +57,6 @@ export default function LoanPayments({ loanId }: LoanPaymentsProps) {
           {showPayments ? 'Ocultar pagos' : 'Ver todos los pagos'}
         </Text>
       </TouchableOpacity>
-
       {showPayments && (
         <View className="mt-4 border border-gray-200 rounded-lg overflow-hidden">
           <View className="flex-row bg-gray-100 px-4 py-3">

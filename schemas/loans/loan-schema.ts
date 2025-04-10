@@ -34,7 +34,7 @@ export const loanSchema = z.object({
     required_error: 'La frecuencia de pago es requerida',
   }),
   status: z
-    .enum(['active', 'completed', 'defaulted', 'pending'], {
+    .enum(['active', 'completed', 'defaulted'], {
       required_error: 'El estado del préstamo es requerido',
     })
     .default('active'),

@@ -1,28 +1,18 @@
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-interface CalculateDueDateParams {
-  dueDate?: string;
-  term?: number;
-  paymentFrequency?: string;
-}
-
 export default function useCalculateDueDate() {
-  const calculateActualDueDate = ({
-    dueDate,
+  const dueDate = ({
+    startDate,
     term,
     paymentFrequency,
-  }: CalculateDueDateParams) => {
-    if (!dueDate || !term || !paymentFrequency) {
-      return 'Fecha desconocida';
-    }
-
-    const startDate = new Date(dueDate);
-
-    // Clone the start date
+  }: {
+    startDate: string;
+    term: number;
+    paymentFrequency: string;
+  }) => {
     const calculatedDueDate = new Date(startDate);
 
-    // Add time based on frequency and term
     switch (paymentFrequency) {
       case 'daily':
         calculatedDueDate.setDate(calculatedDueDate.getDate() + term);
@@ -40,8 +30,14 @@ export default function useCalculateDueDate() {
         calculatedDueDate.setDate(calculatedDueDate.getDate() + term * 7); // Default to weekly
     }
 
-    return format(calculatedDueDate, "dd 'de' MMMM, yyyy", { locale: es });
+    return {
+      dateObject: calculatedDueDate,
+      date: format(calculatedDueDate, 'dd/MM/yyyy', { locale: es }),
+      formattedDate: format(calculatedDueDate, "dd 'de' MMMM, yyyy", {
+        locale: es,
+      }),
+    };
   };
 
-  return { calculateActualDueDate };
+  return { dueDate };
 }

@@ -2,12 +2,10 @@ export const getLoanStatusText = (status: string) => {
   switch (status) {
     case 'active':
       return 'En Curso';
-    case 'completed':
-      return 'Completado';
     case 'defaulted':
       return 'Incumplido';
-    case 'pending':
-      return 'Desembolsado';
+    case 'completed':
+      return 'Completado';
     default:
       return status;
   }
@@ -21,8 +19,6 @@ export const getLoanStatusStyle = (status: string) => {
       return 'bg-green-100 text-green-800';
     case 'defaulted':
       return 'bg-red-100 text-red-800';
-    case 'pending':
-      return 'bg-yellow-100 text-yellow-800';
     default:
       return 'bg-gray-100 text-gray-800';
   }

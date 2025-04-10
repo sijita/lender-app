@@ -17,12 +17,12 @@ export default function ClientList() {
 
   const filteredClients = clients.filter(
     (client) =>
-      `${client.name} ${client.last_name}`
+      `${client.name} ${client.lastName}`
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
       client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       client.phone.includes(searchQuery) ||
-      client.document_number.toString().includes(searchQuery)
+      client.documentNumber.toString().includes(searchQuery)
   );
 
   if (loading) {
@@ -84,10 +84,10 @@ export default function ClientList() {
                 className="flex-row items-center px-4 py-3 border-b border-gray-100"
               >
                 <Text className="w-36 font-geist-medium">
-                  {client.document_number}
+                  {client.documentNumber}
                 </Text>
                 <Text className="w-40 font-geist-medium">
-                  {client.name} {client.last_name}
+                  {client.name} {client.lastName}
                 </Text>
                 <View className="w-52">
                   <Text className="text-gray-600 font-geist-regular">
@@ -103,12 +103,18 @@ export default function ClientList() {
                 <View className="w-40 items-end shrink-0">
                   <Text
                     className={`px-2 py-1 rounded-full text-xs font-geist-medium ${
-                      (client as any).status === 'free'
+                      (client as any).status === 'completed'
                         ? 'bg-green-100 text-green-800'
+                        : (client as any).status === 'defaulted'
+                        ? 'bg-red-100 text-red-800'
                         : 'bg-yellow-100 text-yellow-800'
                     }`}
                   >
-                    {(client as any).status === 'free' ? 'Libre' : 'Pendiente'}
+                    {(client as any).status === 'defaulted'
+                      ? 'En mora'
+                      : (client as any).status === 'pending'
+                      ? 'Pendiente'
+                      : 'Libre'}
                   </Text>
                 </View>
                 <View className="w-16 items-end">

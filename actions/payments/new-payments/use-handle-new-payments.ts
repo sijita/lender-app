@@ -13,6 +13,7 @@ export default function useHandleNewPayments() {
       lastName: string;
       documentNumber: string;
       outstanding: number;
+      pending_quotas: number;
     }
   >({
     clientId: undefined,
@@ -26,6 +27,7 @@ export default function useHandleNewPayments() {
     quotas: 1,
     notes: '',
     outstanding: 0,
+    pending_quotas: 0,
   });
   const [errors, setErrors] = useState<Partial<Record<keyof Payment, string>>>(
     {}
@@ -93,6 +95,7 @@ export default function useHandleNewPayments() {
       documentNumber: client.document_number,
       outstanding: loan.outstanding,
       loanId: loan.id,
+      pending_quotas: loan.pending_quotas,
     }));
     setSearchQuery('');
     setSearchResults([]);
@@ -125,6 +128,7 @@ export default function useHandleNewPayments() {
           id,
           amount,
           outstanding,
+          pending_quotas,
           client:client_id (
             id,
             name,
@@ -213,6 +217,7 @@ export default function useHandleNewPayments() {
         method: 'cash',
         notes: '',
         outstanding: 0,
+        pending_quotas: 0,
       });
 
       showToast({
