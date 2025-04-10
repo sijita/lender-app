@@ -5,25 +5,43 @@ import {
   TextInput,
   ScrollView,
   ActivityIndicator,
+  Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useFetchClients from '@/actions/clients/use-fetch-clients';
 import Error from '@/components/ui/error';
 
 export default function ClientList() {
-  const { clients, loading, error, refetch } = useFetchClients();
   const [searchQuery, setSearchQuery] = useState('');
+  const [orderBy, setOrderBy] = useState('name');
+  const [orderDirection, setOrderDirection] = useState<'asc' | 'desc'>('asc');
+  const [statusFilter, setStatusFilter] = useState<
+    'all' | 'pending' | 'defaulted' | 'completed'
+  >('all');
 
-  const filteredClients = clients.filter(
-    (client) =>
-      `${client.name} ${client.lastName}`
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      client.phone.includes(searchQuery) ||
-      client.documentNumber.toString().includes(searchQuery)
-  );
+  // Configuramos los parámetros de búsqueda
+  const clientParams = {
+    searchQuery,
+    orderBy,
+    orderDirection,
+    status: statusFilter,
+  };
+
+  // Usamos el hook con los parámetros específicos
+  const { clients, loading, error, refetch } = useFetchClients(clientParams);
+
+  // Aplicar búsqueda con un pequeño retraso para evitar muchas llamadas
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      refetch({
+        ...clientParams,
+        searchQuery,
+      });
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   if (loading) {
     return (
@@ -38,6 +56,88 @@ export default function ClientList() {
 
   return (
     <View className="p-5 flex-col gap-5">
+      <View className="flex-row bg-gray-100 rounded-lg p-1 mb-4">
+        <TouchableOpacity
+          onPress={() => {
+            setStatusFilter('all');
+            refetch({
+              ...clientParams,
+              status: 'all',
+            });
+          }}
+          className={`flex-1 py-3 rounded-lg ${
+            statusFilter === 'all' ? 'bg-white' : ''
+          }`}
+        >
+          <Text
+            className={`text-center font-geist-semibold ${
+              statusFilter === 'all' ? 'text-black' : 'text-gray-500'
+            }`}
+          >
+            Todos
+          </Text>
+        </TouchableOpacity>
+        <Pressable
+          onPress={() => {
+            setStatusFilter('pending');
+            refetch({
+              ...clientParams,
+              status: 'pending',
+            });
+          }}
+          className={`flex-1 py-3 rounded-lg ${
+            statusFilter === 'pending' ? 'bg-white' : ''
+          }`}
+        >
+          <Text
+            className={`text-center font-geist-semibold ${
+              statusFilter === 'pending' ? 'text-black' : 'text-gray-500'
+            }`}
+          >
+            Pendientes
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            setStatusFilter('defaulted');
+            refetch({
+              ...clientParams,
+              status: 'defaulted',
+            });
+          }}
+          className={`flex-1 py-3 rounded-lg ${
+            statusFilter === 'defaulted' ? 'bg-white' : ''
+          }`}
+        >
+          <Text
+            className={`text-center font-geist-semibold ${
+              statusFilter === 'defaulted' ? 'text-black' : 'text-gray-500'
+            }`}
+          >
+            En mora
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            setStatusFilter('completed');
+            refetch({
+              ...clientParams,
+              status: 'completed',
+            });
+          }}
+          className={`flex-1 py-3 rounded-lg ${
+            statusFilter === 'completed' ? 'bg-white' : ''
+          }`}
+        >
+          <Text
+            className={`text-center font-geist-semibold ${
+              statusFilter === 'completed' ? 'text-black' : 'text-gray-500'
+            }`}
+          >
+            Libres
+          </Text>
+        </Pressable>
+      </View>
       <View className="flex-row items-center gap-2">
         <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3 border border-gray-100">
           <Ionicons name="search" size={20} color="#6B7280" />
@@ -49,11 +149,44 @@ export default function ClientList() {
             onChangeText={setSearchQuery}
           />
         </View>
-        <TouchableOpacity className="flex-row items-center gap-1 border border-gray-200 rounded-lg p-2">
-          <Ionicons name="list-outline" size={20} color="#6B7280" />
+        <TouchableOpacity
+          className="flex-row items-center gap-1 bg-white rounded-lg px-4 py-2 border border-gray-100"
+          onPress={() => {
+            const newOrderBy = orderBy === 'name' ? 'document_number' : 'name';
+            setOrderBy(newOrderBy);
+            refetch({
+              ...clientParams,
+              orderBy: newOrderBy,
+              orderDirection,
+            });
+          }}
+        >
+          <Text className="text-black font-geist-medium">
+            {orderBy === 'name' ? 'Nombre' : 'Cédula'}
+          </Text>
+          <Ionicons name="chevron-down" size={16} color="#000" />
         </TouchableOpacity>
-        <TouchableOpacity className="flex-row items-center gap-1 border border-gray-200 rounded-lg p-2">
-          <Ionicons name="filter-outline" size={20} color="#6B7280" />
+        <TouchableOpacity
+          className="bg-white rounded-lg px-[8px] py-[8px] border border-gray-100"
+          onPress={() => {
+            const newDirection = orderDirection === 'desc' ? 'asc' : 'desc';
+            setOrderDirection(newDirection);
+            refetch({
+              ...clientParams,
+              orderBy,
+              orderDirection: newDirection,
+            });
+          }}
+        >
+          <Ionicons
+            name={
+              orderDirection === 'desc'
+                ? 'arrow-down-outline'
+                : 'arrow-up-outline'
+            }
+            size={15}
+            color="#000"
+          />
         </TouchableOpacity>
       </View>
       <ScrollView horizontal className="w-full">
@@ -72,12 +205,12 @@ export default function ClientList() {
             </Text>
             <View className="w-16" />
           </View>
-          {filteredClients.length === 0 ? (
+          {clients.length === 0 ? (
             <View className="py-8 items-center">
               <Text className="text-gray-500">No se encontraron clientes</Text>
             </View>
           ) : (
-            filteredClients.map((client) => (
+            clients.map((client) => (
               <TouchableOpacity
                 key={client.id}
                 // onPress={() => onClientPress(client)}

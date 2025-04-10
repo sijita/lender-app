@@ -2,18 +2,54 @@ import { supabase } from '@/lib/supabase';
 import { Client } from '@/schemas/clients/client-schema';
 import { useEffect, useState } from 'react';
 
-export default function useFetchClients() {
+interface FetchClientsParams {
+  searchQuery?: string;
+  orderBy?: string;
+  orderDirection?: 'asc' | 'desc';
+  status?: 'pending' | 'defaulted' | 'completed' | 'all';
+}
+
+export default function useFetchClients(params?: FetchClientsParams) {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchClients = async () => {
+  const fetchClients = async (queryParams?: FetchClientsParams) => {
     try {
       setLoading(true);
+      setError(null);
 
-      const { data: clientsData, error: clientsError } = await supabase
-        .from('clients')
-        .select('*');
+      // Usar los parámetros pasados a la función o los parámetros iniciales
+      const activeParams = queryParams || params || {};
+      const {
+        searchQuery,
+        orderBy = 'name',
+        orderDirection = 'asc',
+        status,
+      } = activeParams;
+
+      // Iniciar la consulta base
+      let query = supabase.from('clients').select('*');
+
+      // Aplicar búsqueda si se proporciona un término
+      if (searchQuery && searchQuery.trim() !== '') {
+        const isNumeric = /^\d+$/.test(searchQuery);
+
+        if (isNumeric) {
+          // Buscar por número de documento si es numérico
+          query = query.or(`document_number.eq.${searchQuery}`);
+        } else {
+          // Buscar por nombre, apellido o email
+          query = query.or(
+            `name.ilike.%${searchQuery}%,last_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,phone.ilike.%${searchQuery}%`
+          );
+        }
+      }
+
+      // Aplicar ordenamiento
+      query = query.order(orderBy, { ascending: orderDirection === 'asc' });
+
+      const { data: clientsData, error: clientsError } = await query;
 
       if (clientsError) throw clientsError;
 
@@ -38,21 +74,31 @@ export default function useFetchClients() {
             (loan) => loan.status === 'defaulted'
           );
 
+          const clientStatus = hasActiveLoansWithoutDefaulted
+            ? 'pending'
+            : hasActiveLoansWithDefaulted
+            ? 'defaulted'
+            : 'completed';
+
           return {
             ...client,
             outstanding,
-            status: hasActiveLoansWithoutDefaulted
-              ? 'pendiente'
-              : hasActiveLoansWithDefaulted
-              ? 'defaulted'
-              : 'completed',
+            status: clientStatus,
           };
         })
       );
 
+      // Filtrar por estado si se especifica
+      let filteredClients = clientsWithLoans;
+      if (status && status !== 'all') {
+        filteredClients = clientsWithLoans.filter(
+          (client) => client.status === status
+        );
+      }
+
       // Transform snake_case to camelCase for client properties
       setClients(
-        clientsWithLoans.map((client) => ({
+        filteredClients.map((client) => ({
           id: client.id,
           name: client.name,
           lastName: client.last_name,
