@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase';
 import { Client } from '@/schemas/clients/client-schema';
 import { useEffect, useState } from 'react';
 
-interface FetchClientsParams {
+export interface FetchClientsParams {
   searchQuery?: string;
   orderBy?: string;
   orderDirection?: 'asc' | 'desc';
@@ -46,7 +46,6 @@ export default function useFetchClients(params?: FetchClientsParams) {
         }
       }
 
-      // Aplicar ordenamiento
       query = query.order(orderBy, { ascending: orderDirection === 'asc' });
 
       const { data: clientsData, error: clientsError } = await query;
@@ -88,7 +87,6 @@ export default function useFetchClients(params?: FetchClientsParams) {
         })
       );
 
-      // Filtrar por estado si se especifica
       let filteredClients = clientsWithLoans;
       if (status && status !== 'all') {
         filteredClients = clientsWithLoans.filter(
@@ -96,7 +94,6 @@ export default function useFetchClients(params?: FetchClientsParams) {
         );
       }
 
-      // Transform snake_case to camelCase for client properties
       setClients(
         filteredClients.map((client) => ({
           id: client.id,

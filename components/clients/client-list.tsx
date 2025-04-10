@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import useFetchClients from '@/actions/clients/use-fetch-clients';
 import Error from '@/components/ui/error';
+import ClientTypeTabs from './client-type-tabs';
 
 export default function ClientList() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,7 +21,6 @@ export default function ClientList() {
     'all' | 'pending' | 'defaulted' | 'completed'
   >('all');
 
-  // Configuramos los parámetros de búsqueda
   const clientParams = {
     searchQuery,
     orderBy,
@@ -28,10 +28,8 @@ export default function ClientList() {
     status: statusFilter,
   };
 
-  // Usamos el hook con los parámetros específicos
   const { clients, loading, error, refetch } = useFetchClients(clientParams);
 
-  // Aplicar búsqueda con un pequeño retraso para evitar muchas llamadas
   useEffect(() => {
     const timer = setTimeout(() => {
       refetch({
@@ -56,88 +54,12 @@ export default function ClientList() {
 
   return (
     <View className="p-5 flex-col gap-5">
-      <View className="flex-row bg-gray-100 rounded-lg p-1 mb-4">
-        <TouchableOpacity
-          onPress={() => {
-            setStatusFilter('all');
-            refetch({
-              ...clientParams,
-              status: 'all',
-            });
-          }}
-          className={`flex-1 py-3 rounded-lg ${
-            statusFilter === 'all' ? 'bg-white' : ''
-          }`}
-        >
-          <Text
-            className={`text-center font-geist-semibold ${
-              statusFilter === 'all' ? 'text-black' : 'text-gray-500'
-            }`}
-          >
-            Todos
-          </Text>
-        </TouchableOpacity>
-        <Pressable
-          onPress={() => {
-            setStatusFilter('pending');
-            refetch({
-              ...clientParams,
-              status: 'pending',
-            });
-          }}
-          className={`flex-1 py-3 rounded-lg ${
-            statusFilter === 'pending' ? 'bg-white' : ''
-          }`}
-        >
-          <Text
-            className={`text-center font-geist-semibold ${
-              statusFilter === 'pending' ? 'text-black' : 'text-gray-500'
-            }`}
-          >
-            Pendientes
-          </Text>
-        </Pressable>
-        <Pressable
-          onPress={() => {
-            setStatusFilter('defaulted');
-            refetch({
-              ...clientParams,
-              status: 'defaulted',
-            });
-          }}
-          className={`flex-1 py-3 rounded-lg ${
-            statusFilter === 'defaulted' ? 'bg-white' : ''
-          }`}
-        >
-          <Text
-            className={`text-center font-geist-semibold ${
-              statusFilter === 'defaulted' ? 'text-black' : 'text-gray-500'
-            }`}
-          >
-            En mora
-          </Text>
-        </Pressable>
-        <Pressable
-          onPress={() => {
-            setStatusFilter('completed');
-            refetch({
-              ...clientParams,
-              status: 'completed',
-            });
-          }}
-          className={`flex-1 py-3 rounded-lg ${
-            statusFilter === 'completed' ? 'bg-white' : ''
-          }`}
-        >
-          <Text
-            className={`text-center font-geist-semibold ${
-              statusFilter === 'completed' ? 'text-black' : 'text-gray-500'
-            }`}
-          >
-            Libres
-          </Text>
-        </Pressable>
-      </View>
+      <ClientTypeTabs
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        refetch={refetch}
+        clientParams={clientParams}
+      />
       <View className="flex-row items-center gap-2">
         <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3 border border-gray-100">
           <Ionicons name="search" size={20} color="#6B7280" />
