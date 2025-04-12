@@ -130,7 +130,7 @@ export default function useFetchClientDetail(clientId: number) {
       const nextPayment =
         upcomingPayments.length > 0
           ? {
-              date: upcomingPayments[0].due_date,
+              date: upcomingPayments[0].payment_date,
               amount: parseFloat(upcomingPayments[0].quota),
             }
           : undefined;
