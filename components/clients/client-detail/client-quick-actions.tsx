@@ -1,8 +1,9 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, useLocalSearchParams } from 'expo-router';
 
 export default function ClientQuickActions() {
+  const { id } = useLocalSearchParams<{ id: string }>();
   return (
     <View className="flex-col gap-6 rounded-xl bg-white p-5 border border-gray-100">
       <Text className="text-xl font-geist-bold">Acciones rápidas</Text>
@@ -32,7 +33,7 @@ export default function ClientQuickActions() {
           </TouchableOpacity>
         </Link>
       </View>
-      <TouchableOpacity className=" bg-red-500 py-4 rounded-lg">
+      <TouchableOpacity className="bg-red-500 py-4 rounded-lg">
         <Text className="text-white text-center font-geist-medium">
           Eliminar cliente
         </Text>

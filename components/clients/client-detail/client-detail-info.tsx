@@ -1,10 +1,12 @@
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
 
 export default function ClientDetailInfo({
   client,
 }: {
   client: {
+    id: number;
     name: string;
     last_name: string;
     email: string;
@@ -66,6 +68,17 @@ export default function ClientDetailInfo({
           </View>
         </View>
       </View>
+      <Link
+        href={`/edit-client/${client?.id}`}
+        className="bg-gray-800 py-4 rounded-lg"
+        asChild
+      >
+        <TouchableOpacity>
+          <Text className="text-white text-center font-geist-medium">
+            Editar cliente
+          </Text>
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 }
