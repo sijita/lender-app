@@ -135,7 +135,10 @@ const NewPaymentForm = () => {
               keyboardType="number-pad"
               className="flex-1 p-3"
               value={formData.quotas?.toString() ?? ''}
-              onChangeText={(text) => handleChange('quotas', text)}
+              onChangeText={(text) => {
+                handleChange('quotas', text);
+                handleAmountChange((Number(text) * formData.quota).toString());
+              }}
             />
             <View className="flex-col gap-0">
               <TouchableOpacity
@@ -143,7 +146,14 @@ const NewPaymentForm = () => {
                 onPress={() => {
                   const currentTerm = Number(formData.quotas) || 0;
                   if (currentTerm < formData.pending_quotas) {
-                    handleChange('quotas', String(currentTerm + 1));
+                    const newQuotas = currentTerm + 1;
+                    handleChange('quotas', String(newQuotas));
+
+                    if (formData.quota) {
+                      const newAmount = (newQuotas * formData.quota).toFixed(0);
+                      console.log('Increment - new amount:', newAmount);
+                      handleAmountChange(newAmount);
+                    }
                   }
                 }}
               >
@@ -154,7 +164,14 @@ const NewPaymentForm = () => {
                 onPress={() => {
                   const currentTerm = Number(formData.quotas) || 0;
                   if (currentTerm > 1) {
-                    handleChange('quotas', String(currentTerm - 1));
+                    const newQuotas = currentTerm - 1;
+                    handleChange('quotas', String(newQuotas));
+
+                    if (formData.quota) {
+                      const newAmount = (newQuotas * formData.quota).toFixed(0);
+                      console.log('Decrement - new amount:', newAmount);
+                      handleAmountChange(newAmount);
+                    }
                   }
                 }}
               >
