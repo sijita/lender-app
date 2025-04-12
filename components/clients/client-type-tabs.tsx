@@ -1,5 +1,5 @@
 import { FetchClientsParams } from '@/actions/clients/use-fetch-clients';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ClientTypeTabs({
   statusFilter,
@@ -19,88 +19,44 @@ export default function ClientTypeTabs({
     status: 'all' | 'pending' | 'defaulted' | 'completed';
   };
 }) {
+  const tabs = [
+    { id: 'all', label: 'Todos' },
+    { id: 'pending', label: 'Pendientes' },
+    { id: 'defaulted', label: 'En mora' },
+    { id: 'completed', label: 'Libres' },
+  ];
+
   return (
-    <View className="flex-row bg-gray-100 rounded-lg p-1 overflow-auto">
-      <TouchableOpacity
-        onPress={() => {
-          setStatusFilter('all');
-          refetch({
-            ...clientParams,
-            status: 'all',
-          });
-        }}
-        className={`flex-1 py-3 rounded-lg ${
-          statusFilter === 'all' ? 'bg-white' : ''
-        }`}
-      >
-        <Text
-          className={`text-center font-geist-semibold ${
-            statusFilter === 'all' ? 'text-black' : 'text-gray-500'
-          }`}
-        >
-          Todos
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          setStatusFilter('pending');
-          refetch({
-            ...clientParams,
-            status: 'pending',
-          });
-        }}
-        className={`flex-1 py-3 rounded-lg ${
-          statusFilter === 'pending' ? 'bg-white' : ''
-        }`}
-      >
-        <Text
-          className={`text-center font-geist-semibold ${
-            statusFilter === 'pending' ? 'text-black' : 'text-gray-500'
-          }`}
-        >
-          Pendientes
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          setStatusFilter('defaulted');
-          refetch({
-            ...clientParams,
-            status: 'defaulted',
-          });
-        }}
-        className={`flex-1 py-3 rounded-lg ${
-          statusFilter === 'defaulted' ? 'bg-white' : ''
-        }`}
-      >
-        <Text
-          className={`text-center font-geist-semibold ${
-            statusFilter === 'defaulted' ? 'text-black' : 'text-gray-500'
-          }`}
-        >
-          En mora
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          setStatusFilter('completed');
-          refetch({
-            ...clientParams,
-            status: 'completed',
-          });
-        }}
-        className={`flex-1 py-3 rounded-lg ${
-          statusFilter === 'completed' ? 'bg-white' : ''
-        }`}
-      >
-        <Text
-          className={`text-center font-geist-semibold ${
-            statusFilter === 'completed' ? 'text-black' : 'text-gray-500'
-          }`}
-        >
-          Libres
-        </Text>
-      </TouchableOpacity>
-    </View>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      className="border-b border-gray-200"
+    >
+      <View className="flex-row">
+        {tabs.map((tab) => (
+          <TouchableOpacity
+            key={tab.id}
+            onPress={() => {
+              setStatusFilter(tab.id as any);
+              refetch({
+                ...clientParams,
+                status: tab.id as any,
+              });
+            }}
+            className={`px-5 py-4 ${
+              statusFilter === tab.id ? 'border-b-2 border-black' : ''
+            }`}
+          >
+            <Text
+              className={`font-geist-semibold ${
+                statusFilter === tab.id ? 'text-black' : 'text-gray-500'
+              }`}
+            >
+              {tab.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ScrollView>
   );
 }

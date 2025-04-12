@@ -4,11 +4,11 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  ActivityIndicator,
-  Pressable,
+  ActivityIndicator
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
+import { Link } from 'expo-router';
 import useFetchClients from '@/actions/clients/use-fetch-clients';
 import Error from '@/components/ui/error';
 import ClientTypeTabs from './client-type-tabs';
@@ -133,49 +133,51 @@ export default function ClientList() {
             </View>
           ) : (
             clients.map((client) => (
-              <TouchableOpacity
-                key={client.id}
-                // onPress={() => onClientPress(client)}
-                className="flex-row items-center px-4 py-3 border-b border-gray-100"
-              >
-                <Text className="w-36 font-geist-medium">
-                  {client.documentNumber}
-                </Text>
-                <Text className="w-40 font-geist-medium">
-                  {client.name} {client.lastName}
-                </Text>
-                <View className="w-52">
-                  <Text className="text-gray-600 font-geist-regular">
-                    {client.email}
+              <Link key={client.id} href={`/client/${client.id}`} asChild>
+                <TouchableOpacity className="flex-row items-center px-4 py-3 border-b border-gray-100">
+                  <Text className="w-36 font-geist-medium">
+                    {client.documentNumber}
                   </Text>
-                  <Text className="text-gray-500 text-sm font-geist-regular">
-                    {client.phone}
+                  <Text className="w-40 font-geist-medium">
+                    {client.name} {client.lastName}
                   </Text>
-                </View>
-                <Text className="w-40 font-geist-semibold text-right">
-                  ${(client as any).outstanding?.toLocaleString() ?? '0'}
-                </Text>
-                <View className="w-40 items-end shrink-0">
-                  <Text
-                    className={`px-2 py-1 rounded-full text-xs font-geist-medium ${
-                      (client as any).status === 'completed'
-                        ? 'bg-green-100 text-green-800'
-                        : (client as any).status === 'defaulted'
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}
-                  >
-                    {(client as any).status === 'defaulted'
-                      ? 'En mora'
-                      : (client as any).status === 'pending'
-                      ? 'Pendiente'
-                      : 'Libre'}
+                  <View className="w-52">
+                    <Text className="text-gray-600 font-geist-regular">
+                      {client.email}
+                    </Text>
+                    <Text className="text-gray-500 text-sm font-geist-regular">
+                      {client.phone}
+                    </Text>
+                  </View>
+                  <Text className="w-40 font-geist-semibold text-right">
+                    ${(client as any).outstanding?.toLocaleString() ?? '0'}
                   </Text>
-                </View>
-                <View className="w-16 items-end">
-                  <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-                </View>
-              </TouchableOpacity>
+                  <View className="w-40 items-end shrink-0">
+                    <Text
+                      className={`px-2 py-1 rounded-full text-xs font-geist-medium ${
+                        (client as any).status === 'completed'
+                          ? 'bg-green-100 text-green-800'
+                          : (client as any).status === 'defaulted'
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}
+                    >
+                      {(client as any).status === 'defaulted'
+                        ? 'En mora'
+                        : (client as any).status === 'pending'
+                        ? 'Pendiente'
+                        : 'Libre'}
+                    </Text>
+                  </View>
+                  <View className="w-16 items-end">
+                    <Ionicons
+                      name="chevron-forward"
+                      size={20}
+                      color="#9CA3AF"
+                    />
+                  </View>
+                </TouchableOpacity>
+              </Link>
             ))
           )}
         </View>

@@ -21,6 +21,7 @@ import {
   getTransactionTypeStyle,
   getTransactionTypeText,
 } from '@/utils/transactions';
+import TransactionTabs from './new-transactions/transaction-tabs';
 
 export default function TransactionList() {
   const router = useRouter();
@@ -96,36 +97,14 @@ export default function TransactionList() {
 
   return (
     <View className="p-5 flex-col gap-5">
-      <View className="flex-row bg-gray-100 rounded-lg p-1">
-        <TouchableOpacity
-          onPress={() => setActiveTab('loans')}
-          className={`flex-1 py-3 rounded-lg ${
-            activeTab === 'loans' ? 'bg-white' : ''
-          }`}
-        >
-          <Text
-            className={`text-center font-geist-semibold ${
-              activeTab === 'loans' ? 'text-black' : 'text-gray-500'
-            }`}
-          >
-            Préstamos
-          </Text>
-        </TouchableOpacity>
-        <Pressable
-          onPress={() => setActiveTab('payments')}
-          className={`flex-1 py-3 rounded-lg ${
-            activeTab === 'payments' ? 'bg-white' : ''
-          }`}
-        >
-          <Text
-            className={`text-center font-geist-semibold ${
-              activeTab === 'payments' ? 'text-black' : 'text-gray-500'
-            }`}
-          >
-            Pagos
-          </Text>
-        </Pressable>
-      </View>
+      <TransactionTabs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        tabs={[
+          { id: 'loans', label: 'Préstamos' },
+          { id: 'payments', label: 'Pagos' },
+        ]}
+      />
       <View className="flex-row items-center gap-2">
         <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3 border border-gray-100">
           <Ionicons name="search" size={20} color="#6B7280" />

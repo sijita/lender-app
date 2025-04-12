@@ -1,8 +1,7 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
 
-export default function ClientInfo({
+export default function ClientDetailInfo({
   client,
 }: {
   client: {
@@ -14,34 +13,32 @@ export default function ClientInfo({
     sub_address?: string;
     document_type: string;
     document_number: number;
+    created_at: string;
   };
 }) {
   return (
     <View className="flex-col gap-6 bg-white p-5 border border-gray-100 rounded-xl">
-      <Text className="text-xl font-geist-bold">Información del cliente</Text>
-      <View className="flex-row items-center gap-3">
-        <View className="w-14 h-14 bg-gray-200 rounded-full items-center justify-center">
-          <Text className="font-geist-medium text-gray-600">
-            {client?.name.charAt(0)}
-            {client?.last_name.charAt(0)}
+      <View className="flex-row justify-center items-center">
+        <View className="w-16 h-16 bg-gray-200 rounded-full items-center justify-center">
+          <Text className="font-geist-medium text-gray-600 text-xl">
+            {client?.name?.split(' ')[0]?.charAt(0)}
+            {client?.last_name?.split(' ')[1]?.charAt(0)}
           </Text>
         </View>
-        <Text className="font-geist-bold text-lg">
+      </View>
+      <View className="flex-col items-center">
+        <Text className="font-geist-bold text-xl">
           {client?.name} {client?.last_name}
+        </Text>
+        <Text className="text-gray-500 font-geist-medium text-sm">
+          Cliente desde{' '}
+          {new Date(client?.created_at).toLocaleDateString('es-ES', {
+            month: 'long',
+            year: 'numeric',
+          })}
         </Text>
       </View>
       <View className="flex-col gap-3">
-        <View className="flex-row items-center gap-2">
-          <Ionicons name="id-card-outline" size={15} color="#6B7280" />
-          <View className="flex-row">
-            <Text className="font-geist-medium text-lg capitalize">
-              {client?.document_type}
-            </Text>
-            <Text className="font-geist-medium text-lg">
-              : {client?.document_number}
-            </Text>
-          </View>
-        </View>
         <View className="flex-row items-center gap-2">
           <Ionicons name="mail-outline" size={15} color="#6B7280" />
           <Text className="font-geist-medium text-lg">{client?.email}</Text>
@@ -57,16 +54,18 @@ export default function ClientInfo({
             {client?.sub_address ? `, ${client?.sub_address}` : ''}
           </Text>
         </View>
+        <View className="flex-row items-center gap-2">
+          <Ionicons name="id-card-outline" size={15} color="#6B7280" />
+          <View className="flex-row">
+            <Text className="font-geist-medium text-lg capitalize">
+              {client?.document_type}
+            </Text>
+            <Text className="font-geist-medium text-lg">
+              : {client?.document_number}
+            </Text>
+          </View>
+        </View>
       </View>
-      <Link
-        href={`/client/${client.id}`}
-        className="p-4 border border-gray-200 rounded-lg"
-        asChild
-      >
-        <TouchableOpacity>
-          <Text className="text-center font-geist-bold">Ver perfil</Text>
-        </TouchableOpacity>
-      </Link>
     </View>
   );
 }
