@@ -16,7 +16,6 @@ export default function TransactionsSection() {
     error: paymentsError,
   } = useFetchUpcomingPayments();
 
-  // Mostrar indicador de carga mientras se obtienen los datos
   if (loadingTransactions || loadingPayments) {
     return (
       <View className="flex-col items-center justify-center py-10">
@@ -28,7 +27,6 @@ export default function TransactionsSection() {
     );
   }
 
-  // Mostrar mensaje de error si hay algún problema
   if (transactionsError || paymentsError) {
     return (
       <View className="flex-col">
@@ -42,6 +40,16 @@ export default function TransactionsSection() {
             Error al cargar pagos: {paymentsError}
           </Text>
         )}
+      </View>
+    );
+  }
+
+  if (!recentTransactions.length && !upcomingPayments.length) {
+    return (
+      <View className="flex-col items-center justify-center py-10 bg-white rounded-xl border border-gray-100">
+        <Text className="text-gray-500 font-geist-medium">
+          No hay transacciones recientes
+        </Text>
       </View>
     );
   }

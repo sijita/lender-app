@@ -2,12 +2,11 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import useHandleNewPayments from '@/actions/payments/new-payments/use-handle-new-payments';
 import { formatCurrency } from '@/utils';
 import SearchableSelect from '@/components/ui/searchable-select';
 import ActionButtons from '@/components/ui/action-buttons';
+import { format } from '@formkit/tempo';
 
 const NewPaymentForm = () => {
   const {
@@ -196,7 +195,7 @@ const NewPaymentForm = () => {
         >
           <Text className={formData.date ? 'text-black' : 'text-gray-500'}>
             {formData.date
-              ? format(formData.date, 'dd/MM/yyyy', { locale: es })
+              ? format(formData.date, 'DD/MM/YYYY', 'es')
               : 'dd / mm / aaaa'}
           </Text>
           <Ionicons name="calendar-outline" size={20} color="#6B7280" />

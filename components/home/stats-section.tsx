@@ -2,11 +2,11 @@ import { Text, View } from 'react-native';
 import StatsCard from './stats-card';
 import useFetchStats from '@/actions/stats/use-fetch-stats';
 import { formatCurrency } from '@/utils';
+import DirectShortcuts from './direct-shortcuts';
 
 export default function StatsSection() {
   const { stats, loading, error } = useFetchStats();
 
-  // Reorganizamos el orden de las tarjetas para que 'Desembolsado en el mes' sea la primera
   const statsData = [
     {
       title: 'Desembolsado en el mes',
@@ -44,6 +44,7 @@ export default function StatsSection() {
     return (
       <View className="flex-col gap-5">
         <Text className="text-2xl font-geist-bold">Inicio</Text>
+        <DirectShortcuts />
         <Text className="text-red-500">
           Error al cargar las estadísticas: {error}
         </Text>
@@ -53,6 +54,7 @@ export default function StatsSection() {
   return (
     <View className="flex-col gap-5">
       <Text className="text-2xl font-geist-bold">Inicio</Text>
+      <DirectShortcuts />
       <View className="flex-row flex-wrap gap-4">
         <View className="flex-1 basis-full min-w-[160]">
           <StatsCard

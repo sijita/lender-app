@@ -9,13 +9,12 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import useFetchTransactionDetail from '@/actions/transactions/use-fetch-transaction-detail';
 import Error from '@/components/ui/error';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import BackButton from '@/components/ui/back-button';
 import ClientInfo from '@/components/transactions/transaction-detail/client-info';
 import TransactionInfo from '@/components/transactions/transaction-detail/transaction-info';
 import LoanInfo from '@/components/transactions/transaction-detail/loan-info';
 import QuickActions from '@/components/transactions/transaction-detail/quick-actions';
+import { format } from '@formkit/tempo';
 
 export default function TransactionDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -56,9 +55,7 @@ export default function TransactionDetail() {
   }
 
   const formattedDate = transaction?.created_at
-    ? format(new Date(transaction?.created_at), "dd 'de' MMMM, yyyy", {
-        locale: es,
-      })
+    ? format(new Date(transaction?.created_at), 'full', 'es')
     : 'Fecha desconocida';
 
   return (
@@ -76,7 +73,7 @@ export default function TransactionDetail() {
         )}
         <TransactionInfo transaction={transaction} />
         {transaction?.loan && <LoanInfo loan={transaction.loan} />}
-        <QuickActions />
+        <QuickActions loanId={transaction?.loan?.id} />
       </View>
     </ScrollView>
   );

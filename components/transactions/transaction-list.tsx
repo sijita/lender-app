@@ -5,12 +5,9 @@ import {
   TextInput,
   ScrollView,
   ActivityIndicator,
-  Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { useRouter } from 'expo-router';
 import useFetchTransactions, {
   TransactionType,
@@ -22,6 +19,7 @@ import {
   getTransactionTypeText,
 } from '@/utils/transactions';
 import TransactionTabs from './new-transactions/transaction-tabs';
+import { format } from '@formkit/tempo';
 
 export default function TransactionList() {
   const router = useRouter();
@@ -30,7 +28,6 @@ export default function TransactionList() {
   const [orderBy, setOrderBy] = useState('created_at');
   const [orderDirection, setOrderDirection] = useState<'asc' | 'desc'>('desc');
 
-  // Configuramos los parámetros de búsqueda según la pestaña activa
   const transactionParams = {
     type:
       activeTab === 'loans'
@@ -41,7 +38,6 @@ export default function TransactionList() {
     orderDirection: orderDirection,
   };
 
-  // Usamos el hook con los parámetros específicos para cada pestaña
   const { transactions, loading, error, refetch } = useFetchTransactions({
     type:
       activeTab === 'loans'
@@ -52,7 +48,6 @@ export default function TransactionList() {
     orderDirection,
   });
 
-  // Refrescar los datos cuando cambie la pestaña
   useEffect(() => {
     refetch({
       type: activeTab === 'loans' ? 'loan_disbursement' : ('payment' as const),
@@ -62,7 +57,6 @@ export default function TransactionList() {
     });
   }, [activeTab]);
 
-  // Aplicar búsqueda con un pequeño retraso para evitar muchas llamadas
   useEffect(() => {
     const timer = setTimeout(() => {
       refetch({
@@ -94,6 +88,15 @@ export default function TransactionList() {
   }
 
   if (error) return <Error error={error} refetch={refetch} />;
+
+  console.log(transactions[0].created_at);
+  console.log(
+    format({
+      date: new Date(transactions[0].created_at),
+      format: 'DD/MM/YYYY',
+      tz: 'America/Bogota',
+    })
+  );
 
   return (
     <View className="p-5 flex-col gap-5">
@@ -197,8 +200,10 @@ export default function TransactionList() {
                   className="flex-row items-center px-4 py-3 border-b border-gray-100"
                 >
                   <Text className="w-36 font-geist-regular text-gray-600">
-                    {format(new Date(transaction.created_at), 'dd/MM/yyyy', {
-                      locale: es,
+                    {format({
+                      date: new Date(transaction.created_at),
+                      format: 'DD/MM/YYYY',
+                      tz: 'America/Bogota',
                     })}
                   </Text>
                   <Text className="w-40 font-geist-medium">

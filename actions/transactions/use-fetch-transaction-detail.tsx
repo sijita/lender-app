@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Transaction } from '@/types/transactions';
+import { useFocusEffect } from 'expo-router';
 
 interface TransactionDetail extends Transaction {
   loan: {
@@ -78,6 +79,14 @@ export default function useFetchTransactionDetail(transactionId: number) {
       setLoading(false);
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (transactionId) {
+        fetchTransactionDetail();
+      }
+    }, [transactionId])
+  );
 
   useEffect(() => {
     if (transactionId) {

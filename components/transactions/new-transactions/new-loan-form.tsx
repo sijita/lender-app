@@ -3,13 +3,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useHandleNewLoans } from '@/actions/loans/new-loans/use-handle-new-loans';
 import Select from '@/components/ui/select';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { formatCurrency } from '@/utils';
 import ActionButtons from '@/components/ui/action-buttons';
 import { frequencyOptions } from '@/constants/loans';
 import SearchableSelect from '@/components/ui/searchable-select';
+import { format } from '@formkit/tempo';
 
 const NewLoanForm = () => {
   const {
@@ -31,7 +30,6 @@ const NewLoanForm = () => {
   } = useHandleNewLoans();
 
   const renderOptionItem = ({ item }: { item: any }) => {
-    console.log('item', item);
     if (!item.documentNumber) {
       return (
         <View className="py-4 items-center justify-center">
@@ -51,6 +49,27 @@ const NewLoanForm = () => {
   return (
     <View className="flex-col gap-5">
       <Text className="text-xl font-geist-bold">Registrar nuevo préstamo</Text>
+      <View className="flex-col gap-2">
+        <Text className="font-geist-medium">
+          Fecha de inicio<Text className="text-red-500">*</Text>
+        </Text>
+        <TouchableOpacity
+          className={`border ${
+            errors.startDate ? 'border-red-500' : 'border-gray-200'
+          } rounded-lg p-3 flex-row justify-between items-center`}
+          onPress={() => setShowDatePicker('start')}
+        >
+          <Text className={formData.startDate ? 'text-black' : 'text-gray-500'}>
+            {formData.startDate
+              ? format(formData.startDate, 'DD/MM/YYYY')
+              : 'dd / mm / aaaa'}
+          </Text>
+          <Ionicons name="calendar-outline" size={20} color="#6B7280" />
+        </TouchableOpacity>
+        {errors.startDate && (
+          <Text className="text-red-500 text-sm">{errors.startDate}</Text>
+        )}
+      </View>
       <View className="flex-col gap-2">
         <SearchableSelect
           label="Cliente"
@@ -94,27 +113,6 @@ const NewLoanForm = () => {
         </View>
         {errors.amount && (
           <Text className="text-red-500 text-sm">{errors.amount}</Text>
-        )}
-      </View>
-      <View className="flex-col gap-2">
-        <Text className="font-geist-medium">
-          Fecha de inicio<Text className="text-red-500">*</Text>
-        </Text>
-        <TouchableOpacity
-          className={`border ${
-            errors.startDate ? 'border-red-500' : 'border-gray-200'
-          } rounded-lg p-3 flex-row justify-between items-center`}
-          onPress={() => setShowDatePicker('start')}
-        >
-          <Text className={formData.startDate ? 'text-black' : 'text-gray-500'}>
-            {formData.startDate
-              ? format(formData.startDate, 'dd/MM/yyyy', { locale: es })
-              : 'dd / mm / aaaa'}
-          </Text>
-          <Ionicons name="calendar-outline" size={20} color="#6B7280" />
-        </TouchableOpacity>
-        {errors.startDate && (
-          <Text className="text-red-500 text-sm">{errors.startDate}</Text>
         )}
       </View>
       <View className="flex-col gap-2">
@@ -214,7 +212,7 @@ const NewLoanForm = () => {
             className={formData.paymentDate ? 'text-black' : 'text-gray-500'}
           >
             {formData.paymentDate
-              ? format(formData.paymentDate, 'dd/MM/yyyy', { locale: es })
+              ? format(formData.paymentDate, 'DD/MM/YYYY', 'es')
               : 'dd / mm / aaaa'}
           </Text>
           <Ionicons name="calendar-outline" size={20} color="#6B7280" />

@@ -21,7 +21,6 @@ export default function useFetchTransactions(params?: FetchTransactionsParams) {
       setLoading(true);
       setError(null);
 
-      // Usar los parámetros pasados a la función o los parámetros iniciales
       const activeParams = queryParams || params || {};
       const {
         type,
@@ -30,7 +29,6 @@ export default function useFetchTransactions(params?: FetchTransactionsParams) {
         orderDirection = 'desc',
       } = activeParams;
 
-      // Iniciar la consulta base
       let query = supabase.from('transactions').select(`
           *,
           loan:loan_id (
@@ -41,17 +39,13 @@ export default function useFetchTransactions(params?: FetchTransactionsParams) {
           )
         `);
 
-      // Aplicar filtro por tipo de transacción si se especifica
       if (type) {
-        // Aplicar el filtro directamente por el tipo especificado
         query = query.eq('type', type);
       }
 
-      // Aplicar búsqueda si se proporciona un término
       if (searchQuery && searchQuery.trim() !== '') {
         const isNumeric = /^\d+$/.test(searchQuery);
         let clientIds: string[] = [];
-        // Buscar en la tabla de transacciones
         const { data: clients, error: clientError } = await supabase
           .from('clients')
           .select('id')
@@ -68,17 +62,14 @@ export default function useFetchTransactions(params?: FetchTransactionsParams) {
         }
 
         if (clientIds.length > 0) {
-          // Buscar en transacciones que tengan esos client_ids vía loan
           query = query.in('loan.client_id', clientIds);
         }
 
-        // Si el término es numérico, buscar también por amount
         if (isNumeric) {
           query = query.or(`amount.eq.${searchQuery}`);
         }
       }
 
-      // Aplicar ordenamiento
       query = query.order(orderBy, { ascending: orderDirection === 'asc' });
 
       const { data, error } = await query;

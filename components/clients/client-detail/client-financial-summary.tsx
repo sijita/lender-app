@@ -2,8 +2,7 @@ import { View, Text } from 'react-native';
 import { formatCurrency } from '@/utils';
 import { ClientDetail } from '@/actions/clients/use-fetch-client-detail';
 import { Ionicons } from '@expo/vector-icons';
-import { formatDate, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { format } from '@formkit/tempo';
 
 export default function ClientFinancialSummary({
   client,
@@ -82,12 +81,10 @@ export default function ClientFinancialSummary({
             <View className="flex-col">
               <Text className="font-geist-bold text-lg">Próximo pago</Text>
               <Text className="text-gray-700">
-                {formatDate(
-                  parseISO(client.financial_summary.next_payment.date),
-                  "dd 'de' MMMM, yyyy",
-                  {
-                    locale: es,
-                  }
+                {format(
+                  new Date(client.financial_summary.next_payment.date),
+                  'full',
+                  'es'
                 )}
               </Text>
             </View>

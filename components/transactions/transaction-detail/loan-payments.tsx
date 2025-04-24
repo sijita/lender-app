@@ -1,16 +1,11 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { supabase } from '@/lib/supabase';
 import { formatCurrency } from '@/utils';
+import { format } from '@formkit/tempo';
 
-interface LoanPaymentsProps {
-  loanId: number;
-}
-
-export default function LoanPayments({ loanId }: LoanPaymentsProps) {
+export default function LoanPayments({ loanId }: { loanId: number }) {
   const [showPayments, setShowPayments] = useState(false);
   const [loanPayments, setLoanPayments] = useState<any[]>([]);
   const [loadingPayments, setLoadingPayments] = useState(false);
@@ -63,7 +58,6 @@ export default function LoanPayments({ loanId }: LoanPaymentsProps) {
             <Text className="flex-1 font-geist-medium">Fecha</Text>
             <Text className="flex-1 font-geist-medium text-right">Monto</Text>
           </View>
-
           {loadingPayments ? (
             <View className="py-6 items-center">
               <ActivityIndicator size="small" color="#000" />
@@ -80,9 +74,7 @@ export default function LoanPayments({ loanId }: LoanPaymentsProps) {
                 className="flex-row px-4 py-3 border-t border-gray-100"
               >
                 <Text className="flex-1 font-geist-regular">
-                  {format(new Date(payment.created_at), "dd 'de' MMMM, yyyy", {
-                    locale: es,
-                  })}
+                  {format(new Date(payment.created_at), 'full', 'es')}
                 </Text>
                 <Text className="flex-1 font-geist-medium text-right">
                   {formatCurrency(payment.amount)}

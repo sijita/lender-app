@@ -151,7 +151,10 @@ export default function LoanInfo({
         </View>
       </View>
       {loan?.status !== 'completed' && (
-        <NextPayment nextPaymentDate={loan?.payment_date} amount={loan?.quota} />
+        <NextPayment
+          nextPaymentDate={loan?.payment_date}
+          amount={loan?.quota}
+        />
       )}
       <LoanPayments loanId={loan.id} />
     </View>

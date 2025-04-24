@@ -1,5 +1,4 @@
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { format } from '@formkit/tempo';
 
 export default function useCalculateDueDate() {
   const dueDate = ({
@@ -32,10 +31,8 @@ export default function useCalculateDueDate() {
 
     return {
       dateObject: calculatedDueDate,
-      date: format(calculatedDueDate, 'dd/MM/yyyy', { locale: es }),
-      formattedDate: format(calculatedDueDate, "dd 'de' MMMM, yyyy", {
-        locale: es,
-      }),
+      date: format(calculatedDueDate, 'DD/MM/YYYY'),
+      formattedDate: format(calculatedDueDate, 'full', 'es'),
     };
   };
 
