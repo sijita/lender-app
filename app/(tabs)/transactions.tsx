@@ -1,7 +1,7 @@
 import { View, TouchableOpacity, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import TransactionList from '@/components/transactions/transaction-list';
+import { Plus } from 'lucide-react-native';
 
 export default function Transactions() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function Transactions() {
           <Text className="text-white font-geist-medium">
             Nueva transacción
           </Text>
-          <Ionicons name="add" size={20} color="white" />
+          <Plus size={18} color="white" />
         </TouchableOpacity>
       </View>
       <TransactionList />

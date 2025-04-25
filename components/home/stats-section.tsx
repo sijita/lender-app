@@ -2,7 +2,13 @@ import { Text, View } from 'react-native';
 import StatsCard from './stats-card';
 import useFetchStats from '@/actions/stats/use-fetch-stats';
 import { formatCurrency } from '@/utils';
-import DirectShortcuts from './direct-shortcuts';
+import {
+  HandCoins,
+  Users,
+  Wallet,
+  AlarmClock,
+  CircleDollarSign,
+} from 'lucide-react-native';
 
 export default function StatsSection() {
   const { stats, loading, error } = useFetchStats();
@@ -12,31 +18,31 @@ export default function StatsSection() {
       title: 'Desembolsado en el mes',
       value: loading ? '-' : formatCurrency(stats.monthlyLoanedAmount),
       change: { value: stats.monthlyLoanedAmountChange, period: 'Último mes' },
-      icon: 'wallet-outline',
+      icon: <Wallet size={18} color="#000" />,
     },
     {
       title: 'Total pendiente',
       value: loading ? '-' : formatCurrency(stats.totalOutstanding),
       change: { value: stats.outstandingChange, period: 'Último mes' },
-      icon: 'cash-outline',
+      icon: <HandCoins size={18} color="#000" />,
     },
     {
       title: 'Clientes activos',
       value: loading ? '-' : stats.activeClients.toString(),
       subtitle: loading ? '-' : `+${stats.newClientsThisMonth} Nuevos este mes`,
-      icon: 'people-outline',
+      icon: <Users size={18} color="#000" />,
     },
     {
       title: 'Próximos pagos',
       value: loading ? '-' : stats.upcomingPayments.toString(),
       subtitle: 'Esta semana',
-      icon: 'time-outline',
+      icon: <AlarmClock size={18} color="#000" />,
     },
     {
       title: 'Ingresos mensuales',
       value: loading ? '-' : formatCurrency(stats.monthlyIncome),
       change: { value: stats.monthlyIncomeChange, period: 'Último mes' },
-      icon: 'stats-chart-outline',
+      icon: <CircleDollarSign size={18} color="#000" />,
     },
   ];
 
@@ -44,7 +50,6 @@ export default function StatsSection() {
     return (
       <View className="flex-col gap-5">
         <Text className="text-2xl font-geist-bold">Inicio</Text>
-        <DirectShortcuts />
         <Text className="text-red-500">
           Error al cargar las estadísticas: {error}
         </Text>
@@ -54,7 +59,6 @@ export default function StatsSection() {
   return (
     <View className="flex-col gap-5">
       <Text className="text-2xl font-geist-bold">Inicio</Text>
-      <DirectShortcuts />
       <View className="flex-row flex-wrap gap-4">
         <View className="flex-1 basis-full min-w-[160]">
           <StatsCard

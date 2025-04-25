@@ -1,5 +1,4 @@
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useHandleNewLoans } from '@/actions/loans/new-loans/use-handle-new-loans';
 import Select from '@/components/ui/select';
@@ -9,6 +8,7 @@ import ActionButtons from '@/components/ui/action-buttons';
 import { frequencyOptions } from '@/constants/loans';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { format } from '@formkit/tempo';
+import { Calendar, ChevronDown, ChevronUp } from 'lucide-react-native';
 
 const NewLoanForm = () => {
   const {
@@ -64,7 +64,7 @@ const NewLoanForm = () => {
               ? format(formData.startDate, 'DD/MM/YYYY')
               : 'dd / mm / aaaa'}
           </Text>
-          <Ionicons name="calendar-outline" size={20} color="#6B7280" />
+          <Calendar size={20} color="#6B7280" />
         </TouchableOpacity>
         {errors.startDate && (
           <Text className="text-red-500 text-sm">{errors.startDate}</Text>
@@ -179,7 +179,7 @@ const NewLoanForm = () => {
                 }
               }}
             >
-              <Ionicons name="chevron-up-outline" size={20} color="#6B7280" />
+              <ChevronUp size={20} color="#6B7280" />
             </TouchableOpacity>
             <TouchableOpacity
               className="px-3 py-1"
@@ -190,7 +190,7 @@ const NewLoanForm = () => {
                 }
               }}
             >
-              <Ionicons name="chevron-down-outline" size={20} color="#6B7280" />
+              <ChevronDown size={20} color="#6B7280" />
             </TouchableOpacity>
           </View>
         </View>
@@ -215,7 +215,7 @@ const NewLoanForm = () => {
               ? format(formData.paymentDate, 'DD/MM/YYYY', 'es')
               : 'dd / mm / aaaa'}
           </Text>
-          <Ionicons name="calendar-outline" size={20} color="#6B7280" />
+          <Calendar size={20} color="#6B7280" />
         </TouchableOpacity>
         {errors.paymentDate && (
           <Text className="text-red-500 text-sm">{errors.paymentDate}</Text>

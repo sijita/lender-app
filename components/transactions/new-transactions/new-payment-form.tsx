@@ -1,5 +1,4 @@
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import useHandleNewPayments from '@/actions/payments/new-payments/use-handle-new-payments';
@@ -7,6 +6,14 @@ import { formatCurrency } from '@/utils';
 import SearchableSelect from '@/components/ui/searchable-select';
 import ActionButtons from '@/components/ui/action-buttons';
 import { format } from '@formkit/tempo';
+import {
+  Banknote,
+  Calendar,
+  ChevronDown,
+  ChevronUp,
+  Ellipsis,
+  Landmark,
+} from 'lucide-react-native';
 
 const NewPaymentForm = () => {
   const {
@@ -156,7 +163,7 @@ const NewPaymentForm = () => {
                   }
                 }}
               >
-                <Ionicons name="chevron-up-outline" size={20} color="#6B7280" />
+                <ChevronUp size={20} color="#6B7280" />
               </TouchableOpacity>
               <TouchableOpacity
                 className="px-3 py-1"
@@ -174,11 +181,7 @@ const NewPaymentForm = () => {
                   }
                 }}
               >
-                <Ionicons
-                  name="chevron-down-outline"
-                  size={20}
-                  color="#6B7280"
-                />
+                <ChevronDown size={20} color="#6B7280" />
               </TouchableOpacity>
             </View>
           </View>
@@ -198,7 +201,7 @@ const NewPaymentForm = () => {
               ? format(formData.date, 'DD/MM/YYYY', 'es')
               : 'dd / mm / aaaa'}
           </Text>
-          <Ionicons name="calendar-outline" size={20} color="#6B7280" />
+          <Calendar size={20} color="#6B7280" />
         </TouchableOpacity>
         {showDatePicker && (
           <DateTimePicker
@@ -222,7 +225,7 @@ const NewPaymentForm = () => {
               )}
             </View>
             <View className="flex-row items-center gap-2">
-              <Ionicons name="cash-outline" size={18} color="#000" />
+              <Banknote size={18} color="#000" />
               <Text>Efectivo</Text>
             </View>
           </TouchableOpacity>
@@ -236,7 +239,7 @@ const NewPaymentForm = () => {
               )}
             </View>
             <View className="flex-row items-center gap-2">
-              <Ionicons name="card-outline" size={18} color="#000" />
+              <Landmark size={18} color="#000" />
               <Text>Transferencia</Text>
             </View>
           </TouchableOpacity>
@@ -250,7 +253,7 @@ const NewPaymentForm = () => {
               )}
             </View>
             <View className="flex-row items-center gap-2">
-              <Ionicons name="ellipsis-horizontal" size={18} color="#000" />
+              <Ellipsis size={18} color="#000" />
               <Text>Otro</Text>
             </View>
           </TouchableOpacity>

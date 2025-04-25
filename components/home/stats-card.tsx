@@ -1,6 +1,5 @@
 import { Text, View } from 'react-native';
 import { ReactNode } from 'react';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function StatsCard({
   title,
@@ -26,13 +25,7 @@ export default function StatsCard({
         <Text className="text-gray-800 font-geist-semibold truncate flex-1">
           {title}
         </Text>
-        {icon && (
-          <Ionicons
-            className="text-muted-foreground shrink-0"
-            name={icon as keyof typeof Ionicons.glyphMap}
-            size={20}
-          />
-        )}
+        {icon}
       </View>
       <View className="flex-col justify-end gap-[2px]">
         <Text

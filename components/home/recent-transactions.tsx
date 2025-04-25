@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { formatCurrency } from '@/utils';
+import DynamicIcon from '@/components/ui/dynamic-icon';
 
 export default function RecentTransactions({
   transactions,
@@ -38,11 +38,11 @@ export default function RecentTransactions({
                 <Text className="text-lg font-geist-semibold">
                   {formatCurrency(transaction.amount)}
                 </Text>
-                <Ionicons
+                <DynamicIcon
                   name={
                     transaction.type === 'payment_received'
-                      ? 'arrow-down'
-                      : 'arrow-up'
+                      ? 'ArrowDown'
+                      : 'ArrowUp'
                   }
                   size={16}
                   color={

@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { formatCurrency } from '@/utils';
 import { format } from '@formkit/tempo';
+import DynamicIcon from '@/components/ui/dynamic-icon';
 
 export default function LoanPayments({ loanId }: { loanId: number }) {
   const [showPayments, setShowPayments] = useState(false);
@@ -43,8 +43,8 @@ export default function LoanPayments({ loanId }: { loanId: number }) {
         onPress={togglePaymentsView}
         className="p-4 border border-gray-200 rounded-lg flex-row items-center justify-center gap-2"
       >
-        <Ionicons
-          name={showPayments ? 'chevron-up' : 'chevron-down'}
+        <DynamicIcon
+          name={showPayments ? 'ChevronUp' : 'ChevronDown'}
           size={16}
           color="#6B7280"
         />

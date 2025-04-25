@@ -6,15 +6,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import BackButton from '@/components/ui/back-button';
 import ClientDetailInfo from '@/components/clients/client-detail/client-detail-info';
-import ClientPaymentHistory from '@/components/clients/client-detail/client-payment-history';
 import ClientActivityHistory from '@/components/clients/client-detail/client-activity-history';
 import ClientDetailTabs from '@/components/clients/client-detail/client-detail-tabs';
 import ClientQuickActions from '@/components/clients/client-detail/client-quick-actions';
 
 import useFetchClientDetail from '@/actions/clients/use-fetch-client-detail';
+import { ArrowLeft } from 'lucide-react-native';
 
 export default function ClientDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -41,7 +40,7 @@ export default function ClientDetail() {
           className="mt-4 flex-row items-center gap-2 bg-black px-4 py-2 rounded-full"
           onPress={() => router.back()}
         >
-          <Ionicons name="arrow-back" size={16} color="white" />
+          <ArrowLeft size={16} color="white" />
           <Text className="text-white font-geist-medium">Volver</Text>
         </TouchableOpacity>
       </View>
@@ -58,7 +57,7 @@ export default function ClientDetail() {
           className="mt-4 flex-row items-center gap-2 bg-black px-4 py-2 rounded-full"
           onPress={() => router.back()}
         >
-          <Ionicons name="arrow-back" size={16} color="white" />
+          <ArrowLeft size={16} color="white" />
           <Text className="text-white font-geist-medium">Volver</Text>
         </TouchableOpacity>
       </View>
@@ -68,12 +67,11 @@ export default function ClientDetail() {
   return (
     <ScrollView className="flex-1 bg-gray-50">
       <Stack.Screen options={{ headerShown: false }} />
-      <BackButton title={`Cliente #${client.id}`} />
-
+      <BackButton title={`Cliente #${client?.id}`} />
       <View className="p-5 flex-col gap-5">
         <ClientDetailInfo client={client} />
         <ClientDetailTabs client={client} />
-        <ClientActivityHistory activities={client.activity_history} />
+        <ClientActivityHistory activities={client?.activity_history} />
         <ClientQuickActions />
       </View>
     </ScrollView>

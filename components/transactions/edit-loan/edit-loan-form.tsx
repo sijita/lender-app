@@ -6,13 +6,13 @@ import {
   View,
 } from 'react-native';
 import { router, Stack } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import useHandleEditLoan from '@/actions/loans/edit-loan/use-handle-edit-loan';
 import Select from '@/components/ui/select';
 import { formatCurrency } from '@/utils';
 import { frequencyOptions } from '@/constants/loans';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format, parse } from '@formkit/tempo';
+import { Calendar, ChevronDown, ChevronUp } from 'lucide-react-native';
 
 interface EditLoanFormProps {
   loanId: number;
@@ -74,7 +74,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                   ? format(formData.startDate, 'DD/MM/YYYY')
                   : 'dd / mm / aaaa'}
               </Text>
-              <Ionicons name="calendar-outline" size={20} color="#6B7280" />
+              <Calendar size={20} color="#6B7280" />
             </TouchableOpacity>
             {errors.startDate && (
               <Text className="text-red-500 text-sm">{errors.startDate}</Text>
@@ -120,11 +120,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                     }
                   }}
                 >
-                  <Ionicons
-                    name="chevron-up-outline"
-                    size={20}
-                    color="#6B7280"
-                  />
+                  <ChevronUp size={20} color="#6B7280" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   className="px-3 py-1"
@@ -135,11 +131,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                     }
                   }}
                 >
-                  <Ionicons
-                    name="chevron-down-outline"
-                    size={20}
-                    color="#6B7280"
-                  />
+                  <ChevronDown size={20} color="#6B7280" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -245,7 +237,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
               ? format(formData.paymentDate, 'DD/MM/YYYY')
               : 'dd / mm / aaaa'}
           </Text>
-          <Ionicons name="calendar-outline" size={20} color="#6B7280" />
+          <Calendar size={20} color="#6B7280" />
         </TouchableOpacity>
         {errors.paymentDate && (
           <Text className="text-red-500 text-sm">{errors.paymentDate}</Text>

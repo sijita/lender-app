@@ -1,8 +1,8 @@
 import { View, Text } from 'react-native';
 import { formatCurrency } from '@/utils';
 import { ClientDetail } from '@/actions/clients/use-fetch-client-detail';
-import { Ionicons } from '@expo/vector-icons';
 import { format } from '@formkit/tempo';
+import { Calendar } from 'lucide-react-native';
 
 export default function ClientFinancialSummary({
   client,
@@ -77,7 +77,7 @@ export default function ClientFinancialSummary({
       {client.financial_summary.next_payment && (
         <View className="flex-row justify-between items-center p-4 bg-yellow-50 rounded-lg border border-yellow-100">
           <View className="flex-row items-center gap-3">
-            <Ionicons name="calendar-outline" size={20} color="#000" />
+            <Calendar size={20} color="#000" />
             <View className="flex-col">
               <Text className="font-geist-bold text-lg">Próximo pago</Text>
               <Text className="text-gray-700">

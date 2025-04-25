@@ -7,7 +7,8 @@ import {
   FlatList,
   StyleSheet,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import DynamicIcon from './dynamic-icon';
+import { Check } from 'lucide-react-native';
 
 type Option = {
   id: string;
@@ -73,8 +74,8 @@ const Select = ({
         <Text className={`${selectedOption ? 'text-black' : 'text-gray-500'}`}>
           {selectedOption ? selectedOption.label : placeholder}
         </Text>
-        <Ionicons
-          name={showOptions ? 'chevron-up' : 'chevron-down'}
+        <DynamicIcon
+          name={showOptions ? 'ChevronUp' : 'ChevronDown'}
           size={20}
           color="#6B7280"
         />
@@ -111,9 +112,7 @@ const Select = ({
                   <Text className="font-geist-regular text-base">
                     {item.label}
                   </Text>
-                  {item.id === value && (
-                    <Ionicons name="checkmark" size={20} color="#000" />
-                  )}
+                  {item.id === value && <Check size={20} color="#000" />}
                 </TouchableOpacity>
               )}
             />

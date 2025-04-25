@@ -1,11 +1,12 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
+import { IdCard, Mail, Map, Phone } from 'lucide-react-native';
 
 export default function ClientInfo({
   client,
 }: {
   client: {
+    id: number;
     name: string;
     last_name: string;
     email: string;
@@ -32,7 +33,7 @@ export default function ClientInfo({
       </View>
       <View className="flex-col gap-3">
         <View className="flex-row items-center gap-2">
-          <Ionicons name="id-card-outline" size={15} color="#6B7280" />
+          <IdCard size={15} color="#6B7280" />
           <View className="flex-row">
             <Text className="font-geist-medium text-lg capitalize">
               {client?.document_type}
@@ -43,15 +44,15 @@ export default function ClientInfo({
           </View>
         </View>
         <View className="flex-row items-center gap-2">
-          <Ionicons name="mail-outline" size={15} color="#6B7280" />
+          <Mail size={15} color="#6B7280" />
           <Text className="font-geist-medium text-lg">{client?.email}</Text>
         </View>
         <View className="flex-row items-center gap-2">
-          <Ionicons name="call-outline" size={15} color="#6B7280" />
+          <Phone size={15} color="#6B7280" />
           <Text className="font-geist-medium text-lg">{client?.phone}</Text>
         </View>
         <View className="flex-row items-center gap-2">
-          <Ionicons name="location-outline" size={15} color="#6B7280" />
+          <Map size={15} color="#6B7280" />
           <Text className="font-geist-medium text-lg">
             {client?.address}
             {client?.sub_address ? `, ${client?.sub_address}` : ''}

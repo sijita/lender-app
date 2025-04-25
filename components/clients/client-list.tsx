@@ -4,14 +4,15 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import { Link } from 'expo-router';
 import useFetchClients from '@/actions/clients/use-fetch-clients';
 import Error from '@/components/ui/error';
 import ClientTypeTabs from './client-type-tabs';
+import DynamicIcon from '@/components/ui/dynamic-icon';
+import { ChevronDown, ChevronRight, Search } from 'lucide-react-native';
 
 export default function ClientList() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,7 +63,7 @@ export default function ClientList() {
       />
       <View className="flex-row items-center gap-2">
         <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3 border border-gray-100">
-          <Ionicons name="search" size={20} color="#6B7280" />
+          <Search size={20} color="#6B7280" />
           <TextInput
             placeholder="Buscar cliente..."
             className="flex-1 text-base placeholder:font-geist-light"
@@ -86,7 +87,7 @@ export default function ClientList() {
           <Text className="text-black font-geist-medium">
             {orderBy === 'name' ? 'Nombre' : 'Cédula'}
           </Text>
-          <Ionicons name="chevron-down" size={16} color="#000" />
+          <ChevronDown size={16} color="#000" />
         </TouchableOpacity>
         <TouchableOpacity
           className="bg-white rounded-lg px-[8px] py-[8px] border border-gray-100"
@@ -100,12 +101,8 @@ export default function ClientList() {
             });
           }}
         >
-          <Ionicons
-            name={
-              orderDirection === 'desc'
-                ? 'arrow-down-outline'
-                : 'arrow-up-outline'
-            }
+          <DynamicIcon
+            name={orderDirection === 'desc' ? 'ArrowDown' : 'ArrowUp'}
             size={15}
             color="#000"
           />
@@ -170,11 +167,7 @@ export default function ClientList() {
                     </Text>
                   </View>
                   <View className="w-16 items-end">
-                    <Ionicons
-                      name="chevron-forward"
-                      size={20}
-                      color="#9CA3AF"
-                    />
+                    <ChevronRight size={20} color="#9CA3AF" />
                   </View>
                 </TouchableOpacity>
               </Link>

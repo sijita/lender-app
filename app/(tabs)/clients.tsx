@@ -1,7 +1,7 @@
 import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import ClientList from '@/components/clients/client-list';
+import { Plus } from 'lucide-react-native';
 
 export default function Clients() {
   const router = useRouter();
@@ -15,7 +15,7 @@ export default function Clients() {
           onPress={() => router.push('/new-client')}
         >
           <Text className="text-white font-geist-medium">Añadir cliente</Text>
-          <Ionicons name="add" size={20} color="white" />
+          <Plus size={18} color="white" />
         </TouchableOpacity>
       </View>
       <ClientList />

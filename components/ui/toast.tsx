@@ -1,6 +1,6 @@
-import React from 'react';
-import { Animated, Text, TouchableOpacity, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Animated, Text, TouchableOpacity } from 'react-native';
+import DynamicIcon from './dynamic-icon';
+import { X } from 'lucide-react-native';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -24,14 +24,14 @@ export const Toast: React.FC<ToastProps> = ({
   const getIconName = (type: ToastType) => {
     switch (type) {
       case 'success':
-        return 'checkmark-circle';
+        return 'BadgeCheck';
       case 'error':
-        return 'alert-circle';
+        return 'CircleX';
       case 'warning':
-        return 'warning';
+        return 'TriangleAlert';
       case 'info':
       default:
-        return 'information-circle';
+        return 'Info';
     }
   };
 
@@ -66,12 +66,12 @@ export const Toast: React.FC<ToastProps> = ({
         type
       )} rounded-lg shadow-lg p-4 z-50 flex-row items-center`}
     >
-      <Ionicons name={getIconName(type)} size={24} color="white" />
+      <DynamicIcon name={getIconName(type)} size={24} color="white" />
       <Text className="flex-1 text-white font-geist-medium ml-3">
         {message}
       </Text>
       <TouchableOpacity onPress={onClose}>
-        <Ionicons name="close" size={20} color="white" />
+        <X size={20} color="white" />
       </TouchableOpacity>
     </Animated.View>
   );

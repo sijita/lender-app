@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { formatCurrency } from '@/utils';
 import { format } from '@formkit/tempo';
+import { Calendar } from 'lucide-react-native';
 
 export default function NextPayment({
   nextPaymentDate,
@@ -13,7 +13,7 @@ export default function NextPayment({
   return (
     <View className="flex-row justify-between items-center p-4 bg-yellow-50 rounded-lg border border-yellow-100">
       <View className="flex-row items-center gap-4">
-        <Ionicons name="calendar-outline" size={20} color="#000" />
+        <Calendar size={20} color="#000" />
         <View className="flex-col">
           <Text className="font-geist-bold text-lg">Próximo pago</Text>
           <Text className="text-gray-700">

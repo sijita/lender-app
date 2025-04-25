@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { formatCurrency } from '@/utils';
+import DynamicIcon from '@/components/ui/dynamic-icon';
 
 export default function ClientActivityHistory({
   activities,
@@ -20,8 +20,8 @@ export default function ClientActivityHistory({
         <View className="flex-col gap-4">
           {activities.map((activity) => (
             <View key={activity.id} className="flex-row items-center gap-3">
-              <Ionicons
-                name={activity.type === 'payment' ? 'arrow-down' : 'arrow-up'}
+              <DynamicIcon
+                name={activity.type === 'payment' ? 'ArrowDown' : 'ArrowUp'}
                 size={16}
                 color={activity.type === 'payment' ? '#16a34a' : '#2563eb'}
               />

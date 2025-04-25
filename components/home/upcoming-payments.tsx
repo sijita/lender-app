@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { formatCurrency } from '@/utils';
+import { ArrowRight, Bell } from 'lucide-react-native';
 
 type Payment = {
   name: string;
@@ -65,8 +65,7 @@ export default function UpcomingPayments({
                 <Text className="text-lg font-geist-semibold">
                   {formatCurrency(payment.amount)}
                 </Text>
-                <Ionicons
-                  name="notifications-outline"
+                <Bell
                   size={16}
                   color={payment.status === 'on_time' ? '#22c55e' : '#ef4444'}
                 />
@@ -87,8 +86,9 @@ export default function UpcomingPayments({
         className="p-4 border border-gray-200 rounded-lg"
         asChild
       >
-        <TouchableOpacity>
+        <TouchableOpacity className="flex-row items-center justify-center gap-2">
           <Text className="text-center font-geist-bold">Ver todos</Text>
+          <ArrowRight size={18} color="#000" />
         </TouchableOpacity>
       </Link>
     </View>

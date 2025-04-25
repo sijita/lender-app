@@ -1,5 +1,6 @@
 import { Text, View } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import DynamicIcon from '@/components/ui/dynamic-icon';
+import { icons } from 'lucide-react-native';
 
 const TabIcon = ({
   focused,
@@ -7,7 +8,7 @@ const TabIcon = ({
   title,
 }: {
   focused: boolean;
-  icon: string;
+  icon: keyof typeof icons;
   title: string;
 }) => {
   if (focused) {
@@ -20,11 +21,7 @@ const TabIcon = ({
 
   return (
     <View className="size-full justify-center items-center mt-3 rounded-full">
-      <Ionicons
-        name={icon as keyof typeof Ionicons.glyphMap}
-        size={23}
-        color="#000"
-      />
+      <DynamicIcon name={icon} size={23} color="#000" />
     </View>
   );
 };

@@ -1,11 +1,11 @@
 import { View, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { formatCurrency } from '@/utils';
 import {
   getTransactionTypeStyle,
   getTransactionTypeText,
 } from '@/utils/transactions';
 import { getPaymentMethodText } from '@/utils/loans';
+import DynamicIcon from '@/components/ui/dynamic-icon';
 
 export default function TransactionInfo({
   transaction,
@@ -57,13 +57,13 @@ export default function TransactionInfo({
               <Text className="font-geist-medium text-lg">
                 {getPaymentMethodText(transaction?.payment.method)}
               </Text>
-              <Ionicons
+              <DynamicIcon
                 name={
                   transaction?.payment.method === 'cash'
-                    ? 'cash-outline'
+                    ? 'Banknote'
                     : transaction?.payment.method === 'transfer'
-                    ? 'card-outline'
-                    : 'ellipsis-horizontal'
+                    ? 'Landmark'
+                    : 'Ellipsis'
                 }
                 size={15}
                 color="#6B7280"

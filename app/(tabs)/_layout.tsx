@@ -30,7 +30,7 @@ const _layout = () => {
           title: 'Inicio',
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon="home-outline" title="Inicio" />
+            <TabIcon focused={focused} icon="House" title="Inicio" />
           ),
         }}
       />
@@ -40,7 +40,7 @@ const _layout = () => {
           title: 'Clientes',
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon="person-outline" title="Clientes" />
+            <TabIcon focused={focused} icon="UserRound" title="Clientes" />
           ),
         }}
       />
@@ -52,7 +52,7 @@ const _layout = () => {
           tabBarIcon: ({ focused }) => (
             <TabIcon
               focused={focused}
-              icon="swap-horizontal-outline"
+              icon="ArrowUpDown"
               title="Transacciones"
             />
           ),
@@ -66,7 +66,7 @@ const _layout = () => {
           tabBarIcon: ({ focused }) => (
             <TabIcon
               focused={focused}
-              icon="stats-chart-outline"
+              icon="ChartNoAxesColumn"
               title="Reportes"
             />
           ),
