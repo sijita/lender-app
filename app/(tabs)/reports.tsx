@@ -1,14 +1,57 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { Text, View } from 'react-native';
+import { Animated } from 'react-native';
+import { useTabBarScroll } from '@/hooks/use-tab-bar-scroll';
+import PeriodSelector from '@/components/reports/period-selector';
+import { BarChart3, PieChart, LineChart } from 'lucide-react-native';
+import ReportCard from '@/components/reports/report-card';
+import SummaryCard from '@/components/reports/summary-card';
+import useReports from '@/hooks/use-reports';
 
-const reports = () => {
+const Reports = () => {
+  const { handleScroll } = useTabBarScroll();
+  const { loading, reportData, handlePeriodChange, handleDownloadReport } =
+    useReports();
+
   return (
-    <View>
-      <Text>reports</Text>
-    </View>
+    <Animated.ScrollView
+      className="flex-1 bg-gray-50"
+      onScroll={handleScroll}
+      scrollEventThrottle={16}
+    >
+      <View className="flex-row justify-between items-center px-4 py-6 bg-white border-b border-gray-200">
+        <Text className="text-2xl font-geist-bold">Reportes</Text>
+      </View>
+      <View className="flex-col gap-5 p-5">
+        <SummaryCard
+          reportData={reportData}
+          loading={loading}
+          handleDownloadReport={handleDownloadReport}
+        />
+        <PeriodSelector onPeriodChange={handlePeriodChange} />
+        <ReportCard
+          title="Resumen de Ingresos"
+          subtitle="Ingresos mensuales por pagos"
+          icon={<BarChart3 size={24} color="#6366F1" />}
+          loading={loading}
+          onDownload={handleDownloadReport}
+        />
+        <ReportCard
+          title="Préstamos Pendientes"
+          subtitle="Total pendiente por cliente"
+          icon={<PieChart size={24} color="#F59E0B" />}
+          loading={loading}
+          onDownload={handleDownloadReport}
+        />
+        <ReportCard
+          title="Tendencias de Pago"
+          subtitle="Historial de pagos por tiempo"
+          icon={<LineChart size={24} color="#10B981" />}
+          loading={loading}
+          onDownload={handleDownloadReport}
+        />
+      </View>
+    </Animated.ScrollView>
   );
 };
 
-export default reports;
-
-const styles = StyleSheet.create({});
+export default Reports;
