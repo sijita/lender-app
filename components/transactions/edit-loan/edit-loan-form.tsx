@@ -46,7 +46,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
   }
 
   return (
-    <View className="flex-col gap-6">
+    <View className="flex-col gap-6 p-5">
       {loan && (
         <View className="flex-col gap-5">
           <View className="flex-col items-center mb-5">

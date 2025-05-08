@@ -2,12 +2,13 @@ import { View, TouchableOpacity, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import TransactionList from '@/components/transactions/transaction-list';
 import { Plus } from 'lucide-react-native';
+import CustomSafeScreen from '@/components/ui/custom-safe-screen';
 
 export default function Transactions() {
   const router = useRouter();
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <CustomSafeScreen>
       <View className="flex-row justify-between items-center px-4 py-6 bg-white border-b border-gray-200">
         <Text className="text-2xl font-geist-bold">Transacciones</Text>
         <TouchableOpacity
@@ -21,6 +22,6 @@ export default function Transactions() {
         </TouchableOpacity>
       </View>
       <TransactionList />
-    </View>
+    </CustomSafeScreen>
   );
 }

@@ -1,23 +1,17 @@
 import { Text, View } from 'react-native';
-import { Animated } from 'react-native';
-import { useTabBarScroll } from '@/hooks/use-tab-bar-scroll';
 import PeriodSelector from '@/components/reports/period-selector';
 import { BarChart3, PieChart, LineChart } from 'lucide-react-native';
 import ReportCard from '@/components/reports/report-card';
 import SummaryCard from '@/components/reports/summary-card';
 import useReports from '@/hooks/use-reports';
+import CustomSafeScreen from '@/components/ui/custom-safe-screen';
 
 const Reports = () => {
-  const { handleScroll } = useTabBarScroll();
   const { loading, reportData, handlePeriodChange, handleDownloadReport } =
     useReports();
 
   return (
-    <Animated.ScrollView
-      className="flex-1 bg-gray-50"
-      onScroll={handleScroll}
-      scrollEventThrottle={16}
-    >
+    <CustomSafeScreen>
       <View className="flex-row justify-between items-center px-4 py-6 bg-white border-b border-gray-200">
         <Text className="text-2xl font-geist-bold">Reportes</Text>
       </View>
@@ -50,7 +44,7 @@ const Reports = () => {
           onDownload={handleDownloadReport}
         />
       </View>
-    </Animated.ScrollView>
+    </CustomSafeScreen>
   );
 };
 

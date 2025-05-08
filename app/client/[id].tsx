@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import BackButton from '@/components/ui/back-button';
 import ClientDetailInfo from '@/components/clients/client-detail/client-detail-info';
@@ -14,6 +8,7 @@ import ClientQuickActions from '@/components/clients/client-detail/client-quick-
 
 import useFetchClientDetail from '@/actions/clients/use-fetch-client-detail';
 import { ArrowLeft } from 'lucide-react-native';
+import CustomSafeScreen from '@/components/ui/custom-safe-screen';
 
 export default function ClientDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -65,7 +60,7 @@ export default function ClientDetail() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50">
+    <CustomSafeScreen>
       <Stack.Screen options={{ headerShown: false }} />
       <BackButton title={`Cliente #${client?.id}`} />
       <View className="p-5 flex-col gap-5">
@@ -74,6 +69,6 @@ export default function ClientDetail() {
         <ClientActivityHistory activities={client?.activity_history} />
         <ClientQuickActions />
       </View>
-    </ScrollView>
+    </CustomSafeScreen>
   );
 }

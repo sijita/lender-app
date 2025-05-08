@@ -35,7 +35,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
   }
 
   return (
-    <View className="flex-col gap-5">
+    <View className="flex-col gap-5 p-5">
       <Text className="text-xl font-geist-bold">
         Editar Información del Cliente
       </Text>

@@ -1,13 +1,14 @@
-import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import ClientList from '@/components/clients/client-list';
 import { Plus } from 'lucide-react-native';
+import CustomSafeScreen from '@/components/ui/custom-safe-screen';
 
 export default function Clients() {
   const router = useRouter();
 
   return (
-    <ScrollView className="flex-1 bg-gray-50">
+    <CustomSafeScreen>
       <View className="flex-row justify-between items-center px-4 py-6 bg-white border-b border-gray-200">
         <Text className="text-2xl font-geist-bold">Clientes</Text>
         <TouchableOpacity
@@ -19,6 +20,6 @@ export default function Clients() {
         </TouchableOpacity>
       </View>
       <ClientList />
-    </ScrollView>
+    </CustomSafeScreen>
   );
 }

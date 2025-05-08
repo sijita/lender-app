@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import useFetchTransactionDetail from '@/actions/transactions/use-fetch-transaction-detail';
 import Error from '@/components/ui/error';
@@ -15,6 +9,7 @@ import LoanInfo from '@/components/transactions/transaction-detail/loan-info';
 import QuickActions from '@/components/transactions/transaction-detail/quick-actions';
 import { format } from '@formkit/tempo';
 import { ArrowLeft } from 'lucide-react-native';
+import CustomSafeScreen from '@/components/ui/custom-safe-screen';
 
 export default function TransactionDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -59,7 +54,7 @@ export default function TransactionDetail() {
     : 'Fecha desconocida';
 
   return (
-    <ScrollView className="flex-1 bg-gray-50">
+    <CustomSafeScreen>
       <Stack.Screen options={{ headerShown: false }} />
       <BackButton title={`Transacción #${transaction?.id}`} />
       <View className="p-5 flex-col gap-5">
@@ -75,6 +70,6 @@ export default function TransactionDetail() {
         {transaction?.loan && <LoanInfo loan={transaction.loan} />}
         <QuickActions loanId={transaction?.loan?.id} />
       </View>
-    </ScrollView>
+    </CustomSafeScreen>
   );
 }
