@@ -5,11 +5,7 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'expo-router';
-import useFetchTransactions, {
-  TransactionType,
-} from '@/actions/transactions/use-fetch-transactions';
+import useFetchTransactions from '@/actions/transactions/use-fetch-transactions';
 import Error from '@/components/ui/error';
 import { formatCurrency } from '@/utils';
 import {
@@ -18,72 +14,28 @@ import {
 } from '@/utils/transactions';
 import TransactionTabs from './new-transactions/transaction-tabs';
 import { format } from '@formkit/tempo';
-import {
-  ArrowDown,
-  ArrowUp,
-  ChevronDown,
-  ChevronRight,
-  Search,
-} from 'lucide-react-native';
+import { ChevronDown, ChevronRight, Search } from 'lucide-react-native';
 import DynamicIcon from '@/components/ui/dynamic-icon';
 import Loading from '@/components/ui/loading';
 
 export default function TransactionList() {
-  const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'loans' | 'payments'>('loans');
-  const [orderBy, setOrderBy] = useState('created_at');
-  const [orderDirection, setOrderDirection] = useState<'asc' | 'desc'>('desc');
-
-  const transactionParams = {
-    type:
-      activeTab === 'loans'
-        ? 'loan_disbursement'
-        : ('payment' as TransactionType),
-    searchQuery: searchQuery,
-    orderBy: orderBy,
-    orderDirection: orderDirection,
-  };
-
-  const { transactions, loading, error, refetch } = useFetchTransactions({
-    type:
-      activeTab === 'loans'
-        ? 'loan_disbursement'
-        : ('payment' as TransactionType),
+  const {
+    transactions,
+    loading,
+    error,
+    activeTab,
     searchQuery,
     orderBy,
     orderDirection,
-  });
-
-  useEffect(() => {
-    refetch({
-      type: activeTab === 'loans' ? 'loan_disbursement' : ('payment' as const),
-      searchQuery,
-      orderBy,
-      orderDirection,
-    });
-  }, [activeTab]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      refetch({
-        type: transactionParams.type,
-        searchQuery: searchQuery,
-        orderBy: orderBy,
-        orderDirection: orderDirection,
-      });
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-  const getTransactionIcon = (type: string) => {
-    if (type === 'payment') {
-      return <ArrowDown size={15} color="#16a34a" />;
-    } else {
-      return <ArrowUp size={15} color="#2563eb" />;
-    }
-  };
+    router,
+    setOrderDirection,
+    setOrderBy,
+    setSearchQuery,
+    setActiveTab,
+    refetch,
+  } = useFetchTransactions();
+  const transactionType =
+    activeTab === 'loans' ? 'loan_disbursement' : ('payment' as const);
 
   if (loading) {
     return <Loading loadingText="Cargando transacciones..." />;
@@ -121,7 +73,7 @@ export default function TransactionList() {
               orderBy === 'created_at' ? 'amount' : 'created_at';
             setOrderBy(newOrderBy);
             refetch({
-              type: transactionParams.type,
+              type: transactionType,
               searchQuery,
               orderBy: newOrderBy,
               orderDirection,
@@ -139,7 +91,7 @@ export default function TransactionList() {
             const newDirection = orderDirection === 'desc' ? 'asc' : 'desc';
             setOrderDirection(newDirection);
             refetch({
-              type: transactionParams.type,
+              type: transactionType,
               searchQuery,
               orderBy,
               orderDirection: newDirection,
@@ -205,7 +157,18 @@ export default function TransactionList() {
                     <Text className="font-geist-semibold">
                       {formatCurrency(Number(transaction?.amount))}
                     </Text>
-                    {getTransactionIcon(transaction?.type)}
+                    {/* {getTransactionIcon(transaction?.type)} */}
+                    <DynamicIcon
+                      name={
+                        transaction?.type === 'payment'
+                          ? 'ArrowDown'
+                          : 'ArrowUp'
+                      }
+                      size={15}
+                      color={
+                        transaction?.type === 'payment' ? '#16a34a' : '#2563eb'
+                      }
+                    />
                   </View>
                   <View className="w-40 items-end shrink-0">
                     <Text

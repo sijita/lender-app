@@ -1,33 +1,34 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Transaction } from '@/types/transactions';
+import { useDebounce } from 'use-debounce';
+import { useRouter } from 'expo-router';
 
-export type TransactionType = 'loan_disbursement' | 'payment' | 'all';
+type TransactionType = 'loan_disbursement' | 'payment' | 'all';
 
-interface FetchTransactionsParams {
-  type?: TransactionType;
-  searchQuery?: string;
-  orderBy?: string;
-  orderDirection?: 'asc' | 'desc';
-}
-
-export default function useFetchTransactions(params?: FetchTransactionsParams) {
+export default function useFetchTransactions() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState<'loans' | 'payments'>('loans');
+  const [orderBy, setOrderBy] = useState('created_at');
+  const [orderDirection, setOrderDirection] = useState<'asc' | 'desc'>('desc');
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchTransactions = async (queryParams?: FetchTransactionsParams) => {
+  const fetchTransactions = async (queryParams?: {
+    type?: TransactionType;
+    searchQuery?: string;
+    orderBy?: string;
+    orderDirection?: 'asc' | 'desc';
+  }) => {
     try {
       setLoading(true);
       setError(null);
 
-      const activeParams = queryParams || params || {};
-      const {
-        type,
-        searchQuery,
-        orderBy = 'created_at',
-        orderDirection = 'desc',
-      } = activeParams;
+      const activeParams = queryParams || {};
+      const { type, searchQuery, orderBy, orderDirection } = activeParams;
 
       let query = supabase.from('transactions').select(`
           *,
@@ -70,7 +71,9 @@ export default function useFetchTransactions(params?: FetchTransactionsParams) {
         }
       }
 
-      query = query.order(orderBy, { ascending: orderDirection === 'asc' });
+      if (orderBy) {
+        query = query.order(orderBy, { ascending: orderDirection === 'asc' });
+      }
 
       const { data, error } = await query;
 
@@ -91,5 +94,28 @@ export default function useFetchTransactions(params?: FetchTransactionsParams) {
     fetchTransactions();
   }, []);
 
-  return { transactions, loading, error, refetch: fetchTransactions };
+  useEffect(() => {
+    fetchTransactions({
+      type: activeTab === 'loans' ? 'loan_disbursement' : ('payment' as const),
+      searchQuery: debouncedSearchQuery,
+      orderBy,
+      orderDirection,
+    });
+  }, [activeTab, debouncedSearchQuery]);
+
+  return {
+    transactions,
+    loading,
+    error,
+    router,
+    activeTab,
+    searchQuery,
+    orderBy,
+    orderDirection,
+    setOrderDirection,
+    setOrderBy,
+    setActiveTab,
+    setSearchQuery,
+    refetch: fetchTransactions,
+  };
 }

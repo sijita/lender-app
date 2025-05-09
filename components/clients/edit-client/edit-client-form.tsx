@@ -9,6 +9,7 @@ import { router, Stack } from 'expo-router';
 import useHandleEditClientForm from '@/actions/clients/edit-client/use-handle-edit-client-form';
 import { documentTypes } from '@/constants/clients';
 import Select from '@/components/ui/select';
+import Loading from '@/components/ui/loading';
 
 interface EditClientFormProps {
   clientId: number;
@@ -25,13 +26,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
   } = useHandleEditClientForm(clientId);
 
   if (isLoading) {
-    return (
-      <View className="min-h-screen flex-1 justify-center items-center bg-gray-50">
-        <Stack.Screen options={{ headerShown: false }} />
-        <ActivityIndicator size="large" color="#000" />
-        <Text className="mt-2 text-gray-500">Cargando cliente...</Text>
-      </View>
-    );
+    return <Loading loadingText="Cargando información del cliente..." />;
   }
 
   return (

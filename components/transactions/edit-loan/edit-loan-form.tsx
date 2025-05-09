@@ -13,6 +13,7 @@ import { frequencyOptions } from '@/constants/loans';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format, parse } from '@formkit/tempo';
 import { Calendar, ChevronDown, ChevronUp } from 'lucide-react-native';
+import Loading from '@/components/ui/loading';
 
 interface EditLoanFormProps {
   loanId: number;
@@ -36,13 +37,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
   } = useHandleEditLoan(loanId);
 
   if (isLoading) {
-    return (
-      <View className="min-h-screen flex-1 justify-center items-center bg-gray-50">
-        <Stack.Screen options={{ headerShown: false }} />
-        <ActivityIndicator size="large" color="#000" />
-        <Text className="mt-2 text-gray-500">Cargando préstamo...</Text>
-      </View>
-    );
+    return <Loading loadingText="Cargando información del préstamo..." />;
   }
 
   return (
