@@ -6,17 +6,12 @@ import {
 } from '@/utils/transactions';
 import { getPaymentMethodText } from '@/utils/loans';
 import DynamicIcon from '@/components/ui/dynamic-icon';
+import { TransactionDetail } from '@/types/transactions';
 
 export default function TransactionInfo({
   transaction,
 }: {
-  transaction: {
-    type: string;
-    amount: number;
-    payment?: {
-      method: string;
-    };
-  };
+  transaction: TransactionDetail;
 }) {
   return (
     <View className="flex-col gap-6 bg-white p-5 border border-gray-100 rounded-xl">

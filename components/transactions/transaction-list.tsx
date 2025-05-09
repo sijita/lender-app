@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  ActivityIndicator,
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
@@ -27,6 +26,7 @@ import {
   Search,
 } from 'lucide-react-native';
 import DynamicIcon from '@/components/ui/dynamic-icon';
+import Loading from '@/components/ui/loading';
 
 export default function TransactionList() {
   const router = useRouter();
@@ -86,15 +86,12 @@ export default function TransactionList() {
   };
 
   if (loading) {
-    return (
-      <View className="min-h-screen flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#000" />
-        <Text className="mt-2 text-gray-500">Cargando transacciones...</Text>
-      </View>
-    );
+    return <Loading loadingText="Cargando transacciones..." />;
   }
 
-  if (error) return <Error error={error} refetch={refetch} />;
+  if (error) {
+    return <Error error={error} refetch={refetch} />;
+  }
 
   return (
     <View className="p-5 flex-col gap-5">

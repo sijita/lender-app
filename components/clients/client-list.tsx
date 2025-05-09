@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  ActivityIndicator,
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Link } from 'expo-router';
@@ -13,6 +12,7 @@ import Error from '@/components/ui/error';
 import ClientTypeTabs from './client-type-tabs';
 import DynamicIcon from '@/components/ui/dynamic-icon';
 import { ChevronDown, ChevronRight, Search } from 'lucide-react-native';
+import Loading from '@/components/ui/loading';
 
 export default function ClientList() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -43,15 +43,12 @@ export default function ClientList() {
   }, [searchQuery]);
 
   if (loading) {
-    return (
-      <View className="min-h-screen flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#000" />
-        <Text className="mt-2 text-gray-500">Cargando clientes...</Text>
-      </View>
-    );
+    return <Loading loadingText="Cargando clientes..." />;
   }
 
-  if (error) <Error error={error} refetch={refetch} />;
+  if (error) {
+    return <Error error={error} refetch={refetch} />;
+  }
 
   return (
     <View className="p-5 flex-col gap-5">

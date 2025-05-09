@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import useFetchTransactionDetail from '@/actions/transactions/use-fetch-transaction-detail';
 import Error from '@/components/ui/error';
@@ -10,6 +10,7 @@ import QuickActions from '@/components/transactions/transaction-detail/quick-act
 import { format } from '@formkit/tempo';
 import { ArrowLeft } from 'lucide-react-native';
 import CustomSafeScreen from '@/components/ui/custom-safe-screen';
+import Loading from '@/components/ui/loading';
 
 export default function TransactionDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -19,20 +20,14 @@ export default function TransactionDetail() {
   );
 
   if (loading) {
-    return (
-      <View className="flex-1 justify-center items-center bg-gray-50">
-        <Stack.Screen options={{ headerShown: false }} />
-        <ActivityIndicator size="large" color="#000" />
-        <Text className="mt-2 text-gray-500">Cargando detalles...</Text>
-      </View>
-    );
+    return <Loading loadingText="Cargando detalles de la transacción..." />;
   }
 
   if (error) {
     return <Error error={error} refetch={refetch} />;
   }
 
-  if (!transaction) {
+  if (!loading && !transaction) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-50">
         <Text className="text-lg font-geist-medium text-gray-800">
@@ -63,12 +58,14 @@ export default function TransactionDetail() {
             {formattedDate}
           </Text>
         </View>
-        {transaction?.loan?.client && (
-          <ClientInfo client={transaction.loan.client} />
+        {transaction && transaction?.loan?.client && (
+          <>
+            <ClientInfo client={transaction.loan.client} />
+            <TransactionInfo transaction={transaction} />
+            <LoanInfo loan={transaction.loan} />
+            <QuickActions loanId={transaction?.loan?.id} />
+          </>
         )}
-        <TransactionInfo transaction={transaction} />
-        {transaction?.loan && <LoanInfo loan={transaction.loan} />}
-        <QuickActions loanId={transaction?.loan?.id} />
       </View>
     </CustomSafeScreen>
   );

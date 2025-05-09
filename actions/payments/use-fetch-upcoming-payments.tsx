@@ -1,12 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-
-interface UpcomingPayment {
-  name: string;
-  amount: number;
-  dueDate: string;
-  status: 'on_time' | 'at_risk' | 'overdue';
-}
+import { UpcomingPayment } from '@/types/payments';
 
 export default function useFetchUpcomingPayments() {
   const [upcomingPayments, setUpcomingPayments] = useState<UpcomingPayment[]>(
@@ -25,10 +19,17 @@ export default function useFetchUpcomingPayments() {
         .from('loans')
         .select(
           `
-          *,
+          id,
+          amount,
+          payment_date,
+          quota,
+          status,
           clients:client_id (
             name,
             last_name
+          ),
+          transactions (
+            id
           )
         `
         )
@@ -39,7 +40,6 @@ export default function useFetchUpcomingPayments() {
         throw loansError;
       }
 
-      // Obtener la fecha actual
       const today = new Date();
 
       // Calcular la fecha límite (7 días desde hoy)
@@ -47,13 +47,12 @@ export default function useFetchUpcomingPayments() {
       oneWeekFromNow.setDate(today.getDate() + 7);
 
       // Filtrar préstamos con pagos próximos (dentro de los próximos 7 días)
-      const upcomingLoans = loans.filter((loan) => {
+      const upcomingPayments = loans.filter((loan) => {
         const paymentDate = new Date(loan.payment_date);
         return paymentDate <= oneWeekFromNow;
       });
 
-      // Transformar los datos al formato requerido por el componente
-      const formattedPayments = upcomingLoans.map((loan) => {
+      const formattedPayments = upcomingPayments.map((loan) => {
         const paymentDate = new Date(loan.payment_date);
         const daysUntilPayment = Math.ceil(
           (paymentDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
@@ -84,13 +83,14 @@ export default function useFetchUpcomingPayments() {
 
         // Construir el nombre completo del cliente
         const clientName = loan.clients
-          ? `${loan.clients.name} ${loan.clients.last_name}`
+          ? `${loan.clients?.name} ${loan.clients?.last_name}`
           : 'Cliente desconocido';
 
         return {
-          name: clientName,
+          clientName: clientName,
           amount: loan.quota,
-          dueDate: formattedDueDate,
+          paymentDate: formattedDueDate,
+          transactionId: loan.transactions?.[0]?.id,
           status: status,
         };
       });

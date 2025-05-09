@@ -53,8 +53,6 @@ const NewPaymentForm = () => {
     );
   };
 
-  console.log(formData);
-
   return (
     <View className="flex-col gap-5">
       <Text className="text-xl font-geist-bold mb-2">Registrar pago</Text>
@@ -157,7 +155,6 @@ const NewPaymentForm = () => {
 
                     if (formData.quota) {
                       const newAmount = (newQuotas * formData.quota).toFixed(0);
-                      console.log('Increment - new amount:', newAmount);
                       handleAmountChange(newAmount);
                     }
                   }
@@ -175,7 +172,6 @@ const NewPaymentForm = () => {
 
                     if (formData.quota) {
                       const newAmount = (newQuotas * formData.quota).toFixed(0);
-                      console.log('Decrement - new amount:', newAmount);
                       handleAmountChange(newAmount);
                     }
                   }

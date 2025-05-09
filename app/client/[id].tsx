@@ -1,14 +1,15 @@
-import { View, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import BackButton from '@/components/ui/back-button';
 import ClientDetailInfo from '@/components/clients/client-detail/client-detail-info';
 import ClientActivityHistory from '@/components/clients/client-detail/client-activity-history';
 import ClientDetailTabs from '@/components/clients/client-detail/client-detail-tabs';
 import ClientQuickActions from '@/components/clients/client-detail/client-quick-actions';
-
 import useFetchClientDetail from '@/actions/clients/use-fetch-client-detail';
 import { ArrowLeft } from 'lucide-react-native';
 import CustomSafeScreen from '@/components/ui/custom-safe-screen';
+import Loading from '@/components/ui/loading';
+import Error from '@/components/ui/error';
 
 export default function ClientDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -16,30 +17,11 @@ export default function ClientDetail() {
   const router = useRouter();
 
   if (loading) {
-    return (
-      <View className="flex-1 justify-center items-center bg-gray-50">
-        <Stack.Screen options={{ headerShown: false }} />
-        <ActivityIndicator size="large" color="#000" />
-        <Text className="mt-2 text-gray-500">Cargando detalles...</Text>
-      </View>
-    );
+    return <Loading loadingText="Cargando detalles del cliente..." />;
   }
 
   if (error) {
-    return (
-      <View className="flex-1 justify-center items-center bg-gray-50">
-        <Text className="text-lg font-geist-medium text-gray-800">
-          Error al cargar los datos del cliente
-        </Text>
-        <TouchableOpacity
-          className="mt-4 flex-row items-center gap-2 bg-black px-4 py-2 rounded-full"
-          onPress={() => router.back()}
-        >
-          <ArrowLeft size={16} color="white" />
-          <Text className="text-white font-geist-medium">Volver</Text>
-        </TouchableOpacity>
-      </View>
-    );
+    return <Error error={error} refetch={refetch} />;
   }
 
   if (!client) {

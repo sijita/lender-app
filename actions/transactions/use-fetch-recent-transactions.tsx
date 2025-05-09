@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { Transaction } from '@/types/transactions';
 
 interface RecentTransaction {
+  id: number;
   name: string;
   type: 'payment_received' | 'new_loan';
   amount: number;
@@ -75,6 +76,7 @@ export default function useFetchRecentTransactions() {
           : 'Cliente desconocido';
 
         return {
+          id: transaction.id,
           name: clientName,
           type: transactionType as 'payment_received' | 'new_loan',
           amount: transaction.amount,

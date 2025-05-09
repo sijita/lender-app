@@ -171,7 +171,6 @@ export default function useHandleEditLoan(loanId: number) {
       setErrors({});
       return true;
     } catch (error) {
-      console.log('error', error);
       if (error instanceof ZodError) {
         const newErrors: Partial<Record<keyof Loan, string>> = {};
         error.errors.forEach((err) => {

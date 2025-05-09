@@ -20,7 +20,7 @@ export default function Error({
         <Text className="font-geist-extrabold text-red-500 text-3xl">
           Error
         </Text>
-        <Text className="font-geist-semibold text-lg">{error}</Text>
+        <Text className="font-geist-semibold text-lg text-center">{error}</Text>
       </View>
       <TouchableOpacity
         className="bg-red-500 py-3 px-6 rounded-lg flex-row items-center gap-2 shadow-sm"

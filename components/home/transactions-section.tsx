@@ -1,8 +1,9 @@
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text } from 'react-native';
 import RecentTransactions from './recent-transactions';
 import UpcomingPayments from './upcoming-payments';
 import useFetchRecentTransactions from '@/actions/transactions/use-fetch-recent-transactions';
 import useFetchUpcomingPayments from '@/actions/payments/use-fetch-upcoming-payments';
+import Loading from '@/components/ui/loading';
 
 export default function TransactionsSection() {
   const {
@@ -17,14 +18,7 @@ export default function TransactionsSection() {
   } = useFetchUpcomingPayments();
 
   if (loadingTransactions || loadingPayments) {
-    return (
-      <View className="flex-col items-center justify-center py-10">
-        <ActivityIndicator size="large" color="#000" />
-        <Text className="mt-4 text-gray-500 font-geist-medium">
-          Cargando datos...
-        </Text>
-      </View>
-    );
+    return <Loading loadingText="Cargando datos..." />;
   }
 
   if (transactionsError || paymentsError) {
@@ -55,7 +49,8 @@ export default function TransactionsSection() {
   }
 
   return (
-    <View className="flex-col">
+    <View className="flex-col gap-5">
+      <Text className="text-2xl font-geist-bold">Transacciones recientes</Text>
       <RecentTransactions transactions={recentTransactions} />
       <UpcomingPayments payments={upcomingPayments} />
     </View>
