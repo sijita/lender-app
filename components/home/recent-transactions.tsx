@@ -3,6 +3,7 @@ import { formatCurrency } from '@/utils';
 import DynamicIcon from '@/components/ui/dynamic-icon';
 import { Link } from 'expo-router';
 import { ArrowRight } from 'lucide-react-native';
+import useTransactionTabs from '@/store/use-transaction-tabs';
 
 export default function RecentTransactions({
   transactions,
@@ -15,6 +16,7 @@ export default function RecentTransactions({
     date: string;
   }[];
 }) {
+  const setActiveTab = useTransactionTabs((state) => state.setActiveTab);
   return (
     <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
       <View className="flex-col">
@@ -24,7 +26,12 @@ export default function RecentTransactions({
         </Text>
       </View>
       <View className="flex-col gap-3">
-        {transactions.map((transaction, index) => (
+        {transactions?.length === 0 && (
+          <View className="items-center justify-center py-5">
+            <Text className="text-gray-500">No hay transacciones</Text>
+          </View>
+        )}
+        {transactions?.map((transaction, index) => (
           <Link
             href={`/transaction/${transaction.id}`}
             key={index}
@@ -74,7 +81,10 @@ export default function RecentTransactions({
         className="p-4 bg-black rounded-lg"
         asChild
       >
-        <TouchableOpacity className="flex-row items-center justify-center gap-2">
+        <TouchableOpacity
+          onPress={() => setActiveTab('loan')}
+          className="flex-row items-center justify-center gap-2"
+        >
           <Text className="text-center font-geist-bold text-white">
             Ver todos
           </Text>

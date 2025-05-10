@@ -274,7 +274,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
             </>
           ) : (
             <Text className="font-geist-medium text-white">
-              Actualizar Préstamo
+              Actualizar préstamo
             </Text>
           )}
         </TouchableOpacity>

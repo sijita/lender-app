@@ -3,6 +3,7 @@ import { formatCurrency } from '@/utils';
 import { ClientDetail } from '@/actions/clients/use-fetch-client-detail';
 import { format } from '@formkit/tempo';
 import { Calendar } from 'lucide-react-native';
+import NextPayment from '@/components/transactions/transaction-detail/next-payment';
 
 export default function ClientFinancialSummary({
   client,
@@ -75,26 +76,10 @@ export default function ClientFinancialSummary({
         </View>
       </View>
       {client.financial_summary.next_payment && (
-        <View className="flex-row justify-between items-center p-4 bg-yellow-50 rounded-lg border border-yellow-100">
-          <View className="flex-row items-center gap-3">
-            <Calendar size={20} color="#000" />
-            <View className="flex-col">
-              <Text className="font-geist-bold text-lg">Próximo pago</Text>
-              <Text className="text-gray-700">
-                {format(
-                  new Date(client.financial_summary.next_payment.date),
-                  'full',
-                  'es'
-                )}
-              </Text>
-            </View>
-          </View>
-          <View className="flex-row justify-between">
-            <Text className="font-geist-bold text-xl">
-              {formatCurrency(client.financial_summary.next_payment.amount)}
-            </Text>
-          </View>
-        </View>
+        <NextPayment
+          nextPaymentDate={client.financial_summary.next_payment.date}
+          amount={client.financial_summary.next_payment.amount}
+        />
       )}
     </View>
   );

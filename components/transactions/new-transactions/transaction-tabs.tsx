@@ -1,13 +1,25 @@
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { TransactionType } from '@/actions/transactions/use-fetch-transactions';
+import { Text, TouchableOpacity, View } from 'react-native';
+
+type TransactionParams = {
+  type?: TransactionType;
+  searchQuery?: string;
+  orderBy?: string;
+  orderDirection?: 'asc' | 'desc';
+};
 
 export default function TransactionTabs({
   activeTab,
   setActiveTab,
   tabs,
+  transactionParams,
+  refetch,
 }: {
   activeTab: string;
-  setActiveTab: React.Dispatch<React.SetStateAction<any>>;
+  setActiveTab: (tab: 'loan' | 'payment') => void;
   tabs: { id: string; label: string }[];
+  transactionParams: TransactionParams;
+  refetch: (queryParams?: TransactionParams) => Promise<void>;
 }) {
   return (
     <View className="w-full border-b border-gray-200">
@@ -18,7 +30,16 @@ export default function TransactionTabs({
             className={`flex-1 items-center px-5 py-4 ${
               activeTab === tab.id ? 'border-b-2 border-black' : ''
             }`}
-            onPress={() => setActiveTab(tab.id as any)}
+            onPress={() => {
+              const newTabId = tab.id as 'loan' | 'payment';
+              setActiveTab(newTabId);
+              const newTransactionType =
+                newTabId === 'loan' ? 'loan_disbursement' : 'payment';
+              refetch({
+                ...transactionParams,
+                type: newTransactionType,
+              });
+            }}
           >
             <Text
               className={`font-geist-semibold ${

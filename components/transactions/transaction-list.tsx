@@ -35,7 +35,7 @@ export default function TransactionList() {
     refetch,
   } = useFetchTransactions();
   const transactionType =
-    activeTab === 'loans' ? 'loan_disbursement' : ('payment' as const);
+    activeTab === 'loan' ? 'loan_disbursement' : 'payment';
 
   if (loading) {
     return <Loading loadingText="Cargando transacciones..." />;
@@ -51,9 +51,16 @@ export default function TransactionList() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         tabs={[
-          { id: 'loans', label: 'Préstamos' },
-          { id: 'payments', label: 'Pagos' },
+          { id: 'loan', label: 'Préstamos' },
+          { id: 'payment', label: 'Pagos' },
         ]}
+        transactionParams={{
+          searchQuery,
+          orderBy,
+          orderDirection,
+          type: transactionType,
+        }}
+        refetch={refetch}
       />
       <View className="flex-row items-center gap-2">
         <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3 border border-gray-100">

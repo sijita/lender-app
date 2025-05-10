@@ -191,7 +191,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
             </>
           ) : (
             <Text className="font-geist-medium text-white">
-              Actualizar Cliente
+              Actualizar cliente
             </Text>
           )}
         </TouchableOpacity>

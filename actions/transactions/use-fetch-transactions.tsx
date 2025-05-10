@@ -3,14 +3,16 @@ import { supabase } from '@/lib/supabase';
 import { Transaction } from '@/types/transactions';
 import { useDebounce } from 'use-debounce';
 import { useRouter } from 'expo-router';
+import useTransactionTabs from '@/store/use-transaction-tabs';
 
-type TransactionType = 'loan_disbursement' | 'payment' | 'all';
+export type TransactionType = 'loan_disbursement' | 'payment' | 'all';
 
 export default function useFetchTransactions() {
   const router = useRouter();
+  const activeTab = useTransactionTabs((state) => state.activeTab);
+  const setActiveTab = useTransactionTabs((state) => state.setActiveTab);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
-  const [activeTab, setActiveTab] = useState<'loans' | 'payments'>('loans');
   const [orderBy, setOrderBy] = useState('created_at');
   const [orderDirection, setOrderDirection] = useState<'asc' | 'desc'>('desc');
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -99,15 +101,6 @@ export default function useFetchTransactions() {
       searchQuery: debouncedSearchQuery,
     });
   }, [debouncedSearchQuery]);
-
-  // useEffect(() => {
-  //   fetchTransactions({
-  //     type: activeTab === 'loans' ? 'loan_disbursement' : ('payment' as const),
-  //     searchQuery: debouncedSearchQuery,
-  //     orderBy,
-  //     orderDirection,
-  //   });
-  // }, [activeTab, orderBy, orderDirection, debouncedSearchQuery]);
 
   return {
     transactions,

@@ -4,12 +4,14 @@ import { formatCurrency } from '@/utils';
 import { ArrowRight, Bell } from 'lucide-react-native';
 import { UpcomingPayment } from '@/types/payments';
 import { getStatusColor, getStatusText } from '@/utils/payments';
+import useTransactionTabs from '@/store/use-transaction-tabs';
 
 export default function UpcomingPayments({
   payments,
 }: {
   payments: UpcomingPayment[];
 }) {
+  const setActiveTab = useTransactionTabs((state) => state.setActiveTab);
   return (
     <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
       <View className="flex-col">
@@ -19,7 +21,12 @@ export default function UpcomingPayments({
         </Text>
       </View>
       <View className="flex-col gap-3">
-        {payments.map((payment, index) => (
+        {payments?.length === 0 && (
+          <View className="items-center justify-center py-5">
+            <Text className="text-gray-500">No hay pagos pendientes</Text>
+          </View>
+        )}
+        {payments?.map((payment, index) => (
           <Link
             href={`/transaction/${payment.transactionId}`}
             key={index}
@@ -68,7 +75,10 @@ export default function UpcomingPayments({
         className="p-4 bg-black rounded-lg"
         asChild
       >
-        <TouchableOpacity className="flex-row items-center justify-center gap-2">
+        <TouchableOpacity
+          onPress={() => setActiveTab('payment')}
+          className="flex-row items-center justify-center gap-2"
+        >
           <Text className="text-center font-geist-bold text-white">
             Ver todos
           </Text>

@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
-import { IdCard, Mail, Map, Phone } from 'lucide-react-native';
+import { ArrowRight, IdCard, Mail, Map, Phone } from 'lucide-react-native';
 
 export default function ClientInfo({
   client,
@@ -61,11 +61,14 @@ export default function ClientInfo({
       </View>
       <Link
         href={`/client/${client.id}`}
-        className="p-4 border border-gray-200 rounded-lg"
+        className="p-4 bg-black rounded-lg"
         asChild
       >
-        <TouchableOpacity>
-          <Text className="text-center font-geist-bold">Ver perfil</Text>
+        <TouchableOpacity className="flex-row items-center justify-center gap-2">
+          <Text className="text-center text-white font-geist-bold">
+            Ver perfil
+          </Text>
+          <ArrowRight size={18} color="#fff" />
         </TouchableOpacity>
       </Link>
     </View>
