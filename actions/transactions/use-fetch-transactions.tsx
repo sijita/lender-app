@@ -9,10 +9,10 @@ type TransactionType = 'loan_disbursement' | 'payment' | 'all';
 export default function useFetchTransactions() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
   const [activeTab, setActiveTab] = useState<'loans' | 'payments'>('loans');
   const [orderBy, setOrderBy] = useState('created_at');
   const [orderDirection, setOrderDirection] = useState<'asc' | 'desc'>('desc');
-  const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -96,12 +96,18 @@ export default function useFetchTransactions() {
 
   useEffect(() => {
     fetchTransactions({
-      type: activeTab === 'loans' ? 'loan_disbursement' : ('payment' as const),
       searchQuery: debouncedSearchQuery,
-      orderBy,
-      orderDirection,
     });
-  }, [activeTab, debouncedSearchQuery]);
+  }, [debouncedSearchQuery]);
+
+  // useEffect(() => {
+  //   fetchTransactions({
+  //     type: activeTab === 'loans' ? 'loan_disbursement' : ('payment' as const),
+  //     searchQuery: debouncedSearchQuery,
+  //     orderBy,
+  //     orderDirection,
+  //   });
+  // }, [activeTab, orderBy, orderDirection, debouncedSearchQuery]);
 
   return {
     transactions,

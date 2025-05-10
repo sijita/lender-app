@@ -5,7 +5,6 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import { useState, useEffect } from 'react';
 import { Link } from 'expo-router';
 import useFetchClients from '@/actions/clients/use-fetch-clients';
 import Error from '@/components/ui/error';
@@ -15,32 +14,20 @@ import { ChevronDown, ChevronRight, Search } from 'lucide-react-native';
 import Loading from '@/components/ui/loading';
 
 export default function ClientList() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [orderBy, setOrderBy] = useState('name');
-  const [orderDirection, setOrderDirection] = useState<'asc' | 'desc'>('asc');
-  const [statusFilter, setStatusFilter] = useState<
-    'all' | 'pending' | 'defaulted' | 'completed'
-  >('all');
-
-  const clientParams = {
-    searchQuery,
+  const {
+    clients,
+    loading,
+    error,
+    statusFilter,
     orderBy,
     orderDirection,
-    status: statusFilter,
-  };
-
-  const { clients, loading, error, refetch } = useFetchClients(clientParams);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      refetch({
-        ...clientParams,
-        searchQuery,
-      });
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+    searchQuery,
+    setOrderDirection,
+    setStatusFilter,
+    setSearchQuery,
+    setOrderBy,
+    refetch,
+  } = useFetchClients();
 
   if (loading) {
     return <Loading loadingText="Cargando clientes..." />;
@@ -56,7 +43,12 @@ export default function ClientList() {
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
         refetch={refetch}
-        clientParams={clientParams}
+        clientParams={{
+          searchQuery,
+          orderBy,
+          orderDirection,
+          status: statusFilter,
+        }}
       />
       <View className="flex-row items-center gap-2">
         <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3 border border-gray-100">
@@ -75,9 +67,10 @@ export default function ClientList() {
             const newOrderBy = orderBy === 'name' ? 'document_number' : 'name';
             setOrderBy(newOrderBy);
             refetch({
-              ...clientParams,
+              searchQuery,
               orderBy: newOrderBy,
               orderDirection,
+              status: statusFilter,
             });
           }}
         >
@@ -92,9 +85,10 @@ export default function ClientList() {
             const newDirection = orderDirection === 'desc' ? 'asc' : 'desc';
             setOrderDirection(newDirection);
             refetch({
-              ...clientParams,
+              searchQuery,
               orderBy,
               orderDirection: newDirection,
+              status: statusFilter,
             });
           }}
         >

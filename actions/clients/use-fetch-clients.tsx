@@ -1,52 +1,50 @@
 import { supabase } from '@/lib/supabase';
 import { Client } from '@/schemas/clients/client-schema';
 import { useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
 
-export interface FetchClientsParams {
-  searchQuery?: string;
-  orderBy?: string;
-  orderDirection?: 'asc' | 'desc';
-  status?: 'pending' | 'defaulted' | 'completed' | 'all';
-}
-
-export default function useFetchClients(params?: FetchClientsParams) {
+export default function useFetchClients() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
+  const [orderBy, setOrderBy] = useState('name');
+  const [orderDirection, setOrderDirection] = useState<'asc' | 'desc'>('asc');
+  const [statusFilter, setStatusFilter] = useState<
+    'all' | 'pending' | 'defaulted' | 'completed'
+  >('all');
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchClients = async (queryParams?: FetchClientsParams) => {
+  const fetchClients = async (queryParams?: {
+    searchQuery?: string;
+    orderBy?: string;
+    orderDirection?: 'asc' | 'desc';
+    status?: 'pending' | 'defaulted' | 'completed' | 'all';
+  }) => {
     try {
       setLoading(true);
       setError(null);
 
-      // Usar los parámetros pasados a la función o los parámetros iniciales
-      const activeParams = queryParams || params || {};
-      const {
-        searchQuery,
-        orderBy = 'name',
-        orderDirection = 'asc',
-        status,
-      } = activeParams;
+      const activeParams = queryParams || {};
+      const { searchQuery, orderBy, orderDirection, status } = activeParams;
 
-      // Iniciar la consulta base
       let query = supabase.from('clients').select('*');
 
-      // Aplicar búsqueda si se proporciona un término
       if (searchQuery && searchQuery.trim() !== '') {
         const isNumeric = /^\d+$/.test(searchQuery);
 
         if (isNumeric) {
-          // Buscar por número de documento si es numérico
           query = query.or(`document_number.eq.${searchQuery}`);
         } else {
-          // Buscar por nombre, apellido o email
           query = query.or(
             `name.ilike.%${searchQuery}%,last_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,phone.ilike.%${searchQuery}%`
           );
         }
       }
 
-      query = query.order(orderBy, { ascending: orderDirection === 'asc' });
+      if (orderBy) {
+        query = query.order(orderBy, { ascending: orderDirection === 'asc' });
+      }
 
       const { data: clientsData, error: clientsError } = await query;
 
@@ -122,5 +120,24 @@ export default function useFetchClients(params?: FetchClientsParams) {
     fetchClients();
   }, []);
 
-  return { clients, loading, error, refetch: fetchClients };
+  useEffect(() => {
+    fetchClients({
+      searchQuery: debouncedSearchQuery,
+    });
+  }, [debouncedSearchQuery]);
+
+  return {
+    clients,
+    loading,
+    error,
+    orderBy,
+    orderDirection,
+    statusFilter,
+    searchQuery,
+    setStatusFilter,
+    setSearchQuery,
+    setOrderBy,
+    setOrderDirection,
+    refetch: fetchClients,
+  };
 }

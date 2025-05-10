@@ -1,5 +1,11 @@
-import { FetchClientsParams } from '@/actions/clients/use-fetch-clients';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+
+type ClientParams = {
+  searchQuery: string;
+  orderBy: string;
+  orderDirection: 'desc' | 'asc';
+  status: 'all' | 'pending' | 'defaulted' | 'completed';
+};
 
 export default function ClientTypeTabs({
   statusFilter,
@@ -11,13 +17,8 @@ export default function ClientTypeTabs({
   setStatusFilter: React.Dispatch<
     React.SetStateAction<'all' | 'pending' | 'defaulted' | 'completed'>
   >;
-  refetch: (queryParams?: FetchClientsParams) => Promise<void>;
-  clientParams: {
-    searchQuery: string;
-    orderBy: string;
-    orderDirection: 'desc' | 'asc';
-    status: 'all' | 'pending' | 'defaulted' | 'completed';
-  };
+  refetch: (queryParams?: ClientParams) => Promise<void>;
+  clientParams: ClientParams;
 }) {
   const tabs = [
     { id: 'all', label: 'Todos' },
