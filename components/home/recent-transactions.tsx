@@ -4,6 +4,7 @@ import DynamicIcon from '@/components/ui/dynamic-icon';
 import { Link } from 'expo-router';
 import { ArrowRight } from 'lucide-react-native';
 import useTransactionTabs from '@/store/use-transaction-tabs';
+import useFetchTransactions from '@/actions/transactions/use-fetch-transactions';
 
 export default function RecentTransactions({
   transactions,
@@ -16,6 +17,7 @@ export default function RecentTransactions({
     date: string;
   }[];
 }) {
+  const { refetch } = useFetchTransactions();
   const setActiveTab = useTransactionTabs((state) => state.setActiveTab);
   return (
     <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
@@ -82,7 +84,10 @@ export default function RecentTransactions({
         asChild
       >
         <TouchableOpacity
-          onPress={() => setActiveTab('loan')}
+          onPress={() => {
+            setActiveTab('loan');
+            refetch({ type: 'loan_disbursement' });
+          }}
           className="flex-row items-center justify-center gap-2"
         >
           <Text className="text-center font-geist-bold text-white">

@@ -3,11 +3,10 @@ import { Link } from 'expo-router';
 import { formatCurrency } from '@/utils';
 import { ArrowRight, Bell } from 'lucide-react-native';
 import { UpcomingPayment } from '@/types/payments';
-import { getStatusColor, getStatusText } from '@/utils/payments';
 import useTransactionTabs from '@/store/use-transaction-tabs';
 import useFetchTransactions from '@/actions/transactions/use-fetch-transactions';
 
-export default function UpcomingPayments({
+export default function OverduePayments({
   payments,
 }: {
   payments: UpcomingPayment[];
@@ -17,15 +16,17 @@ export default function UpcomingPayments({
   return (
     <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
       <View className="flex-col">
-        <Text className="text-xl font-geist-bold">Pagos pendientes</Text>
+        <Text className="text-xl font-geist-bold">Pagos vencidos</Text>
         <Text className="text-gray-500 font-geist-regular">
-          Pagos con vencimiento en los próximos 7 días
+          Pagos que no se han realizado en la fecha establecida
         </Text>
       </View>
       <View className="flex-col gap-3">
         {payments?.length === 0 && (
           <View className="items-center justify-center py-5">
-            <Text className="text-gray-500">No hay pagos pendientes</Text>
+            <Text className="text-gray-500">
+              No hay pagos vencidos recientes
+            </Text>
           </View>
         )}
         {payments?.map((payment, index) => (
@@ -37,14 +38,14 @@ export default function UpcomingPayments({
           >
             <View
               key={index}
-              className="flex-row justify-between items-start p-3 rounded-lg bg-gray-50/50 active:bg-gray-100"
+              className="flex-row justify-between items-start p-3 rounded-lg bg-red-50/50 active:bg-red-100"
             >
               <View className="flex-1">
                 <Text className="font-geist-semibold text-gray-800">
                   {payment.clientName}
                 </Text>
                 <Text className="font-geist-regular text-gray-500">
-                  Vencimiento:{' '}
+                  Vencido:{' '}
                   <Text className="font-geist-medium text-black">
                     {payment.paymentDate}
                   </Text>
@@ -55,17 +56,10 @@ export default function UpcomingPayments({
                   <Text className="text-lg font-geist-semibold">
                     {formatCurrency(payment.amount)}
                   </Text>
-                  <Bell
-                    size={16}
-                    color={payment.status === 'on_time' ? '#22c55e' : '#ef4444'}
-                  />
+                  <Bell size={16} color="#ef4444" />
                 </View>
-                <Text
-                  className={`${getStatusColor(
-                    payment.status
-                  )} font-geist-regular text-sm`}
-                >
-                  {getStatusText(payment.status)}
+                <Text className="text-red-500 font-geist-regular text-sm">
+                  Vencido
                 </Text>
               </View>
             </View>

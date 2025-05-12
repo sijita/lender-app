@@ -23,21 +23,21 @@ const Reports = () => {
         />
         <PeriodSelector onPeriodChange={handlePeriodChange} />
         <ReportCard
-          title="Resumen de Ingresos"
+          title="Resumen de ingresos"
           subtitle="Ingresos mensuales por pagos"
           icon={<BarChart3 size={24} color="#6366F1" />}
           loading={loading}
           onDownload={handleDownloadReport}
         />
         <ReportCard
-          title="Préstamos Pendientes"
+          title="Préstamos pendientes"
           subtitle="Total pendiente por cliente"
           icon={<PieChart size={24} color="#F59E0B" />}
           loading={loading}
           onDownload={handleDownloadReport}
         />
         <ReportCard
-          title="Tendencias de Pago"
+          title="Tendencias de pago"
           subtitle="Historial de pagos por tiempo"
           icon={<LineChart size={24} color="#10B981" />}
           loading={loading}

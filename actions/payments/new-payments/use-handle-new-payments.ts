@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { Payment, paymentSchema } from '@/schemas/payments/payment-schema';
 import { ZodError } from 'zod';
 import { useToast } from '@/components/ui/toast-context';
+import { useDebounce, useDebouncedCallback } from 'use-debounce';
 
 export default function useHandleNewPayments() {
   const { showToast } = useToast();
@@ -36,7 +37,6 @@ export default function useHandleNewPayments() {
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [formattedAmount, setFormattedAmount] = useState(
@@ -100,13 +100,10 @@ export default function useHandleNewPayments() {
       pending_quotas: loan.pending_quotas,
       quota: loan.quota,
     }));
-    setSearchQuery('');
     setSearchResults([]);
   };
 
-  const searchClients = async (query: string) => {
-    setSearchQuery(query);
-
+  const searchClients = useDebouncedCallback(async (query: string) => {
     if (query.length < 2) {
       setSearchResults([]);
       return;
@@ -133,6 +130,7 @@ export default function useHandleNewPayments() {
           outstanding,
           pending_quotas,
           quota,
+          status,
           client:client_id (
             id,
             name,
@@ -141,7 +139,7 @@ export default function useHandleNewPayments() {
           )
         `
         )
-        .eq('status', 'active')
+        .or('status.eq.active,status.eq.defaulted')
         .or(queryFilter, {
           referencedTable: 'client',
         })
@@ -156,7 +154,7 @@ export default function useHandleNewPayments() {
     } finally {
       setIsSearching(false);
     }
-  };
+  }, 500);
 
   const formattedSearchResults = searchResults.map((item) => ({
     id: item?.id?.toString(),
@@ -169,10 +167,14 @@ export default function useHandleNewPayments() {
 
   const validateForm = (): boolean => {
     try {
-      paymentSchema.parse(formData);
+      paymentSchema.parse({
+        ...formData,
+        quotas: Number(formData.quotas),
+      });
       setErrors({});
       return true;
     } catch (error) {
+      console.log('error:', error);
       if (error instanceof ZodError) {
         const newErrors: Partial<Record<keyof Payment, string>> = {};
         error.errors.forEach((err) => {
@@ -198,9 +200,11 @@ export default function useHandleNewPayments() {
         amount: Number(formData.amount),
         method: formData.method,
         notes: formData.notes,
-        quotas: formData.quotas,
+        quotas: Number(formData.quotas),
         status: 'completed',
       };
+
+      console.log('paymentData:', paymentData);
 
       const { error: paymentError } = await supabase
         .from('payments')
@@ -247,7 +251,6 @@ export default function useHandleNewPayments() {
     errors,
     isSubmitting,
     showDatePicker,
-    searchQuery,
     searchResults,
     isSearching,
     formattedAmount,

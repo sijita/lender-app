@@ -4,8 +4,11 @@ import { Transaction } from '@/types/transactions';
 import { useDebounce } from 'use-debounce';
 import { useRouter } from 'expo-router';
 import useTransactionTabs from '@/store/use-transaction-tabs';
+import useFetchUpcomingPayments from '../payments/use-fetch-upcoming-payments';
+import useFetchOverduePayments from '../payments/use-fetch-overdue-payments';
 
 export type TransactionType = 'loan_disbursement' | 'payment' | 'all';
+export type PaymentStatus = 'all' | 'completed' | 'upcoming' | 'overdue';
 
 export default function useFetchTransactions() {
   const router = useRouter();
@@ -18,6 +21,13 @@ export default function useFetchTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('all');
+
+  const { upcomingPayments } = useFetchUpcomingPayments();
+  const { overduePayments } = useFetchOverduePayments();
+
+  console.log('activeTab', activeTab);
+  console.log('paymentStatus', paymentStatus);
 
   const fetchTransactions = async (queryParams?: {
     type?: TransactionType;
@@ -83,7 +93,7 @@ export default function useFetchTransactions() {
         throw error;
       }
 
-      setTransactions(data || []);
+      return setTransactions(data || []);
     } catch (err: any) {
       setError(err.message || 'Error al cargar las transacciones');
       console.error('Error fetching transactions:', err);
@@ -93,8 +103,10 @@ export default function useFetchTransactions() {
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    fetchTransactions({
+      type: activeTab === 'loan' ? 'loan_disbursement' : 'payment',
+    });
+  }, [activeTab]);
 
   useEffect(() => {
     fetchTransactions({
@@ -103,7 +115,14 @@ export default function useFetchTransactions() {
   }, [debouncedSearchQuery]);
 
   return {
-    transactions,
+    transactions:
+      activeTab === 'payment' && paymentStatus === 'upcoming'
+        ? upcomingPayments
+        : activeTab === 'payment' && paymentStatus === 'overdue'
+        ? overduePayments
+        : activeTab === 'payment' && paymentStatus === 'all'
+        ? [...transactions, ...upcomingPayments, ...overduePayments]
+        : transactions,
     loading,
     error,
     router,
@@ -111,10 +130,12 @@ export default function useFetchTransactions() {
     searchQuery,
     orderBy,
     orderDirection,
+    paymentStatus,
     setOrderDirection,
     setOrderBy,
     setActiveTab,
     setSearchQuery,
+    setPaymentStatus,
     refetch: fetchTransactions,
   };
 }

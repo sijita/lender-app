@@ -5,6 +5,7 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
+import { useState } from 'react';
 import useFetchTransactions from '@/actions/transactions/use-fetch-transactions';
 import Error from '@/components/ui/error';
 import { formatCurrency } from '@/utils';
@@ -28,6 +29,8 @@ export default function TransactionList() {
     orderBy,
     orderDirection,
     router,
+    paymentStatus,
+    setPaymentStatus,
     setOrderDirection,
     setOrderBy,
     setSearchQuery,
@@ -62,6 +65,49 @@ export default function TransactionList() {
         }}
         refetch={refetch}
       />
+      {activeTab === 'payment' && (
+        <ScrollView
+          contentContainerStyle={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 8,
+          }}
+          className="bg-gray-50 rounded-lg p-1"
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        >
+          {['all', 'completed', 'upcoming', 'overdue'].map((status) => (
+            <TouchableOpacity
+              key={status}
+              className={`flex-1 py-2 px-3 rounded-lg ${
+                paymentStatus === status ? 'bg-white shadow-sm' : ''
+              }`}
+              onPress={() => {
+                setPaymentStatus(
+                  status as 'all' | 'completed' | 'upcoming' | 'overdue'
+                );
+                refetch({
+                  type: transactionType,
+                  searchQuery,
+                  orderBy,
+                  orderDirection,
+                });
+              }}
+            >
+              <Text
+                className={`text-center font-geist-medium ${
+                  paymentStatus === status ? 'text-black' : 'text-gray-500'
+                }`}
+              >
+                {status === 'all' && 'Todos'}
+                {status === 'completed' && 'Completados'}
+                {status === 'upcoming' && 'Próximos'}
+                {status === 'overdue' && 'Vencidos'}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
       <View className="flex-row items-center gap-2">
         <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3 border border-gray-100">
           <Search size={20} color="#6B7280" />
@@ -134,63 +180,118 @@ export default function TransactionList() {
               </Text>
             </View>
           ) : (
-            transactions.map((transaction) => {
+            transactions.map((transaction, index) => {
               if (
-                !transaction?.loan ||
-                !transaction?.loan.client ||
-                !transaction?.loan.client.name
+                'loan' in transaction &&
+                transaction.loan &&
+                transaction.loan.client &&
+                transaction.loan.client.name
               ) {
-                return null;
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() =>
+                      router.push(`/transaction/${transaction.id}`)
+                    }
+                    className="flex-row items-center px-4 py-3 border-b border-gray-100"
+                  >
+                    <Text className="w-36 font-geist-regular text-gray-600">
+                      {format({
+                        date: new Date(transaction.created_at),
+                        format: 'medium',
+                        tz: 'America/Bogota',
+                      })}
+                    </Text>
+                    <Text className="w-40 font-geist-medium">
+                      {`${transaction.loan.client.name} ${transaction.loan.client.last_name}` ||
+                        'Cliente desconocido'}
+                    </Text>
+                    <View className="w-40 text-right flex-row items-center justify-end gap-1">
+                      <Text className="font-geist-semibold">
+                        {formatCurrency(Number(transaction.amount))}
+                      </Text>
+                      <DynamicIcon
+                        name={
+                          transaction.type === 'payment'
+                            ? 'ArrowDown'
+                            : 'ArrowUp'
+                        }
+                        size={15}
+                        color={
+                          transaction.type === 'payment' ? '#16a34a' : '#2563eb'
+                        }
+                      />
+                    </View>
+                    <View className="w-40 items-end shrink-0">
+                      <Text
+                        className={`px-3 py-1 rounded-full text-xs font-geist-medium ${getTransactionTypeStyle(
+                          transaction.type
+                        )}`}
+                      >
+                        {getTransactionTypeText(transaction.type)}
+                      </Text>
+                    </View>
+                    <View className="w-16 items-end">
+                      <ChevronRight size={20} color="#9CA3AF" />
+                    </View>
+                  </TouchableOpacity>
+                );
               }
-
-              return (
-                <TouchableOpacity
-                  key={transaction?.id}
-                  onPress={() => router.push(`/transaction/${transaction?.id}`)}
-                  className="flex-row items-center px-4 py-3 border-b border-gray-100"
-                >
-                  <Text className="w-36 font-geist-regular text-gray-600">
-                    {format({
-                      date: new Date(transaction?.created_at),
-                      format: 'DD/MM/YYYY',
-                      tz: 'America/Bogota',
-                    })}
-                  </Text>
-                  <Text className="w-40 font-geist-medium">
-                    {`${transaction?.loan?.client?.name} ${transaction?.loan?.client?.last_name}` ||
-                      'Cliente desconocido'}
-                  </Text>
-                  <View className="w-40 text-right flex-row items-center justify-end gap-1">
-                    <Text className="font-geist-semibold">
-                      {formatCurrency(Number(transaction?.amount))}
+              if (
+                'transactionId' in transaction &&
+                'clientName' in transaction
+              ) {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() =>
+                      router.push(`/transaction/${transaction.transactionId}`)
+                    }
+                    className={`flex-row items-center px-4 py-3 border-b border-gray-100 ${
+                      paymentStatus === 'upcoming'
+                        ? 'bg-yellow-50'
+                        : paymentStatus === 'overdue' && 'bg-red-50'
+                    }`}
+                  >
+                    <Text className="w-36 font-geist-regular text-gray-600">
+                      {transaction.paymentDate}
                     </Text>
-                    {/* {getTransactionIcon(transaction?.type)} */}
-                    <DynamicIcon
-                      name={
-                        transaction?.type === 'payment'
-                          ? 'ArrowDown'
-                          : 'ArrowUp'
-                      }
-                      size={15}
-                      color={
-                        transaction?.type === 'payment' ? '#16a34a' : '#2563eb'
-                      }
-                    />
-                  </View>
-                  <View className="w-40 items-end shrink-0">
-                    <Text
-                      className={`px-3 py-1 rounded-full text-xs font-geist-medium ${getTransactionTypeStyle(
-                        transaction?.type
-                      )}`}
-                    >
-                      {getTransactionTypeText(transaction?.type)}
+                    <Text className="w-40 font-geist-medium">
+                      {transaction.clientName}
                     </Text>
-                  </View>
-                  <View className="w-16 items-end">
-                    <ChevronRight size={20} color="#9CA3AF" />
-                  </View>
-                </TouchableOpacity>
-              );
+                    <View className="w-40 text-right flex-row items-center justify-end gap-1">
+                      <Text className="font-geist-semibold">
+                        {formatCurrency(Number(transaction.amount))}
+                      </Text>
+                      <DynamicIcon
+                        name={'ArrowDown'}
+                        size={15}
+                        color={'#f59e42'}
+                      />
+                    </View>
+                    <View className="w-40 items-end shrink-0">
+                      <Text
+                        className={`px-3 py-1 rounded-full text-xs font-geist-medium ${
+                          paymentStatus === 'upcoming'
+                            ? 'bg-yellow-200 text-yellow-800'
+                            : paymentStatus === 'overdue' &&
+                              'bg-red-200 text-red-800'
+                        }`}
+                      >
+                        {paymentStatus === 'upcoming'
+                          ? 'Próximo'
+                          : paymentStatus === 'overdue'
+                          ? 'Vencido'
+                          : 'Pendiente'}
+                      </Text>
+                    </View>
+                    <View className="w-16 items-end">
+                      <ChevronRight size={20} color="#9CA3AF" />
+                    </View>
+                  </TouchableOpacity>
+                );
+              }
+              return null;
             })
           )}
         </View>

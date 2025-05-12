@@ -28,17 +28,17 @@ export default function ReportCard({
           <Text className="text-gray-400">Cargando datos...</Text>
         </View>
       ) : (
-        <View className="h-32 flex items-center justify-center">
+        <View className="h-5 flex items-center justify-center">
           {/* Aquí se mostrarían gráficos en una implementación completa */}
         </View>
       )}
 
       <TouchableOpacity
-        className="flex-row items-center justify-center mt-2"
+        className="bg-black p-4 rounded-lg flex-row items-center justify-center gap-2"
         onPress={onDownload}
       >
-        <Download size={16} color="#000" />
-        <Text className="ml-2 font-geist-medium">Descargar</Text>
+        <Text className="text-white font-geist-medium">Descargar</Text>
+        <Download size={16} color="#fff" />
       </TouchableOpacity>
     </View>
   );

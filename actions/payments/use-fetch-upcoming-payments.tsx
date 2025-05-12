@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { UpcomingPayment } from '@/types/payments';
+import { format } from '@formkit/tempo';
 
 export default function useFetchUpcomingPayments() {
   const [upcomingPayments, setUpcomingPayments] = useState<UpcomingPayment[]>(
@@ -75,9 +76,10 @@ export default function useFetchUpcomingPayments() {
         } else if (daysUntilPayment < 0) {
           formattedDueDate = `Hace ${Math.abs(daysUntilPayment)} días`;
         } else {
-          formattedDueDate = paymentDate.toLocaleDateString('es-CO', {
-            day: 'numeric',
-            month: 'short',
+          formattedDueDate = format({
+            date: paymentDate,
+            format: 'medium',
+            tz: 'America/Bogota',
           });
         }
 

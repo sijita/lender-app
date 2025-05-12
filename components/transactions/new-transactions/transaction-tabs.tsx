@@ -6,6 +6,7 @@ type TransactionParams = {
   searchQuery?: string;
   orderBy?: string;
   orderDirection?: 'asc' | 'desc';
+  paymentStatus?: 'all' | 'completed' | 'upcoming' | 'overdue';
 };
 
 export default function TransactionTabs({
@@ -18,8 +19,8 @@ export default function TransactionTabs({
   activeTab: string;
   setActiveTab: (tab: 'loan' | 'payment') => void;
   tabs: { id: string; label: string }[];
-  transactionParams: TransactionParams;
-  refetch: (queryParams?: TransactionParams) => Promise<void>;
+  transactionParams?: TransactionParams;
+  refetch?: (queryParams?: TransactionParams) => Promise<void>;
 }) {
   return (
     <View className="w-full border-b border-gray-200">
@@ -35,10 +36,12 @@ export default function TransactionTabs({
               setActiveTab(newTabId);
               const newTransactionType =
                 newTabId === 'loan' ? 'loan_disbursement' : 'payment';
-              refetch({
-                ...transactionParams,
-                type: newTransactionType,
-              });
+              if (refetch) {
+                refetch({
+                  ...transactionParams,
+                  type: newTransactionType,
+                });
+              }
             }}
           >
             <Text

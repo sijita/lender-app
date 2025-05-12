@@ -86,187 +86,201 @@ const NewPaymentForm = () => {
           </View>
         )}
       </View>
-      <View className="flex-col gap-2">
-        <Text className="font-geist-medium">
-          Monto del pago<Text className="text-red-500">*</Text>
-        </Text>
-        <View className="flex-row gap-3 items-center">
-          <View className="flex-1 border border-gray-200 rounded-lg flex-row items-center">
-            <Text className="text-gray-500 pl-3 pr-1">$</Text>
-            <TextInput
-              placeholder="0"
-              keyboardType="decimal-pad"
-              className="flex-1 p-3"
-              value={formattedAmount}
-              onChangeText={handleAmountChange}
-            />
+      {formData?.clientId && (
+        <>
+          <View className="flex-col gap-2">
+            <Text className="font-geist-medium">
+              Monto del pago<Text className="text-red-500">*</Text>
+            </Text>
+            <View className="flex-row gap-3 items-center">
+              <View className="flex-1 border border-gray-200 rounded-lg flex-row items-center">
+                <Text className="text-gray-500 pl-3 pr-1">$</Text>
+                <TextInput
+                  placeholder="0"
+                  keyboardType="decimal-pad"
+                  className="flex-1 p-3"
+                  value={formattedAmount}
+                  onChangeText={handleAmountChange}
+                />
+              </View>
+              {formData.clientId && (
+                <TouchableOpacity
+                  className="bg-black py-3 px-4 rounded-lg"
+                  onPress={() => {
+                    if (formData.outstanding) {
+                      handleAmountChange(formData.outstanding.toString());
+                      handleChange(
+                        'quotas',
+                        formData.pending_quotas.toString()
+                      );
+                    }
+                  }}
+                >
+                  <Text className="font-geist-medium text-sm text-white">
+                    Pago total
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            {errors.amount && (
+              <Text className="text-red-500 text-sm">{errors.amount}</Text>
+            )}
           </View>
-          {formData.clientId && (
+          <View className="flex-col gap-2">
+            <Text className="font-geist-medium">Cuotas a pagar</Text>
+            {formData.amount === formData.outstanding.toString() ? (
+              <TextInput
+                className="border border-gray-200 rounded-lg p-3 flex-1"
+                editable={false}
+                value={formData.pending_quotas.toString()}
+              />
+            ) : (
+              <View
+                className={`border ${
+                  errors.quotas ? 'border-red-500' : 'border-gray-200'
+                } rounded-lg flex-row items-center`}
+              >
+                <TextInput
+                  placeholder="1"
+                  keyboardType="number-pad"
+                  className="flex-1 p-3"
+                  value={formData.quotas?.toString() ?? ''}
+                  onChangeText={(text) => {
+                    handleChange('quotas', text);
+                    handleAmountChange(
+                      (Number(text) * formData.quota).toString()
+                    );
+                  }}
+                />
+                <View className="flex-col gap-0">
+                  <TouchableOpacity
+                    className="px-3 py-1"
+                    onPress={() => {
+                      const currentTerm = Number(formData.quotas) || 0;
+                      if (currentTerm < formData.pending_quotas) {
+                        const newQuotas = currentTerm + 1;
+                        handleChange('quotas', String(newQuotas));
+
+                        if (formData.quota) {
+                          const newAmount = (
+                            newQuotas * formData.quota
+                          ).toFixed(0);
+                          handleAmountChange(newAmount);
+                        }
+                      }
+                    }}
+                  >
+                    <ChevronUp size={20} color="#6B7280" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    className="px-3 py-1"
+                    onPress={() => {
+                      const currentTerm = Number(formData.quotas) || 0;
+                      if (currentTerm > 1) {
+                        const newQuotas = currentTerm - 1;
+                        handleChange('quotas', String(newQuotas));
+
+                        if (formData.quota) {
+                          const newAmount = (
+                            newQuotas * formData.quota
+                          ).toFixed(0);
+                          handleAmountChange(newAmount);
+                        }
+                      }
+                    }}
+                  >
+                    <ChevronDown size={20} color="#6B7280" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            {errors.quotas && (
+              <Text className="text-red-500 text-sm">{errors.quotas}</Text>
+            )}
+          </View>
+          <View className="flex-col gap-2">
+            <Text className="font-geist-medium">Fecha</Text>
             <TouchableOpacity
-              className="bg-black py-3 px-4 rounded-lg"
-              onPress={() => {
-                if (formData.outstanding) {
-                  handleAmountChange(formData.outstanding.toString());
-                }
-              }}
+              className="border border-gray-200 rounded-lg p-3 flex-row justify-between items-center"
+              onPress={() => setShowDatePicker(true)}
             >
-              <Text className="font-geist-medium text-sm text-white">
-                Pago total
+              <Text className={formData.date ? 'text-black' : 'text-gray-500'}>
+                {formData.date
+                  ? format(formData.date, 'DD/MM/YYYY', 'es')
+                  : 'dd / mm / aaaa'}
               </Text>
+              <Calendar size={20} color="#6B7280" />
             </TouchableOpacity>
-          )}
-        </View>
-        {errors.amount && (
-          <Text className="text-red-500 text-sm">{errors.amount}</Text>
-        )}
-      </View>
-      <View className="flex-col gap-2">
-        <Text className="font-geist-medium">Cuotas a pagar</Text>
-        {formData.amount === formData.outstanding.toString() ? (
-          <TextInput
-            className="border border-gray-200 rounded-lg p-3 flex-1"
-            editable={false}
-            value={formData.pending_quotas.toString()}
-          />
-        ) : (
-          <View
-            className={`border ${
-              errors.quotas ? 'border-red-500' : 'border-gray-200'
-            } rounded-lg flex-row items-center`}
-          >
-            <TextInput
-              placeholder="1"
-              keyboardType="number-pad"
-              className="flex-1 p-3"
-              value={formData.quotas?.toString() ?? ''}
-              onChangeText={(text) => {
-                handleChange('quotas', text);
-                handleAmountChange((Number(text) * formData.quota).toString());
-              }}
-            />
-            <View className="flex-col gap-0">
+            {showDatePicker && (
+              <DateTimePicker
+                value={formData?.date ?? new Date()}
+                mode="date"
+                display="default"
+                onChange={handleDateSelect}
+              />
+            )}
+          </View>
+          <View className="flex-col gap-5">
+            <Text className="font-geist-medium">Método de pago</Text>
+            <View className="flex-col gap-4">
               <TouchableOpacity
-                className="px-3 py-1"
-                onPress={() => {
-                  const currentTerm = Number(formData.quotas) || 0;
-                  if (currentTerm < formData.pending_quotas) {
-                    const newQuotas = currentTerm + 1;
-                    handleChange('quotas', String(newQuotas));
-
-                    if (formData.quota) {
-                      const newAmount = (newQuotas * formData.quota).toFixed(0);
-                      handleAmountChange(newAmount);
-                    }
-                  }
-                }}
+                className="flex-row items-center gap-3"
+                onPress={() => handleChange('method', 'cash')}
               >
-                <ChevronUp size={20} color="#6B7280" />
+                <View className="h-5 w-5 rounded-full border border-gray-300 flex items-center justify-center">
+                  {formData.method === 'cash' && (
+                    <View className="h-3 w-3 rounded-full bg-black" />
+                  )}
+                </View>
+                <View className="flex-row items-center gap-2">
+                  <Banknote size={18} color="#000" />
+                  <Text>Efectivo</Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity
-                className="px-3 py-1"
-                onPress={() => {
-                  const currentTerm = Number(formData.quotas) || 0;
-                  if (currentTerm > 1) {
-                    const newQuotas = currentTerm - 1;
-                    handleChange('quotas', String(newQuotas));
-
-                    if (formData.quota) {
-                      const newAmount = (newQuotas * formData.quota).toFixed(0);
-                      handleAmountChange(newAmount);
-                    }
-                  }
-                }}
+                className="flex-row items-center gap-3"
+                onPress={() => handleChange('method', 'transfer')}
               >
-                <ChevronDown size={20} color="#6B7280" />
+                <View className="h-5 w-5 rounded-full border border-gray-300 flex items-center justify-center">
+                  {formData.method === 'transfer' && (
+                    <View className="h-3 w-3 rounded-full bg-black" />
+                  )}
+                </View>
+                <View className="flex-row items-center gap-2">
+                  <Landmark size={18} color="#000" />
+                  <Text>Transferencia</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="flex-row items-center gap-3"
+                onPress={() => handleChange('method', 'other')}
+              >
+                <View className="h-5 w-5 rounded-full border border-gray-300 flex items-center justify-center">
+                  {formData.method === 'other' && (
+                    <View className="h-3 w-3 rounded-full bg-black" />
+                  )}
+                </View>
+                <View className="flex-row items-center gap-2">
+                  <Ellipsis size={18} color="#000" />
+                  <Text>Otro</Text>
+                </View>
               </TouchableOpacity>
             </View>
           </View>
-        )}
-        {errors.quotas && (
-          <Text className="text-red-500 text-sm">{errors.quotas}</Text>
-        )}
-      </View>
-      <View className="flex-col gap-2">
-        <Text className="font-geist-medium">Fecha</Text>
-        <TouchableOpacity
-          className="border border-gray-200 rounded-lg p-3 flex-row justify-between items-center"
-          onPress={() => setShowDatePicker(true)}
-        >
-          <Text className={formData.date ? 'text-black' : 'text-gray-500'}>
-            {formData.date
-              ? format(formData.date, 'DD/MM/YYYY', 'es')
-              : 'dd / mm / aaaa'}
-          </Text>
-          <Calendar size={20} color="#6B7280" />
-        </TouchableOpacity>
-        {showDatePicker && (
-          <DateTimePicker
-            value={formData?.date ?? new Date()}
-            mode="date"
-            display="default"
-            onChange={handleDateSelect}
-          />
-        )}
-      </View>
-      <View className="flex-col gap-5">
-        <Text className="font-geist-medium">Método de pago</Text>
-        <View className="flex-col gap-4">
-          <TouchableOpacity
-            className="flex-row items-center gap-3"
-            onPress={() => handleChange('method', 'cash')}
-          >
-            <View className="h-5 w-5 rounded-full border border-gray-300 flex items-center justify-center">
-              {formData.method === 'cash' && (
-                <View className="h-3 w-3 rounded-full bg-black" />
-              )}
-            </View>
-            <View className="flex-row items-center gap-2">
-              <Banknote size={18} color="#000" />
-              <Text>Efectivo</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="flex-row items-center gap-3"
-            onPress={() => handleChange('method', 'transfer')}
-          >
-            <View className="h-5 w-5 rounded-full border border-gray-300 flex items-center justify-center">
-              {formData.method === 'transfer' && (
-                <View className="h-3 w-3 rounded-full bg-black" />
-              )}
-            </View>
-            <View className="flex-row items-center gap-2">
-              <Landmark size={18} color="#000" />
-              <Text>Transferencia</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="flex-row items-center gap-3"
-            onPress={() => handleChange('method', 'other')}
-          >
-            <View className="h-5 w-5 rounded-full border border-gray-300 flex items-center justify-center">
-              {formData.method === 'other' && (
-                <View className="h-3 w-3 rounded-full bg-black" />
-              )}
-            </View>
-            <View className="flex-row items-center gap-2">
-              <Ellipsis size={18} color="#000" />
-              <Text>Otro</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View className="flex-col gap-2">
-        <Text className="font-geist-medium">Notas</Text>
-        <TextInput
-          placeholder="Añadir cualquier detalle adicional sobre este pago..."
-          multiline
-          numberOfLines={4}
-          className="border border-gray-200 rounded-lg p-3 h-24 text-base"
-          textAlignVertical="top"
-          value={formData.notes}
-          onChangeText={(text) => handleChange('notes', text)}
-        />
-      </View>
+          <View className="flex-col gap-2">
+            <Text className="font-geist-medium">Notas</Text>
+            <TextInput
+              placeholder="Añadir cualquier detalle adicional sobre este pago..."
+              multiline
+              numberOfLines={4}
+              className="border border-gray-200 rounded-lg p-3 h-24 text-base"
+              textAlignVertical="top"
+              value={formData.notes}
+              onChangeText={(text) => handleChange('notes', text)}
+            />
+          </View>
+        </>
+      )}
       <ActionButtons
         submitLabel="Registrar pago"
         onCancel={() => router.back()}
