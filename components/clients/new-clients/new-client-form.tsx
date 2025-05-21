@@ -16,7 +16,7 @@ const NewClientForm = () => {
 
   return (
     <View className="flex-col gap-6 p-5">
-      <Text className="text-xl font-geist-bold">Información del Cliente</Text>
+      <Text className="text-xl font-geist-bold">Información del cliente</Text>
       <Select
         label="Tipo de Documento"
         placeholder="Seleccionar tipo"

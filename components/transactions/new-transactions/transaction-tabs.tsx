@@ -6,7 +6,9 @@ type TransactionParams = {
   searchQuery?: string;
   orderBy?: string;
   orderDirection?: 'asc' | 'desc';
-  paymentStatus?: 'all' | 'completed' | 'upcoming' | 'overdue';
+  paymentStatus?: 'completed' | 'upcoming' | 'overdue';
+  startDate?: Date | null;
+  endDate?: Date | null;
 };
 
 export default function TransactionTabs({

@@ -12,7 +12,7 @@ export default function Error({
   const router = useRouter();
 
   return (
-    <View className="flex-1 flex-col gap-6 justify-center items-center bg-gray-50">
+    <View className="min-h-screen p-10 flex-1 flex-col gap-6 justify-center items-center bg-gray-50">
       <View className="flex-col items-center justify-center bg-red-500/10 rounded-full p-3">
         <TriangleAlert size={60} color="red" />
       </View>

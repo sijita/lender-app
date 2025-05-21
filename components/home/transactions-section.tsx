@@ -1,18 +1,25 @@
 import { View, Text } from 'react-native';
 import RecentTransactions from './recent-transactions';
 import UpcomingPayments from './upcoming-payments';
-import useFetchRecentTransactions from '@/actions/transactions/use-fetch-recent-transactions';
 import useFetchUpcomingPayments from '@/actions/payments/use-fetch-upcoming-payments';
 import Loading from '@/components/ui/loading';
 import OverduePayments from './overdue-payments';
 import useFetchOverduePayments from '@/actions/payments/use-fetch-overdue-payments';
+import RecentPayments from './recent-payments';
+import useFetchRecentLoans from '@/actions/transactions/use-fetch-recent-loans';
+import useFetchRecentPayments from '@/actions/transactions/use-fetch-recent-payments';
 
 export default function TransactionsSection() {
   const {
-    recentTransactions,
+    recentLoans,
     loading: loadingTransactions,
     error: transactionsError,
-  } = useFetchRecentTransactions();
+  } = useFetchRecentLoans();
+  const {
+    recentPayments,
+    loading: loadingRecentPayments,
+    error: recentPaymentsError,
+  } = useFetchRecentPayments();
   const {
     upcomingPayments,
     loading: loadingPayments,
@@ -24,11 +31,16 @@ export default function TransactionsSection() {
     error: overdueError,
   } = useFetchOverduePayments();
 
-  if (loadingTransactions || loadingPayments || loadingOverdue) {
+  if (loadingTransactions || loadingPayments || loadingOverdue || loadingRecentPayments) {
     return <Loading loadingText="Cargando datos..." />;
   }
 
-  if (transactionsError || paymentsError || overdueError) {
+  if (
+    transactionsError ||
+    paymentsError ||
+    overdueError ||
+    recentPaymentsError
+  ) {
     return (
       <View className="flex-col">
         {transactionsError && (
@@ -46,14 +58,20 @@ export default function TransactionsSection() {
             Error al cargar pagos vencidos: {overdueError}
           </Text>
         )}
+        {recentPaymentsError && (
+          <Text className="text-red-500 p-4">
+            Error al cargar pagos recientes: {recentPaymentsError}
+          </Text>
+        )}
       </View>
     );
   }
 
   if (
-    !recentTransactions.length &&
+    !recentLoans.length &&
     !upcomingPayments.length &&
-    !overduePayments.length
+    !overduePayments.length &&
+    !recentPayments.length
   ) {
     return (
       <View className="flex-col items-center justify-center py-10 bg-white rounded-xl border border-gray-100">
@@ -67,9 +85,10 @@ export default function TransactionsSection() {
   return (
     <View className="flex-col gap-5">
       <Text className="text-2xl font-geist-bold">Transacciones recientes</Text>
-      <RecentTransactions transactions={recentTransactions} />
-      <UpcomingPayments payments={upcomingPayments} />
-      <OverduePayments payments={overduePayments} />
+      <RecentTransactions transactions={recentLoans} />
+      <RecentPayments payments={recentPayments} />
+      <UpcomingPayments payments={upcomingPayments.slice(0, 5)} />
+      <OverduePayments payments={overduePayments.slice(0, 5)} />
     </View>
   );
 }

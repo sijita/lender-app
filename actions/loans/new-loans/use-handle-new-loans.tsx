@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/toast-context';
 import { useDebouncedCallback } from 'use-debounce';
 import useCalculateDueDate from '@/hooks/use-calculate-due-date';
+import { format } from '@formkit/tempo';
 
 export function useHandleNewLoans() {
   const { showToast } = useToast();
@@ -242,6 +243,22 @@ export function useHandleNewLoans() {
 
       const { totalInterest, totalPayment, monthlyPayment } = calculatedValues;
 
+      // Formatear fechas en timezone America/Bogota
+      const paymentDateFormatted = formData.paymentDate
+        ? format({
+            date: formData.paymentDate,
+            tz: 'America/Bogota',
+            format: 'YYYY-MM-DD',
+          })
+        : undefined;
+      const startDateFormatted = formData.startDate
+        ? format({
+            date: formData.startDate,
+            tz: 'America/Bogota',
+            format: 'YYYY-MM-DD',
+          })
+        : undefined;
+
       const loanData = {
         amount,
         interest: totalInterest,
@@ -249,7 +266,7 @@ export function useHandleNewLoans() {
         quota: monthlyPayment,
         term: term,
         pending_quotas: formData.term,
-        payment_date: formData.paymentDate?.toISOString().split('T')[0],
+        payment_date: paymentDateFormatted,
         due_date: dueDateResult?.dateObject,
         status: 'active',
         client_id: formData.clientId,
@@ -258,6 +275,7 @@ export function useHandleNewLoans() {
         payment_frequency: formData.paymentFrequency || 'weekly',
         paid_amount: 0,
         notes: formData.notes || null,
+        created_at: startDateFormatted,
       };
 
       const { error } = await supabase.from('loans').insert(loanData).select();

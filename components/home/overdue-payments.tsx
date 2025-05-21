@@ -13,6 +13,7 @@ export default function OverduePayments({
 }) {
   const { refetch } = useFetchTransactions();
   const setActiveTab = useTransactionTabs((state) => state.setActiveTab);
+
   return (
     <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
       <View className="flex-col">

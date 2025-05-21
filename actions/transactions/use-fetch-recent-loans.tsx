@@ -2,22 +2,20 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Transaction } from '@/types/transactions';
 
-interface RecentTransaction {
+interface RecentLoans {
   id: number;
   name: string;
-  type: 'payment_received' | 'new_loan';
+  type: 'new_loan';
   amount: number;
   date: string;
 }
 
-export default function useFetchRecentTransactions() {
-  const [recentTransactions, setRecentTransactions] = useState<
-    RecentTransaction[]
-  >([]);
+export default function useFetchRecentLoans() {
+  const [recentLoans, setRecentLoans] = useState<RecentLoans[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchRecentTransactions = async () => {
+  const fetchRecentLoans = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -36,6 +34,7 @@ export default function useFetchRecentTransactions() {
           )
         `
         )
+        .eq('type', 'loan_disbursement')
         .order('created_at', { ascending: false })
         .limit(5); // Limitar a las 5 transacciones más recientes
 
@@ -45,10 +44,6 @@ export default function useFetchRecentTransactions() {
 
       // Transformar los datos al formato requerido por el componente
       const formattedTransactions = data.map((transaction: Transaction) => {
-        // Determinar el tipo de transacción
-        const transactionType =
-          transaction.type === 'payment' ? 'payment_received' : 'new_loan';
-
         // Formatear la fecha
         const transactionDate = new Date(transaction.created_at);
         const today = new Date();
@@ -78,13 +73,13 @@ export default function useFetchRecentTransactions() {
         return {
           id: transaction.id,
           name: clientName,
-          type: transactionType as 'payment_received' | 'new_loan',
+          type: 'new_loan' as 'new_loan',
           amount: transaction.amount,
           date: formattedDate,
         };
       });
 
-      setRecentTransactions(formattedTransactions);
+      setRecentLoans(formattedTransactions);
     } catch (err: any) {
       setError(err.message || 'Error al cargar las transacciones recientes');
       console.error('Error fetching recent transactions:', err);
@@ -94,13 +89,13 @@ export default function useFetchRecentTransactions() {
   };
 
   useEffect(() => {
-    fetchRecentTransactions();
+    fetchRecentLoans();
   }, []);
 
   return {
-    recentTransactions,
+    recentLoans,
     loading,
     error,
-    refetch: fetchRecentTransactions,
+    refetch: fetchRecentLoans,
   };
 }

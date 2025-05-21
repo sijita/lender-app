@@ -6,14 +6,26 @@ import { useRouter } from 'expo-router';
 import useTransactionTabs from '@/store/use-transaction-tabs';
 import useFetchUpcomingPayments from '../payments/use-fetch-upcoming-payments';
 import useFetchOverduePayments from '../payments/use-fetch-overdue-payments';
+import { format } from '@formkit/tempo';
 
 export type TransactionType = 'loan_disbursement' | 'payment' | 'all';
-export type PaymentStatus = 'all' | 'completed' | 'upcoming' | 'overdue';
+export type PaymentStatus = 'completed' | 'upcoming' | 'overdue';
+
+export type TransactionParams = {
+  type?: TransactionType;
+  searchQuery?: string;
+  orderBy?: string;
+  orderDirection?: 'asc' | 'desc';
+  paymentStatus?: PaymentStatus;
+  startDate?: Date | null;
+  endDate?: Date | null;
+};
 
 export default function useFetchTransactions() {
   const router = useRouter();
   const activeTab = useTransactionTabs((state) => state.activeTab);
   const setActiveTab = useTransactionTabs((state) => state.setActiveTab);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
   const [orderBy, setOrderBy] = useState('created_at');
@@ -21,30 +33,57 @@ export default function useFetchTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('all');
+  const [paymentStatus, setPaymentStatus] =
+    useState<PaymentStatus>('completed');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState<'start' | 'end' | null>(
+    null
+  );
 
-  const { upcomingPayments } = useFetchUpcomingPayments();
-  const { overduePayments } = useFetchOverduePayments();
-
-  console.log('activeTab', activeTab);
-  console.log('paymentStatus', paymentStatus);
+  const { upcomingPayments } = useFetchUpcomingPayments({
+    startDate: startDate,
+    endDate: endDate,
+  });
+  const { overduePayments } = useFetchOverduePayments({
+    startDate: startDate,
+    endDate: endDate,
+  });
 
   const fetchTransactions = async (queryParams?: {
     type?: TransactionType;
     searchQuery?: string;
     orderBy?: string;
     orderDirection?: 'asc' | 'desc';
+    startDate?: Date | null;
+    endDate?: Date | null;
+    paymentStatus?: PaymentStatus;
   }) => {
     try {
       setLoading(true);
       setError(null);
 
       const activeParams = queryParams || {};
-      const { type, searchQuery, orderBy, orderDirection } = activeParams;
+      const {
+        type,
+        searchQuery,
+        orderBy,
+        orderDirection,
+        startDate,
+        endDate,
+        paymentStatus,
+      } = activeParams;
 
+      // Si se proporciona un estado de pago, actualizar el estado local
+      if (paymentStatus) {
+        setPaymentStatus(paymentStatus);
+      }
+
+      // Construir la consulta base según el tipo de transacción
       let query = supabase.from('transactions').select(`
           *,
           loan:loan_id (
+            id,
             client:client_id (
               name,
               last_name
@@ -59,6 +98,7 @@ export default function useFetchTransactions() {
       if (searchQuery && searchQuery.trim() !== '') {
         const isNumeric = /^\d+$/.test(searchQuery);
         let clientIds: string[] = [];
+
         const { data: clients, error: clientError } = await supabase
           .from('clients')
           .select('id')
@@ -83,6 +123,38 @@ export default function useFetchTransactions() {
         }
       }
 
+      // Filtrar por fecha según el tipo de transacción
+      if (startDate) {
+        query = query.gte(
+          'created_at',
+          format({
+            date: startDate,
+            format: 'YYYY-MM-DD',
+            tz: 'America/Bogota',
+          })
+        );
+      }
+
+      if (endDate) {
+        // Añadir un día a la fecha final para incluir todo el día
+        const nextDay = new Date(endDate);
+        console.log('nextDay', nextDay); // Agrega este console.log para depurar el valor de nextDay
+        nextDay.setDate(nextDay.getDate() + 1);
+
+        console.log('nextDay + 1', nextDay); // Agrega este console.log para depurar el valor de nextDay
+
+        console.log('nextDay.toISOString()'); // Agrega este console.log para depurar el valor de nextDay.toISOString()
+
+        query = query.lt(
+          'created_at',
+          format({
+            date: nextDay,
+            format: 'YYYY-MM-DD',
+            tz: 'America/Bogota',
+          })
+        );
+      }
+
       if (orderBy) {
         query = query.order(orderBy, { ascending: orderDirection === 'asc' });
       }
@@ -102,6 +174,14 @@ export default function useFetchTransactions() {
     }
   };
 
+  // Efecto inicial para cargar las transacciones al montar el componente
+  useEffect(() => {
+    fetchTransactions({
+      type: activeTab === 'loan' ? 'loan_disbursement' : 'payment',
+    });
+  }, []);
+
+  // Efecto para actualizar las transacciones cuando cambia la pestaña activa
   useEffect(() => {
     fetchTransactions({
       type: activeTab === 'loan' ? 'loan_disbursement' : 'payment',
@@ -110,9 +190,19 @@ export default function useFetchTransactions() {
 
   useEffect(() => {
     fetchTransactions({
+      type: activeTab === 'loan' ? 'loan_disbursement' : 'payment',
       searchQuery: debouncedSearchQuery,
     });
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery, activeTab]);
+
+  // Efecto para refrescar cuando cambian las fechas
+  useEffect(() => {
+    fetchTransactions({
+      type: activeTab === 'loan' ? 'loan_disbursement' : 'payment',
+      startDate,
+      endDate,
+    });
+  }, [startDate, endDate, activeTab]);
 
   return {
     transactions:
@@ -120,8 +210,6 @@ export default function useFetchTransactions() {
         ? upcomingPayments
         : activeTab === 'payment' && paymentStatus === 'overdue'
         ? overduePayments
-        : activeTab === 'payment' && paymentStatus === 'all'
-        ? [...transactions, ...upcomingPayments, ...overduePayments]
         : transactions,
     loading,
     error,
@@ -131,6 +219,12 @@ export default function useFetchTransactions() {
     orderBy,
     orderDirection,
     paymentStatus,
+    startDate,
+    endDate,
+    showDatePicker,
+    setStartDate,
+    setEndDate,
+    setShowDatePicker,
     setOrderDirection,
     setOrderBy,
     setActiveTab,
