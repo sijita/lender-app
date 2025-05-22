@@ -14,12 +14,17 @@ export default function useFetchClients() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalClients, setTotalClients] = useState(0);
 
   const fetchClients = async (queryParams?: {
     searchQuery?: string;
     orderBy?: string;
     orderDirection?: 'asc' | 'desc';
     status?: 'pending' | 'defaulted' | 'completed' | 'all';
+    page?: number;
+    pageSize?: number;
   }) => {
     try {
       setLoading(true);
@@ -27,8 +32,10 @@ export default function useFetchClients() {
 
       const activeParams = queryParams || {};
       const { searchQuery, orderBy, orderDirection, status } = activeParams;
+      const currentPage = activeParams.page ?? page;
+      const currentPageSize = activeParams.pageSize ?? pageSize;
 
-      let query = supabase.from('clients').select('*');
+      let query = supabase.from('clients').select('*', { count: 'exact' });
 
       if (searchQuery && searchQuery.trim() !== '') {
         const isNumeric = /^\d+$/.test(searchQuery);
@@ -46,9 +53,15 @@ export default function useFetchClients() {
         query = query.order(orderBy, { ascending: orderDirection === 'asc' });
       }
 
-      const { data: clientsData, error: clientsError } = await query;
+      // Paginación
+      const from = (currentPage - 1) * currentPageSize;
+      const to = from + currentPageSize - 1;
+      query = query.range(from, to);
+
+      const { data: clientsData, error: clientsError, count } = await query;
 
       if (clientsError) throw clientsError;
+      setTotalClients(count ?? 0);
 
       const clientsWithLoans = await Promise.all(
         clientsData.map(async (client) => {
@@ -117,8 +130,8 @@ export default function useFetchClients() {
   };
 
   useEffect(() => {
-    fetchClients();
-  }, []);
+    fetchClients({ page, pageSize });
+  }, [page, pageSize]);
 
   useEffect(() => {
     fetchClients({
@@ -139,5 +152,10 @@ export default function useFetchClients() {
     setOrderBy,
     setOrderDirection,
     refetch: fetchClients,
+    page,
+    setPage,
+    pageSize,
+    setPageSize,
+    totalClients,
   };
 }

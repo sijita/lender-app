@@ -19,6 +19,8 @@ export type TransactionParams = {
   paymentStatus?: PaymentStatus;
   startDate?: Date | null;
   endDate?: Date | null;
+  page?: number;
+  pageSize?: number;
 };
 
 export default function useFetchTransactions() {
@@ -40,6 +42,9 @@ export default function useFetchTransactions() {
   const [showDatePicker, setShowDatePicker] = useState<'start' | 'end' | null>(
     null
   );
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalTransactions, setTotalTransactions] = useState(0);
 
   const { upcomingPayments } = useFetchUpcomingPayments({
     startDate: startDate,
@@ -58,6 +63,8 @@ export default function useFetchTransactions() {
     startDate?: Date | null;
     endDate?: Date | null;
     paymentStatus?: PaymentStatus;
+    page?: number;
+    pageSize?: number;
   }) => {
     try {
       setLoading(true);
@@ -72,15 +79,16 @@ export default function useFetchTransactions() {
         startDate,
         endDate,
         paymentStatus,
+        page: paramPage,
+        pageSize: paramPageSize,
       } = activeParams;
 
-      // Si se proporciona un estado de pago, actualizar el estado local
       if (paymentStatus) {
         setPaymentStatus(paymentStatus);
       }
 
-      // Construir la consulta base según el tipo de transacción
-      let query = supabase.from('transactions').select(`
+      let query = supabase.from('transactions').select(
+        `
           *,
           loan:loan_id (
             id,
@@ -89,7 +97,9 @@ export default function useFetchTransactions() {
               last_name
             )
           )
-        `);
+        `,
+        { count: 'exact' }
+      );
 
       if (type) {
         query = query.eq('type', type);
@@ -123,7 +133,6 @@ export default function useFetchTransactions() {
         }
       }
 
-      // Filtrar por fecha según el tipo de transacción
       if (startDate) {
         query = query.gte(
           'created_at',
@@ -136,15 +145,8 @@ export default function useFetchTransactions() {
       }
 
       if (endDate) {
-        // Añadir un día a la fecha final para incluir todo el día
         const nextDay = new Date(endDate);
-        console.log('nextDay', nextDay); // Agrega este console.log para depurar el valor de nextDay
         nextDay.setDate(nextDay.getDate() + 1);
-
-        console.log('nextDay + 1', nextDay); // Agrega este console.log para depurar el valor de nextDay
-
-        console.log('nextDay.toISOString()'); // Agrega este console.log para depurar el valor de nextDay.toISOString()
-
         query = query.lt(
           'created_at',
           format({
@@ -159,13 +161,20 @@ export default function useFetchTransactions() {
         query = query.order(orderBy, { ascending: orderDirection === 'asc' });
       }
 
-      const { data, error } = await query;
+      const currentPage = paramPage || page;
+      const currentPageSize = paramPageSize || pageSize;
+      const from = (currentPage - 1) * currentPageSize;
+      const to = from + currentPageSize - 1;
+      query = query.range(from, to);
+
+      const { data, error, count } = await query;
 
       if (error) {
         throw error;
       }
 
-      return setTransactions(data || []);
+      setTotalTransactions(count || 0);
+      setTransactions(data || []);
     } catch (err: any) {
       setError(err.message || 'Error al cargar las transacciones');
       console.error('Error fetching transactions:', err);
@@ -231,5 +240,10 @@ export default function useFetchTransactions() {
     setSearchQuery,
     setPaymentStatus,
     refetch: fetchTransactions,
+    page,
+    setPage,
+    pageSize,
+    setPageSize,
+    totalTransactions,
   };
 }

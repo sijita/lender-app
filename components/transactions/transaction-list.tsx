@@ -5,7 +5,6 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import { useState } from 'react';
 import useFetchTransactions, {
   PaymentStatus,
 } from '@/actions/transactions/use-fetch-transactions';
@@ -27,6 +26,7 @@ import {
 import DynamicIcon from '@/components/ui/dynamic-icon';
 import Loading from '@/components/ui/loading';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import PaginationButtons from '../ui/pagination-buttons';
 
 export default function TransactionList() {
   const {
@@ -51,6 +51,10 @@ export default function TransactionList() {
     setSearchQuery,
     setActiveTab,
     refetch,
+    page,
+    setPage,
+    pageSize,
+    totalTransactions,
   } = useFetchTransactions();
 
   const transactionType =
@@ -370,6 +374,12 @@ export default function TransactionList() {
             )}
           </View>
         </ScrollView>
+        <PaginationButtons
+          page={page}
+          setPage={setPage}
+          totalClients={totalTransactions}
+          pageSize={pageSize}
+        />
       </View>
       {showDatePicker && (
         <DateTimePicker

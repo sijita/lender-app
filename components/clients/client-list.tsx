@@ -10,8 +10,13 @@ import useFetchClients from '@/actions/clients/use-fetch-clients';
 import Error from '@/components/ui/error';
 import ClientTypeTabs from './client-type-tabs';
 import DynamicIcon from '@/components/ui/dynamic-icon';
-import { ChevronDown, ChevronRight, Search } from 'lucide-react-native';
+import {
+  ChevronDown,
+  ChevronRight,
+  Search,
+} from 'lucide-react-native';
 import Loading from '@/components/ui/loading';
+import PaginationButtons from '../ui/pagination-buttons';
 
 export default function ClientList() {
   const {
@@ -27,6 +32,10 @@ export default function ClientList() {
     setSearchQuery,
     setOrderBy,
     refetch,
+    page,
+    setPage,
+    pageSize,
+    totalClients,
   } = useFetchClients();
 
   if (loading) {
@@ -174,6 +183,12 @@ export default function ClientList() {
           )}
         </View>
       </ScrollView>
+      <PaginationButtons
+        page={page}
+        setPage={setPage}
+        totalClients={totalClients}
+        pageSize={pageSize}
+      />
     </View>
   );
 }
