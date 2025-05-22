@@ -26,9 +26,7 @@ export default function NewTransaction() {
             { id: 'payment', label: 'Nuevo pago' },
           ]}
         />
-        <View className="bg-white rounded-lg p-5 border border-gray-100">
-          {activeTab === 'loan' ? <NewLoanForm /> : <NewPaymentForm />}
-        </View>
+        {activeTab === 'loan' ? <NewLoanForm /> : <NewPaymentForm />}
       </View>
     </CustomSafeScreen>
   );

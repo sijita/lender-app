@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, Platform } from 'react-native';
 import RecentTransactions from './recent-transactions';
 import UpcomingPayments from './upcoming-payments';
 import useFetchUpcomingPayments from '@/actions/payments/use-fetch-upcoming-payments';
@@ -31,7 +31,12 @@ export default function TransactionsSection() {
     error: overdueError,
   } = useFetchOverduePayments();
 
-  if (loadingTransactions || loadingPayments || loadingOverdue || loadingRecentPayments) {
+  if (
+    loadingTransactions ||
+    loadingPayments ||
+    loadingOverdue ||
+    loadingRecentPayments
+  ) {
     return <Loading loadingText="Cargando datos..." />;
   }
 
@@ -85,10 +90,21 @@ export default function TransactionsSection() {
   return (
     <View className="flex-col gap-5">
       <Text className="text-2xl font-geist-bold">Transacciones recientes</Text>
-      <RecentTransactions transactions={recentLoans} />
-      <RecentPayments payments={recentPayments} />
-      <UpcomingPayments payments={upcomingPayments.slice(0, 5)} />
-      <OverduePayments payments={overduePayments.slice(0, 5)} />
+      {Platform.OS === 'web' ? (
+        <View className="grid grid-cols-2 gap-5">
+          <RecentTransactions transactions={recentLoans} />
+          <RecentPayments payments={recentPayments} />
+          <UpcomingPayments payments={upcomingPayments.slice(0, 5)} />
+          <OverduePayments payments={overduePayments.slice(0, 5)} />
+        </View>
+      ) : (
+        <>
+          <RecentTransactions transactions={recentLoans} />
+          <RecentPayments payments={recentPayments} />
+          <UpcomingPayments payments={upcomingPayments.slice(0, 5)} />
+          <OverduePayments payments={overduePayments.slice(0, 5)} />
+        </>
+      )}
     </View>
   );
 }

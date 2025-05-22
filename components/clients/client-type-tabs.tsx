@@ -31,7 +31,7 @@ export default function ClientTypeTabs({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      className="border-b border-gray-200"
+      className="border-b border-gray-200 sm:flex sm:justify-center"
     >
       <View className="flex-row">
         {tabs.map((tab) => (

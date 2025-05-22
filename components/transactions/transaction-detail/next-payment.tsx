@@ -11,7 +11,7 @@ export default function NextPayment({
   amount: number;
 }) {
   return (
-    <View className="flex-col gap-3 justify-between items-center p-4 bg-blue-50 rounded-lg border border-blue-100">
+    <View className="flex-col gap-3 justify-between items-center p-4 bg-blue-50 rounded-lg border border-blue-100 sm:mt-auto">
       <View className="flex-row items-center gap-1">
         <Calendar size={18} color="#000" />
         <View className="flex-col">

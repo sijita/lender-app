@@ -14,7 +14,7 @@ export default function TransactionInfo({
   transaction: TransactionDetail;
 }) {
   return (
-    <View className="flex-col gap-6 bg-white p-5 border border-gray-100 rounded-xl">
+    <View className="sm:flex-1 flex-col gap-6 bg-white p-5 border border-gray-100 rounded-xl">
       <Text className="text-xl font-geist-bold">
         Detalles de la transacción
       </Text>

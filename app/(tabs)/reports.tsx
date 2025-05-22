@@ -5,15 +5,21 @@ import ReportCard from '@/components/reports/report-card';
 import SummaryCard from '@/components/reports/summary-card';
 import useReports from '@/hooks/use-reports';
 import CustomSafeScreen from '@/components/ui/custom-safe-screen';
+import { useSidebar } from '@/hooks/use-sidebar';
+import ToggleButton from '@/components/home/toggle-button';
 
 const Reports = () => {
   const { loading, reportData, handlePeriodChange, handleDownloadReport } =
     useReports();
+  const isOpen = useSidebar((state) => state.isOpen);
 
   return (
     <CustomSafeScreen>
-      <View className="flex-row justify-between items-center px-4 py-6 bg-white border-b border-gray-200">
-        <Text className="text-2xl font-geist-bold">Reportes</Text>
+      <View className="flex-row items-center px-4 py-6 bg-white border-b border-gray-200">
+        {!isOpen && <ToggleButton />}
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-2xl font-geist-bold">Reportes</Text>
+        </View>
       </View>
       <View className="flex-col gap-5 p-5">
         <SummaryCard

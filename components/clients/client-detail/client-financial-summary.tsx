@@ -1,8 +1,6 @@
 import { View, Text } from 'react-native';
 import { formatCurrency } from '@/utils';
 import { ClientDetail } from '@/actions/clients/use-fetch-client-detail';
-import { format } from '@formkit/tempo';
-import { Calendar } from 'lucide-react-native';
 import NextPayment from '@/components/transactions/transaction-detail/next-payment';
 
 export default function ClientFinancialSummary({
@@ -11,8 +9,8 @@ export default function ClientFinancialSummary({
   client: ClientDetail;
 }) {
   return (
-    <View className="flex-col gap-6">
-      <Text className="text-xl font-geist-bold">Resumen Financiero</Text>
+    <View className="h-full flex-col gap-6">
+      <Text className="text-xl font-geist-bold">Resumen financiero</Text>
       <View className="flex-col gap-4">
         <View className="flex-row justify-between items-center">
           <Text className="text-gray-500 font-geist-medium text-lg">

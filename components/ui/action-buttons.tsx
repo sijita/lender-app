@@ -18,7 +18,7 @@ const ActionButtons = ({
   return (
     <View className="flex-row justify-between mt-4">
       <TouchableOpacity
-        className="py-3 px-6 border border-gray-200 rounded-lg"
+        className="bg-white py-3 px-6 border border-gray-200 rounded-lg"
         onPress={onCancel}
         disabled={isSubmitting}
       >

@@ -6,11 +6,35 @@ const TabIcon = ({
   focused,
   icon,
   title,
+  isWeb,
 }: {
   focused: boolean;
   icon: keyof typeof icons;
   title: string;
+  isWeb?: boolean;
 }) => {
+  if (isWeb) {
+    return (
+      <View
+        className={`flex-row gap-3 items-center w-full h-full p-3 ${
+          focused ? 'bg-black rounded-lg' : ''
+        }`}
+      >
+        <DynamicIcon name={icon} size={20} color={focused ? '#fff' : '#000'} />
+        <Text
+          className={`text-sm ${
+            focused
+              ? 'font-geist-semibold text-white'
+              : 'text-gray-700 font-geist-regular'
+          }`}
+        >
+          {title}
+        </Text>
+      </View>
+    );
+  }
+
+  // Mobile version
   if (focused) {
     return (
       <View className="flex flex-row w-full flex-1 min-w-[100px] min-h-[60px] mt-3 justify-center items-center rounded-full overflow-hidden bg-black">

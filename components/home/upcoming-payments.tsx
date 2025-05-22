@@ -75,7 +75,7 @@ export default function UpcomingPayments({
       </View>
       <Link
         href="/(tabs)/transactions"
-        className="p-4 bg-black rounded-lg"
+        className="p-4 bg-black rounded-lg mt-auto"
         asChild
       >
         <TouchableOpacity

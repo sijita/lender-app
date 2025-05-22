@@ -29,7 +29,7 @@ export default function LoanInfo({
       : 0;
 
   return (
-    <View className="flex-col gap-8 bg-white p-5 border border-gray-100 rounded-xl">
+    <View className="sm:flex-1 flex-col gap-8 bg-white p-5 border border-gray-100 rounded-xl">
       <View className="flex-row justify-between items-center">
         <Text className="text-xl font-geist-bold">Detalles del préstamo</Text>
         <View className="flex items-end shrink-0">

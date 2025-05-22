@@ -1,5 +1,5 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Animated, KeyboardAvoidingView } from 'react-native';
+import { Animated, KeyboardAvoidingView, Platform } from 'react-native';
 import { useTabBarScroll } from '@/hooks/use-tab-bar-scroll';
 
 export default function CustomSafeScreen({
@@ -24,7 +24,7 @@ export default function CustomSafeScreen({
           paddingLeft: insets.left,
           paddingRight: insets.right,
         }}
-        onScroll={handleScroll}
+        onScroll={Platform.OS !== 'web' ? handleScroll : undefined}
         scrollEventThrottle={15}
         contentContainerStyle={{
           paddingBottom: 50,

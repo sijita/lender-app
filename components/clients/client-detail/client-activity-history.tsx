@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { formatCurrency } from '@/utils';
 import DynamicIcon from '@/components/ui/dynamic-icon';
 
@@ -17,7 +17,7 @@ export default function ClientActivityHistory({
     <View className="flex-col gap-6 bg-white p-5 border border-gray-100 rounded-xl">
       <Text className="text-xl font-geist-bold">Historial de actividad</Text>
       {activities.length > 0 ? (
-        <View className="flex-col gap-4">
+        <ScrollView contentContainerClassName="flex-col gap-5">
           {activities.map((activity) => (
             <View key={activity.id} className="flex-row items-center gap-3">
               <DynamicIcon
@@ -44,7 +44,7 @@ export default function ClientActivityHistory({
               )}
             </View>
           ))}
-        </View>
+        </ScrollView>
       ) : (
         <View className="py-4 items-center">
           <Text className="text-gray-500">No hay actividades registradas</Text>

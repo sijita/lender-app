@@ -60,10 +60,14 @@ export default function TransactionDetail() {
         </View>
         {transaction && transaction?.loan?.client && (
           <>
-            <ClientInfo client={transaction.loan.client} />
-            <TransactionInfo transaction={transaction} />
-            <LoanInfo loan={transaction.loan} />
-            <QuickActions loanId={transaction?.loan?.id} />
+            <View className="sm:flex-row sm:gap-5">
+              <View className="sm:flex-col sm:gap-5">
+                <ClientInfo client={transaction.loan.client} />
+                <TransactionInfo transaction={transaction} />
+                <QuickActions loanId={transaction?.loan?.id} />
+              </View>
+              <LoanInfo loan={transaction.loan} />
+            </View>
           </>
         )}
       </View>

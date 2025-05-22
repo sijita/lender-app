@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import BackButton from '@/components/ui/back-button';
 import ClientDetailInfo from '@/components/clients/client-detail/client-detail-info';
@@ -45,11 +45,14 @@ export default function ClientDetail() {
     <CustomSafeScreen>
       <Stack.Screen options={{ headerShown: false }} />
       <BackButton title={`Cliente #${client?.id}`} />
-      <View className="p-5 flex-col gap-5">
-        <ClientDetailInfo client={client} />
+      <View className="p-5 flex-col sm:flex-row gap-5">
+        <View className="flex-col gap-5">
+          <ClientDetailInfo client={client} />
+          {Platform.OS === 'web' && <ClientQuickActions />}
+        </View>
         <ClientDetailTabs client={client} />
         <ClientActivityHistory activities={client?.activity_history} />
-        <ClientQuickActions />
+        {Platform.OS !== 'web' && <ClientQuickActions />}
       </View>
     </CustomSafeScreen>
   );
