@@ -41,6 +41,8 @@ export default function ClientDetail() {
     );
   }
 
+  console.log(Platform.OS);
+
   return (
     <CustomSafeScreen>
       <Stack.Screen options={{ headerShown: false }} />

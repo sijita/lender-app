@@ -47,7 +47,7 @@ const NewLoanForm = () => {
   };
 
   return (
-    <View className="flex-col gap-6 sm:w-[800px] sm:m-auto mt-5">
+    <View className="flex-col gap-6 sm:w-[800px] sm:m-auto">
       <Text className="text-xl font-geist-bold">Registrar nuevo préstamo</Text>
       <View className="flex-col gap-6 bg-white rounded-lg p-5 border border-gray-100">
         <View className="flex-col gap-2">

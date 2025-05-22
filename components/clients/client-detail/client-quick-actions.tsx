@@ -1,11 +1,9 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Link, useLocalSearchParams } from 'expo-router';
-import { BanknoteArrowDown, BanknoteArrowUp, Trash } from 'lucide-react-native';
+import { Trash } from 'lucide-react-native';
 import NewLoanButton from '@/components/ui/new-loan-button';
 import NewPaymentButton from '@/components/ui/new-payment-button';
 
 export default function ClientQuickActions() {
-  const { id } = useLocalSearchParams<{ id: string }>();
   return (
     <View className="flex-col gap-6 rounded-xl bg-white p-5 border border-gray-100">
       <Text className="text-xl font-geist-bold">Acciones rápidas</Text>

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import useFetchTransactionDetail from '@/actions/transactions/use-fetch-transaction-detail';
 import Error from '@/components/ui/error';
@@ -59,16 +59,19 @@ export default function TransactionDetail() {
           </Text>
         </View>
         {transaction && transaction?.loan?.client && (
-          <>
-            <View className="sm:flex-row sm:gap-5">
-              <View className="sm:flex-col sm:gap-5">
-                <ClientInfo client={transaction.loan.client} />
-                <TransactionInfo transaction={transaction} />
-                <QuickActions loanId={transaction?.loan?.id} />
-              </View>
-              <LoanInfo loan={transaction.loan} />
+          <View className="flex-col gap-5 sm:flex-row sm:gap-5">
+            <View className="flex-col gap-5 sm:flex-col sm:gap-5">
+              <ClientInfo client={transaction.loan.client} />
+              <TransactionInfo transaction={transaction} />
+              {Platform.OS === 'web' && (
+                <QuickActions loanId={transaction.loan.id} />
+              )}
             </View>
-          </>
+            <LoanInfo loan={transaction.loan} />
+            {Platform.OS !== 'web' && (
+              <QuickActions loanId={transaction.loan.id} />
+            )}
+          </View>
         )}
       </View>
     </CustomSafeScreen>
