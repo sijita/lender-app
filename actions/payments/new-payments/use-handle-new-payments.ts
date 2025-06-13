@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { router } from 'expo-router';
 import { Payment, paymentSchema } from '@/schemas/payments/payment-schema';
 import { ZodError } from 'zod';
 import { useToast } from '@/components/ui/toast-context';
-import { useDebounce, useDebouncedCallback } from 'use-debounce';
+import { useDebouncedCallback } from 'use-debounce';
+import { formatCurrency } from '@/utils';
 
 export default function useHandleNewPayments() {
   const { showToast } = useToast();
@@ -16,6 +17,7 @@ export default function useHandleNewPayments() {
       outstanding: number;
       pending_quotas: number;
       quota: number;
+      partialQuota: number;
     }
   >({
     clientId: undefined,
@@ -26,11 +28,11 @@ export default function useHandleNewPayments() {
     amount: '',
     date: new Date(),
     method: 'cash',
-    quotas: 1,
     notes: '',
     outstanding: 0,
     pending_quotas: 0,
     quota: 1,
+    partialQuota: 0,
   });
   const [errors, setErrors] = useState<Partial<Record<keyof Payment, string>>>(
     {}
@@ -99,6 +101,7 @@ export default function useHandleNewPayments() {
       loanId: loan.id,
       pending_quotas: loan.pending_quotas,
       quota: loan.quota,
+      partialQuota: loan.partial_quota,
     }));
     setSearchResults([]);
   };
@@ -130,6 +133,7 @@ export default function useHandleNewPayments() {
           outstanding,
           pending_quotas,
           quota,
+          partial_quota,
           status,
           client:client_id (
             id,
@@ -165,12 +169,47 @@ export default function useHandleNewPayments() {
     },
   }));
 
+  const getPaymentStatus = useCallback(() => {
+    if (
+      !formData.amount ||
+      !formData.quota ||
+      formData.partialQuota === undefined
+    ) {
+      return 'partial';
+    }
+    const totalPayment = Number(formData.amount) + formData.partialQuota;
+    return totalPayment >= formData.quota ? 'completed' : 'partial';
+  }, [formData.amount, formData.quota, formData.partialQuota]);
+
+  const getQuotasCovered = useCallback(() => {
+    if (
+      !formData.amount ||
+      !formData.quota ||
+      formData.partialQuota === undefined
+    ) {
+      return 0;
+    }
+    const totalPayment = Number(formData.amount) + formData.partialQuota;
+    return Math.floor(totalPayment / formData.quota);
+  }, [formData.amount, formData.quota, formData.partialQuota]);
+
   const validateForm = (): boolean => {
     try {
       paymentSchema.parse({
         ...formData,
-        quotas: Number(formData.quotas),
+        amount: formData.amount,
+        status: getPaymentStatus(),
+        quotas: getQuotasCovered(),
       });
+
+      if (Number(formData.amount) > formData.outstanding) {
+        showToast({
+          type: 'error',
+          message: 'El monto no puede ser mayor al saldo pendiente',
+        });
+        return false;
+      }
+
       setErrors({});
       return true;
     } catch (error) {
@@ -195,13 +234,19 @@ export default function useHandleNewPayments() {
     try {
       setIsSubmitting(true);
 
+      const paymentStatus = getPaymentStatus();
+      const quotasCovered = getQuotasCovered();
       const paymentData = {
         loan_id: formData.loanId,
         amount: Number(formData.amount),
         method: formData.method,
-        notes: formData.notes,
-        quotas: Number(formData.quotas),
-        status: 'completed',
+        notes:
+          formData.notes ||
+          `Pago de ${formatCurrency(
+            Number(formData.amount)
+          )} (${paymentStatus})`,
+        status: paymentStatus,
+        quotas: quotasCovered, // Added to avoid null
       };
 
       console.log('paymentData:', paymentData);
@@ -227,7 +272,9 @@ export default function useHandleNewPayments() {
         outstanding: 0,
         pending_quotas: 0,
         quota: 1,
+        partialQuota: 0,
       });
+      setFormattedAmount('');
 
       showToast({
         type: 'success',
@@ -239,7 +286,10 @@ export default function useHandleNewPayments() {
       console.error('Error saving payment:', error);
       showToast({
         type: 'error',
-        message: error.message ?? 'Error al registrar el pago',
+        message:
+          error.code === '23502'
+            ? 'Falta un campo requerido en el pago'
+            : error.message ?? 'Error al registrar el pago',
       });
     } finally {
       setIsSubmitting(false);
@@ -255,13 +305,15 @@ export default function useHandleNewPayments() {
     isSearching,
     formattedAmount,
     formattedSearchResults,
+    searchClients,
     handleChange,
     handleDateSelect,
     setShowDatePicker,
-    searchClients,
     selectClient,
     savePayment,
     handleClientSelect,
     handleAmountChange,
+    getPaymentStatus,
+    getQuotasCovered,
   };
 }

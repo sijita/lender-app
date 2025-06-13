@@ -32,11 +32,11 @@ export const paymentSchema = z.object({
   method: z.enum(['cash', 'transfer', 'other'], {
     required_error: 'El método de pago es requerido',
   }),
-  quotas: z
-    .number()
-    .positive({ message: 'El número de cuotas debe ser mayor a 0' })
-    .optional(),
   notes: z.string().optional(),
+  status: z.enum(['partial', 'completed'], {
+    required_error: 'El estado del pago es requerido',
+  }),
+  quotas: z.number().int().min(0).optional(), // Allow zero, optional
 });
 
 export type Payment = z.infer<typeof paymentSchema>;

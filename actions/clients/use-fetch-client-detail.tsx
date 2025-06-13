@@ -93,16 +93,6 @@ export default function useFetchClientDetail(clientId: number) {
 
       if (paymentsError) throw paymentsError;
 
-      // 4. Obtener transacciones relacionadas con los préstamos del cliente
-      const { data: transactionsData, error: transactionsError } =
-        await supabase
-          .from('transactions')
-          .select('*')
-          .in('loan_id', loanIds)
-          .order('created_at', { ascending: false });
-
-      if (transactionsError) throw transactionsError;
-
       // Calcular resumen financiero
       const activeLoans = loansData.filter(
         (loan) => loan.status === 'active' || loan.status === 'defaulted'
@@ -173,18 +163,6 @@ export default function useFetchClientDetail(clientId: number) {
 
       // Formatear historial de actividades (combinando transacciones y pagos)
       const activityHistory = [
-        ...transactionsData.map((transaction) => ({
-          id: transaction.id,
-          type: transaction.type,
-          description:
-            transaction.type === 'loan_disbursement'
-              ? 'Préstamo otorgado'
-              : transaction.type === 'payment'
-              ? 'Pago recibido'
-              : 'Transacción',
-          date: transaction.created_at,
-          amount: parseFloat(transaction.amount),
-        })),
         ...paymentsData.map((payment) => ({
           id: payment.id + 10000, // Evitar colisiones de ID
           type: 'payment',

@@ -18,16 +18,16 @@ export default function ClientPaymentHistory({
         {payments.length > 0 ? (
           <View className="flex-col gap-3">
             <View className="flex-row px-4 pb-4 border-b border-gray-200">
-              <Text className="text-gray-500 font-geist-medium text-sm w-20 text-left">
+              <Text className="w-20 text-sm text-left text-gray-500 font-geist-medium">
                 ID
               </Text>
-              <Text className="text-gray-500 font-geist-medium text-sm flex-1">
+              <Text className="flex-1 text-sm text-gray-500 font-geist-medium">
                 Monto
               </Text>
-              <Text className="text-gray-500 font-geist-medium text-sm w-24 text-right flex-1">
+              <Text className="flex-1 w-24 text-sm text-right text-gray-500 font-geist-medium">
                 Estado
               </Text>
-              <Text className="text-gray-500 font-geist-medium text-sm w-20 text-right">
+              <Text className="w-20 text-sm text-right text-gray-500 font-geist-medium">
                 Fecha
               </Text>
             </View>
@@ -36,30 +36,30 @@ export default function ClientPaymentHistory({
                 key={payment.id}
                 className="flex-row justify-between items-center p-2 border-b border-gray-100"
               >
-                <Text className="text-gray-800 font-geist-medium text-sm w-20 text-left">
+                <Text className="w-20 text-sm text-left text-gray-800 font-geist-medium">
                   #{payment.id}
                 </Text>
-                <Text className="text-gray-800 font-geist-medium text-sm flex-1">
+                <Text className="flex-1 text-sm text-gray-800 font-geist-medium">
                   {formatCurrency(payment.amount)}
                 </Text>
-                <View className="w-24 items-end flex-1">
+                <View className="flex-1 items-end w-24">
                   <Text
                     className={`px-2 py-1 rounded-full text-xs font-geist-medium ${
                       payment.status === 'completed'
                         ? 'bg-green-100 text-green-800'
-                        : payment.status === 'pending'
+                        : payment.status === 'partial'
                         ? 'bg-yellow-100 text-yellow-800'
                         : 'bg-red-100 text-red-800'
                     }`}
                   >
                     {payment.status === 'completed'
                       ? 'Completado'
-                      : payment.status === 'pending'
-                      ? 'Pendiente'
+                      : payment.status === 'partial'
+                      ? 'Parcial'
                       : 'Fallido'}
                   </Text>
                 </View>
-                <Text className="text-gray-800 font-geist-medium text-sm w-20 text-right">
+                <Text className="w-20 text-sm text-right text-gray-800 font-geist-medium">
                   {new Date(payment.date).toLocaleDateString('es-ES', {
                     day: '2-digit',
                     month: '2-digit',
@@ -70,7 +70,7 @@ export default function ClientPaymentHistory({
             ))}
           </View>
         ) : (
-          <View className="py-4 items-center">
+          <View className="items-center py-4">
             <Text className="text-gray-500">No hay pagos registrados</Text>
           </View>
         )}

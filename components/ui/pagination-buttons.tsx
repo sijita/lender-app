@@ -20,9 +20,9 @@ export default function PaginationButtons({
         onPress={() => setPage(page - 1)}
       >
         <ChevronLeft size={20} color="#fff" />
-        <Text className="text-white">Anterior</Text>
+        <Text className="text-white font-geist-regular">Anterior</Text>
       </TouchableOpacity>
-      <Text className="text-gray-700">
+      <Text className="text-gray-700 font-geist-medium">
         Página {page} de {Math.max(1, Math.ceil(totalClients / pageSize))}
       </Text>
       <TouchableOpacity
@@ -30,7 +30,7 @@ export default function PaginationButtons({
         disabled={page >= Math.ceil(totalClients / pageSize)}
         onPress={() => setPage(page + 1)}
       >
-        <Text className="text-white">Siguiente</Text>
+        <Text className="text-white font-geist-regular">Siguiente</Text>
         <ChevronRight size={20} color="#fff" />
       </TouchableOpacity>
     </View>

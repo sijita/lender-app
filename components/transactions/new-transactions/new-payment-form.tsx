@@ -6,14 +6,7 @@ import { formatCurrency } from '@/utils';
 import SearchableSelect from '@/components/ui/searchable-select';
 import ActionButtons from '@/components/ui/action-buttons';
 import { format } from '@formkit/tempo';
-import {
-  Banknote,
-  Calendar,
-  ChevronDown,
-  ChevronUp,
-  Ellipsis,
-  Landmark,
-} from 'lucide-react-native';
+import { Banknote, Calendar, Ellipsis, Landmark } from 'lucide-react-native';
 
 const NewPaymentForm = () => {
   const {
@@ -31,6 +24,8 @@ const NewPaymentForm = () => {
     savePayment,
     handleClientSelect,
     handleAmountChange,
+    getPaymentStatus,
+    getQuotasCovered,
   } = useHandleNewPayments();
 
   const renderOptionItem = ({ item }: { item: any }) => {
@@ -54,9 +49,9 @@ const NewPaymentForm = () => {
   };
 
   return (
-    <View className="flex-col gap-6 sm:w-[800px] sm:m-auto">
+    <View className="flex-col gap-6 sm:w-[800px] sm:m-auto mt-5">
       <Text className="text-xl font-geist-bold">Registrar pago</Text>
-      <View className="flex-col gap-6 bg-white rounded-lg p-5 border border-gray-100">
+      <View className="flex-col gap-6 bg-white rounded-lg p-5 border border-gray-200">
         <View className="flex-col gap-2">
           <SearchableSelect
             label="Cliente"
@@ -82,8 +77,18 @@ const NewPaymentForm = () => {
                 CC: {formData?.documentNumber}
               </Text>
               <Text className="mt-2 font-geist-medium text-lg">
-                {formatCurrency(formData.outstanding)}
+                Saldo pendiente: {formatCurrency(formData.outstanding)}
               </Text>
+              <View className="mt-2 flex-col items-center">
+                <Text className="font-geist-regular text-sm">
+                  Cuota: {formatCurrency(formData.quota)}
+                </Text>
+                <Text className="font-geist-regular text-sm">
+                  Progreso cuota actual:{' '}
+                  {formatCurrency(formData.partialQuota ?? 0)} /{' '}
+                  {formatCurrency(formData.quota)}
+                </Text>
+              </View>
             </View>
           )}
         </View>
@@ -110,10 +115,6 @@ const NewPaymentForm = () => {
                     onPress={() => {
                       if (formData.outstanding) {
                         handleAmountChange(formData.outstanding.toString());
-                        handleChange(
-                          'quotas',
-                          formData.pending_quotas.toString()
-                        );
                       }
                     }}
                   >
@@ -126,77 +127,33 @@ const NewPaymentForm = () => {
               {errors.amount && (
                 <Text className="text-red-500 text-sm">{errors.amount}</Text>
               )}
-            </View>
-            <View className="flex-col gap-2">
-              <Text className="font-geist-medium">Cuotas a pagar</Text>
-              {formData.amount === formData.outstanding.toString() ? (
-                <TextInput
-                  className="border border-gray-200 rounded-lg p-3 flex-1"
-                  editable={false}
-                  value={formData.pending_quotas.toString()}
-                />
-              ) : (
-                <View
-                  className={`border ${
-                    errors.quotas ? 'border-red-500' : 'border-gray-200'
-                  } rounded-lg flex-row items-center`}
+              {formData.amount && (
+                <Text
+                  className={`text-sm ${
+                    getPaymentStatus() === 'partial'
+                      ? 'text-yellow-500'
+                      : 'text-green-500'
+                  }`}
                 >
-                  <TextInput
-                    placeholder="1"
-                    keyboardType="number-pad"
-                    className="flex-1 p-3"
-                    value={formData.quotas?.toString() ?? ''}
-                    onChangeText={(text) => {
-                      handleChange('quotas', text);
-                      handleAmountChange(
-                        (Number(text) * formData.quota).toString()
-                      );
-                    }}
-                  />
-                  <View className="flex-col gap-0">
-                    <TouchableOpacity
-                      className="px-3 py-1"
-                      onPress={() => {
-                        const currentTerm = Number(formData.quotas) || 0;
-                        if (currentTerm < formData.pending_quotas) {
-                          const newQuotas = currentTerm + 1;
-                          handleChange('quotas', String(newQuotas));
-
-                          if (formData.quota) {
-                            const newAmount = (
-                              newQuotas * formData.quota
-                            ).toFixed(0);
-                            handleAmountChange(newAmount);
-                          }
-                        }
-                      }}
-                    >
-                      <ChevronUp size={20} color="#6B7280" />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      className="px-3 py-1"
-                      onPress={() => {
-                        const currentTerm = Number(formData.quotas) || 0;
-                        if (currentTerm > 1) {
-                          const newQuotas = currentTerm - 1;
-                          handleChange('quotas', String(newQuotas));
-
-                          if (formData.quota) {
-                            const newAmount = (
-                              newQuotas * formData.quota
-                            ).toFixed(0);
-                            handleAmountChange(newAmount);
-                          }
-                        }
-                      }}
-                    >
-                      <ChevronDown size={20} color="#6B7280" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-              {errors.quotas && (
-                <Text className="text-red-500 text-sm">{errors.quotas}</Text>
+                  Este pago será registrado como{' '}
+                  {getPaymentStatus() === 'partial' ? 'parcial' : 'completo'}.
+                  {getPaymentStatus() === 'completed' &&
+                    getQuotasCovered() > 0 && (
+                      <> Cubre {getQuotasCovered()} cuota(s).</>
+                    )}
+                  {getPaymentStatus() === 'partial' && (
+                    <>
+                      {' '}
+                      Se necesita{' '}
+                      {formatCurrency(
+                        formData.quota -
+                          (Number(formData.amount) +
+                            (formData.partialQuota ?? 0))
+                      )}{' '}
+                      más para completar una cuota.
+                    </>
+                  )}
+                </Text>
               )}
             </View>
             <View className="flex-col gap-2">

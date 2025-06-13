@@ -33,6 +33,7 @@ export const loanSchema = z.object({
   paymentFrequency: z.enum(['daily', 'weekly', 'biweekly', 'monthly'], {
     required_error: 'La frecuencia de pago es requerida',
   }),
+  partialQuota: z.string().optional(),
   status: z
     .enum(['active', 'completed', 'defaulted'], {
       required_error: 'El estado del préstamo es requerido',
