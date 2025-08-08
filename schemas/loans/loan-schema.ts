@@ -9,19 +9,19 @@ export const loanSchema = z.object({
   amount: z
     .string()
     .min(1, { message: 'El monto es requerido' })
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+    .refine(val => !isNaN(Number(val)) && Number(val) > 0, {
       message: 'El monto debe ser mayor a 0',
     }),
   interestRate: z
     .string()
     .min(1, { message: 'La tasa de interés es requerida' })
-    .refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
+    .refine(val => !isNaN(Number(val)) && Number(val) >= 0, {
       message: 'La tasa de interés debe ser un número válido',
     }),
   term: z
     .string()
     .min(1, { message: 'El plazo es requerido' })
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+    .refine(val => !isNaN(Number(val)) && Number(val) > 0, {
       message: 'El plazo debe ser mayor a 0',
     }),
   startDate: z.date({

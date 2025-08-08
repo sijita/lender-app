@@ -7,7 +7,7 @@ export const paymentSchema = z.object({
       invalid_type_error: 'El cliente es requerido',
     })
     .nullable()
-    .refine((val) => val !== null, {
+    .refine(val => val !== null, {
       message: 'Debe seleccionar un cliente',
     }),
   loanId: z
@@ -16,13 +16,13 @@ export const paymentSchema = z.object({
       invalid_type_error: 'El préstamo es requerido',
     })
     .nullable()
-    .refine((val) => val !== null, {
+    .refine(val => val !== null, {
       message: 'Debe seleccionar un préstamo',
     }),
   amount: z
     .string()
     .min(1, { message: 'El monto es requerido' })
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+    .refine(val => !isNaN(Number(val)) && Number(val) > 0, {
       message: 'El monto debe ser mayor a 0',
     }),
   date: z.date({
