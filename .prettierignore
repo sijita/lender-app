@@ -1,0 +1,10 @@
+node_modules
+.expo
+.expo-shared
+dist
+build
+*.log
+.DS_Store
+*.csv
+package-lock.json
+yarn.lock
