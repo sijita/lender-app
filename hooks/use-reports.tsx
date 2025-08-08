@@ -97,36 +97,42 @@ export default function useReports() {
       );
 
       // Agrupar pagos por mes
-      const incomeByMonth = paymentsData.reduce((acc, payment) => {
-        const date = new Date(payment.created_at);
-        const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
+      const incomeByMonth = paymentsData.reduce(
+        (acc, payment) => {
+          const date = new Date(payment.created_at);
+          const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
 
-        if (!acc[monthYear]) {
-          acc[monthYear] = 0;
-        }
-        acc[monthYear] += parseFloat(payment.amount);
-        return acc;
-      }, {} as Record<string, number>);
+          if (!acc[monthYear]) {
+            acc[monthYear] = 0;
+          }
+          acc[monthYear] += parseFloat(payment.amount);
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
       // Agrupar préstamos por cliente
-      const loansByClient = loansData.reduce((acc, loan) => {
-        const clientName = `${loan.clients?.name} ${loan.clients?.last_name}`;
-        if (!acc[clientName]) {
-          acc[clientName] = 0;
-        }
-        acc[clientName] += parseFloat(loan.outstanding);
-        return acc;
-      }, {} as Record<string, number>);
+      const loansByClient = loansData.reduce(
+        (acc, loan) => {
+          const clientName = `${loan.clients?.name} ${loan.clients?.last_name}`;
+          if (!acc[clientName]) {
+            acc[clientName] = 0;
+          }
+          acc[clientName] += parseFloat(loan.outstanding);
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
       // Calcular tendencias de pago
       const onTimePayments = paymentStatusData.filter(
-        (p) => p.status === 'completed'
+        p => p.status === 'completed'
       ).length;
       const latePayments = paymentStatusData.filter(
-        (p) => p.status === 'late'
+        p => p.status === 'late'
       ).length;
       const missedPayments = paymentStatusData.filter(
-        (p) => p.status === 'missed'
+        p => p.status === 'missed'
       ).length;
 
       // Calcular total de nuevos préstamos
@@ -205,7 +211,7 @@ export default function useReports() {
       // Sección de préstamos pendientes por cliente
       csvContent += 'PRÉSTAMOS PENDIENTES POR CLIENTE\n';
       csvContent += 'Cliente,Monto Pendiente\n';
-      reportData.outstandingLoans.byClient.forEach((item) => {
+      reportData.outstandingLoans.byClient.forEach(item => {
         csvContent += `${item.client},${item.amount}\n`;
       });
       csvContent += '\n';
@@ -213,7 +219,7 @@ export default function useReports() {
       // Sección de ingresos por mes
       csvContent += 'INGRESOS POR MES\n';
       csvContent += 'Mes,Monto\n';
-      reportData.incomeData.byMonth.forEach((item) => {
+      reportData.incomeData.byMonth.forEach(item => {
         csvContent += `${item.month},${item.amount}\n`;
       });
       csvContent += '\n';
