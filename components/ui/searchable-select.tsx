@@ -64,7 +64,7 @@ const SearchableSelect = ({
       setDisplayOptions(searchResults);
     } else if (searchQuery) {
       // Filtrado local si no se proporciona onSearch
-      const filtered = options.filter((option) =>
+      const filtered = options.filter(option =>
         option.label.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setDisplayOptions(filtered);
@@ -73,7 +73,7 @@ const SearchableSelect = ({
     }
   }, [searchQuery, options, searchResults]);
 
-  const selectedOption = options.find((option) => option.id === value);
+  const selectedOption = options.find(option => option.id === value);
 
   const toggleOptions = () => {
     if (!disabled) {
@@ -171,10 +171,10 @@ const SearchableSelect = ({
             {!isSearching && (
               <FlatList
                 data={displayOptions}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 renderItem={
                   renderItem
-                    ? (props) => (
+                    ? props => (
                         <TouchableOpacity
                           onPress={() => handleSelect(props.item)}
                           activeOpacity={0.7}

@@ -15,7 +15,7 @@ export default function PaginationButtons({
   return (
     <View className="flex-row justify-between items-center mt-4">
       <TouchableOpacity
-        className="flex flex-row items-center gap-1 p-3 bg-black rounded-lg disabled:bg-gray-200"
+        className="flex flex-row gap-1 items-start p-3 bg-black rounded-lg disabled:bg-gray-200"
         disabled={page === 1}
         onPress={() => setPage(page - 1)}
       >
@@ -26,7 +26,7 @@ export default function PaginationButtons({
         Página {page} de {Math.max(1, Math.ceil(totalClients / pageSize))}
       </Text>
       <TouchableOpacity
-        className="flex flex-row items-center gap-1 p-3 bg-black rounded-lg disabled:bg-gray-200"
+        className="flex flex-row gap-1 items-start p-3 bg-black rounded-lg disabled:bg-gray-200"
         disabled={page >= Math.ceil(totalClients / pageSize)}
         onPress={() => setPage(page + 1)}
       >

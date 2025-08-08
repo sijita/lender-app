@@ -40,7 +40,7 @@ const Select = ({
 }: SelectProps) => {
   const [showOptions, setShowOptions] = useState(false);
 
-  const selectedOption = options.find((option) => option.id === value);
+  const selectedOption = options.find(option => option.id === value);
 
   const toggleOptions = () => {
     if (!disabled) {
@@ -100,7 +100,7 @@ const Select = ({
             </View>
             <FlatList
               data={options}
-              keyExtractor={(item) => item.id}
+              keyExtractor={item => item.id}
               style={{ maxHeight: 300, minWidth: '80%' }}
               renderItem={({ item }) => (
                 <TouchableOpacity

@@ -4,7 +4,7 @@ import { BanknoteArrowDown } from 'lucide-react-native';
 import { TouchableOpacity, Text } from 'react-native';
 
 export default function NewPaymentButton() {
-  const setActiveTab = useTransactionTabs((state) => state.setActiveTab);
+  const setActiveTab = useTransactionTabs(state => state.setActiveTab);
 
   return (
     <Link
