@@ -41,7 +41,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
           placeholder="Seleccionar tipo"
           options={documentTypes}
           value={formData.documentType}
-          onChange={(value) => handleChange('documentType', value)}
+          onChange={value => handleChange('documentType', value)}
           error={errors.documentType}
           required
         />
@@ -55,7 +55,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
               errors.documentNumber ? 'border-red-500' : 'border-gray-200'
             } rounded-lg p-3`}
             value={formData.documentNumber.toString() ?? ''}
-            onChangeText={(text) => handleChange('documentNumber', text)}
+            onChangeText={text => handleChange('documentNumber', text)}
             keyboardType="number-pad"
           />
           {errors.documentNumber && (
@@ -75,7 +75,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
               errors.name ? 'border-red-500' : 'border-gray-200'
             } rounded-lg p-3`}
             value={formData.name}
-            onChangeText={(text) => handleChange('name', text)}
+            onChangeText={text => handleChange('name', text)}
           />
           {errors.name && (
             <Text className="text-red-500 text-sm">{errors.name}</Text>
@@ -91,7 +91,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
               errors.lastName ? 'border-red-500' : 'border-gray-200'
             } rounded-lg p-3`}
             value={formData.lastName}
-            onChangeText={(text) => handleChange('lastName', text)}
+            onChangeText={text => handleChange('lastName', text)}
           />
           {errors.lastName && (
             <Text className="text-red-500 text-sm">{errors.lastName}</Text>
@@ -108,7 +108,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
               errors.email ? 'border-red-500' : 'border-gray-200'
             } rounded-lg p-3`}
             value={formData.email}
-            onChangeText={(text) => handleChange('email', text)}
+            onChangeText={text => handleChange('email', text)}
             autoCapitalize="none"
           />
           {errors.email && (
@@ -126,7 +126,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
               errors.phone ? 'border-red-500' : 'border-gray-200'
             } rounded-lg p-3`}
             value={formData.phone}
-            onChangeText={(text) => handleChange('phone', text)}
+            onChangeText={text => handleChange('phone', text)}
             maxLength={10}
           />
           {errors.phone && (
@@ -146,7 +146,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
               errors.address ? 'border-red-500' : 'border-gray-200'
             } rounded-lg p-3`}
             value={formData.address}
-            onChangeText={(text) => handleChange('address', text)}
+            onChangeText={text => handleChange('address', text)}
           />
           {errors.address && (
             <Text className="text-red-500 text-sm">{errors.address}</Text>
@@ -158,7 +158,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
             placeholder="Calle 01 #1A - 11"
             className="border border-gray-200 rounded-lg p-3"
             value={formData.subAddress}
-            onChangeText={(text) => handleChange('subAddress', text)}
+            onChangeText={text => handleChange('subAddress', text)}
           />
         </View>
         <View className="flex-col gap-2 ">
@@ -170,7 +170,7 @@ const EditClientForm = ({ clientId }: EditClientFormProps) => {
             className="border border-gray-200 rounded-lg p-3 h-24 text-base"
             textAlignVertical="top"
             value={formData.notes}
-            onChangeText={(text) => handleChange('notes', text)}
+            onChangeText={text => handleChange('notes', text)}
           />
         </View>
       </View>

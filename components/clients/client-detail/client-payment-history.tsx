@@ -31,7 +31,7 @@ export default function ClientPaymentHistory({
                 Fecha
               </Text>
             </View>
-            {payments.map((payment) => (
+            {payments.map(payment => (
               <View
                 key={payment.id}
                 className="flex-row justify-between items-center p-2 border-b border-gray-100"
@@ -48,15 +48,15 @@ export default function ClientPaymentHistory({
                       payment.status === 'completed'
                         ? 'bg-green-100 text-green-800'
                         : payment.status === 'partial'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-red-100 text-red-800'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-red-100 text-red-800'
                     }`}
                   >
                     {payment.status === 'completed'
                       ? 'Completado'
                       : payment.status === 'partial'
-                      ? 'Parcial'
-                      : 'Fallido'}
+                        ? 'Parcial'
+                        : 'Fallido'}
                   </Text>
                 </View>
                 <Text className="w-20 text-sm text-right text-gray-800 font-geist-medium">

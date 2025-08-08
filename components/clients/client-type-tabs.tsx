@@ -34,7 +34,7 @@ export default function ClientTypeTabs({
       className="border-b border-gray-200 sm:flex sm:justify-center"
     >
       <View className="flex-row">
-        {tabs.map((tab) => (
+        {tabs.map(tab => (
           <TouchableOpacity
             key={tab.id}
             onPress={() => {

@@ -30,7 +30,7 @@ export default function ClientDetailTabs({ client }: { client: ClientDetail }) {
           className="border-b border-gray-200 sm:flex sm:justify-center"
         >
           <View className="flex-row">
-            {tabs.map((tab) => (
+            {tabs.map(tab => (
               <TouchableOpacity
                 key={tab.id}
                 onPress={() => setActiveTab(tab.id)}
@@ -51,7 +51,7 @@ export default function ClientDetailTabs({ client }: { client: ClientDetail }) {
         </ScrollView>
       ) : (
         <View className="py-5 flex-row items-center justify-center">
-          {tabs.map((tab) => (
+          {tabs.map(tab => (
             <TouchableOpacity
               key={tab.id}
               onPress={() => setActiveTab(tab.id)}

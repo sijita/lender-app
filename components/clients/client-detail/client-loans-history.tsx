@@ -32,7 +32,7 @@ export default function ClientLoansHistory({
                 Fecha
               </Text>
             </View>
-            {loans?.map((loan) => (
+            {loans?.map(loan => (
               <View
                 key={loan?.id}
                 className="flex-row justify-between items-center p-2 border-b border-gray-100"
@@ -49,15 +49,15 @@ export default function ClientLoansHistory({
                       loan.status === 'completed'
                         ? 'bg-green-100 text-green-800'
                         : loan.status === 'defaulted'
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-yellow-100 text-yellow-800'
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-yellow-100 text-yellow-800'
                     }`}
                   >
                     {loan.status === 'completed'
                       ? 'Libre'
                       : loan.status === 'defaulted'
-                      ? 'En Mora'
-                      : 'Pendiente'}
+                        ? 'En Mora'
+                        : 'Pendiente'}
                   </Text>
                 </View>
                 <Text className="text-gray-800 font-geist-medium text-sm w-20 text-right">

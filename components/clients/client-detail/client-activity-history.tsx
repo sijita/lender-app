@@ -18,7 +18,7 @@ export default function ClientActivityHistory({
       <Text className="text-xl font-geist-bold">Historial de actividad</Text>
       {activities.length > 0 ? (
         <ScrollView contentContainerClassName="flex-col gap-5">
-          {activities.map((activity) => (
+          {activities.map(activity => (
             <View key={activity.id} className="flex-row items-center gap-3">
               <DynamicIcon
                 name={activity.type === 'payment' ? 'ArrowDown' : 'ArrowUp'}

@@ -10,11 +10,7 @@ import useFetchClients from '@/actions/clients/use-fetch-clients';
 import Error from '@/components/ui/error';
 import ClientTypeTabs from './client-type-tabs';
 import DynamicIcon from '@/components/ui/dynamic-icon';
-import {
-  ChevronDown,
-  ChevronRight,
-  Search,
-} from 'lucide-react-native';
+import { ChevronDown, ChevronRight, Search } from 'lucide-react-native';
 import Loading from '@/components/ui/loading';
 import PaginationButtons from '../ui/pagination-buttons';
 
@@ -137,7 +133,7 @@ export default function ClientList() {
               <Text className="text-gray-500">No se encontraron clientes</Text>
             </View>
           ) : (
-            clients.map((client) => (
+            clients.map(client => (
               <Link key={client.id} href={`/client/${client.id}`} asChild>
                 <TouchableOpacity className="flex-row items-center px-4 py-3 border-b border-gray-100">
                   <Text className="w-36 sm:flex-1 font-geist-medium">
@@ -163,15 +159,15 @@ export default function ClientList() {
                         (client as any).status === 'completed'
                           ? 'bg-green-100 text-green-800'
                           : (client as any).status === 'defaulted'
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-yellow-100 text-yellow-800'
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-yellow-100 text-yellow-800'
                       }`}
                     >
                       {(client as any).status === 'defaulted'
                         ? 'En mora'
                         : (client as any).status === 'pending'
-                        ? 'Pendiente'
-                        : 'Libre'}
+                          ? 'Pendiente'
+                          : 'Libre'}
                     </Text>
                   </View>
                   <View className="w-16 items-end">
