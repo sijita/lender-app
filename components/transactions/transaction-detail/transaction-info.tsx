@@ -57,8 +57,8 @@ export default function TransactionInfo({
                   transaction?.payment.method === 'cash'
                     ? 'Banknote'
                     : transaction?.payment.method === 'transfer'
-                    ? 'Landmark'
-                    : 'Ellipsis'
+                      ? 'Landmark'
+                      : 'Ellipsis'
                 }
                 size={15}
                 color="#6B7280"

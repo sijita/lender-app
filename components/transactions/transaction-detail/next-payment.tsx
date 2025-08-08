@@ -12,24 +12,26 @@ export default function NextPayment({
 }) {
   return (
     <View className="flex-col gap-3 justify-between items-center p-4 bg-blue-50 rounded-lg border border-blue-100 sm:mt-auto">
-      <View className="flex-row items-center gap-1">
+      <View className="flex-row gap-1 items-center">
         <Calendar size={18} color="#000" />
         <View className="flex-col">
-          <Text className="font-geist-bold text-lg">Próximo pago</Text>
+          <Text className="text-lg font-geist-bold">Próximo pago</Text>
         </View>
       </View>
-      <Text className="font-geist-bold text-xl">{formatCurrency(amount)}</Text>
-      <Text className="font-geist-medium text-gray-700">
-        {format({
-          date: new Date(
-            nextPaymentDate.includes('T')
-              ? nextPaymentDate
-              : nextPaymentDate + 'T00:00:00-05:00'
-          ),
-          format: 'full',
-          tz: 'America/Bogota',
-          locale: 'es',
-        })}
+      <Text className="text-xl font-geist-bold">{formatCurrency(amount)}</Text>
+      <Text className="text-gray-700 font-geist-medium">
+        {nextPaymentDate
+          ? format({
+              date: new Date(
+                nextPaymentDate?.includes('T')
+                  ? nextPaymentDate
+                  : nextPaymentDate + 'T00:00:00-05:00'
+              ),
+              format: 'full',
+              tz: 'America/Bogota',
+              locale: 'es',
+            })
+          : ''}
       </Text>
     </View>
   );

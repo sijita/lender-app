@@ -107,7 +107,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                   keyboardType="number-pad"
                   className="flex-1 p-3"
                   value={formData.term}
-                  onChangeText={(text) => handleChange('term', text)}
+                  onChangeText={text => handleChange('term', text)}
                 />
                 <View className="flex-col gap-0">
                   <TouchableOpacity
@@ -146,7 +146,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                 placeholder="Seleccionar frecuencia"
                 options={frequencyOptions}
                 value={formData.paymentFrequency || 'weekly'}
-                onChange={(value) => handleChange('paymentFrequency', value)}
+                onChange={value => handleChange('paymentFrequency', value)}
                 error={errors.paymentFrequency}
                 required
               />
@@ -161,7 +161,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                   errors.interestRate ? 'border-red-500' : 'border-gray-200'
                 } rounded-lg p-3`}
                 value={formData.interestRate}
-                onChangeText={(text) => handleChange('interestRate', text)}
+                onChangeText={text => handleChange('interestRate', text)}
                 keyboardType="numeric"
               />
               {errors.interestRate && (
@@ -178,7 +178,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                 { id: 'defaulted', label: 'En Mora' },
               ]}
               value={formData.status || 'active'}
-              onChange={(value) => handleChange('status', value)}
+              onChange={value => handleChange('status', value)}
               error={errors.status}
               required
             />
@@ -193,10 +193,10 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                     {formData.paymentFrequency === 'monthly'
                       ? 'mensual'
                       : formData.paymentFrequency === 'biweekly'
-                      ? 'quincenal'
-                      : formData.paymentFrequency === 'daily'
-                      ? 'diaria'
-                      : 'semanal'}
+                        ? 'quincenal'
+                        : formData.paymentFrequency === 'daily'
+                          ? 'diaria'
+                          : 'semanal'}
                     :
                   </Text>
                   <Text className="font-geist-medium">
@@ -253,7 +253,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                 className="border border-gray-200 rounded-lg p-3 h-24 text-base"
                 textAlignVertical="top"
                 value={formData.notes}
-                onChangeText={(text) => handleChange('notes', text)}
+                onChangeText={text => handleChange('notes', text)}
               />
             </View>
           </View>
@@ -271,8 +271,8 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
             showDatePicker === 'start' && formData.startDate
               ? new Date(formData.startDate)
               : showDatePicker === 'payment' && formData.paymentDate
-              ? parse(formData.paymentDate.toString(), 'YYYY-MM-DD')
-              : new Date()
+                ? parse(formData.paymentDate.toString(), 'YYYY-MM-DD')
+                : new Date()
           }
           mode="date"
           display="default"

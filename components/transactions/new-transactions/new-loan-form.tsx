@@ -129,7 +129,7 @@ const NewLoanForm = () => {
               errors.interestRate ? 'border-red-500' : 'border-gray-200'
             } rounded-lg p-3`}
             value={formData.interestRate}
-            onChangeText={(text) => handleChange('interestRate', text)}
+            onChangeText={text => handleChange('interestRate', text)}
           />
           {errors.interestRate && (
             <Text className="text-red-500 text-sm">{errors.interestRate}</Text>
@@ -143,7 +143,7 @@ const NewLoanForm = () => {
             placeholder="Seleccionar frecuencia"
             options={frequencyOptions}
             value={formData.paymentFrequency || 'weekly'}
-            onChange={(value) => handleChange('paymentFrequency', value)}
+            onChange={value => handleChange('paymentFrequency', value)}
             error={errors.paymentFrequency}
             required
           />
@@ -154,10 +154,10 @@ const NewLoanForm = () => {
             {formData.paymentFrequency === 'monthly'
               ? 'Meses'
               : formData.paymentFrequency === 'biweekly'
-              ? 'Quincenas'
-              : formData.paymentFrequency === 'daily'
-              ? 'Días'
-              : 'Semanas'}
+                ? 'Quincenas'
+                : formData.paymentFrequency === 'daily'
+                  ? 'Días'
+                  : 'Semanas'}
             )<Text className="text-red-500">*</Text>
           </Text>
           <View
@@ -170,7 +170,7 @@ const NewLoanForm = () => {
               keyboardType="number-pad"
               className="flex-1 p-3"
               value={formData.term}
-              onChangeText={(text) => handleChange('term', text)}
+              onChangeText={text => handleChange('term', text)}
             />
             <View className="flex-col gap-0">
               <TouchableOpacity
@@ -233,10 +233,10 @@ const NewLoanForm = () => {
                 {formData.paymentFrequency === 'monthly'
                   ? 'mensual'
                   : formData.paymentFrequency === 'biweekly'
-                  ? 'quincenal'
-                  : formData.paymentFrequency === 'daily'
-                  ? 'diaria'
-                  : 'semanal'}
+                    ? 'quincenal'
+                    : formData.paymentFrequency === 'daily'
+                      ? 'diaria'
+                      : 'semanal'}
                 :
               </Text>
               <Text className="font-geist-medium">
@@ -266,7 +266,7 @@ const NewLoanForm = () => {
             className="border border-gray-200 rounded-lg p-3 h-24 text-base"
             textAlignVertical="top"
             value={formData.notes}
-            onChangeText={(text) => handleChange('notes', text)}
+            onChangeText={text => handleChange('notes', text)}
           />
         </View>
       </View>
@@ -282,8 +282,8 @@ const NewLoanForm = () => {
             showDatePicker === 'start' && formData.startDate
               ? formData.startDate
               : showDatePicker === 'payment' && formData.paymentDate
-              ? formData.paymentDate
-              : new Date()
+                ? formData.paymentDate
+                : new Date()
           }
           mode="date"
           display="default"

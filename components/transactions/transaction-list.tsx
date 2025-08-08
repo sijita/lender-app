@@ -70,7 +70,7 @@ export default function TransactionList() {
 
   return (
     <>
-      <View className="p-5 flex-col gap-5">
+      <View className="flex-col gap-5 p-5">
         <TransactionTabs
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -89,8 +89,8 @@ export default function TransactionList() {
           refetch={refetch}
         />
         {activeTab === 'payment' && (
-          <View className="flex-row items-center justify-between bg-gray-50 rounded-lg p-1">
-            {['completed', 'upcoming', 'overdue'].map((status) => (
+          <View className="flex-row justify-between items-center p-1 bg-gray-50 rounded-lg">
+            {['completed', 'upcoming', 'overdue'].map(status => (
               <TouchableOpacity
                 key={status}
                 className={`w-full flex-1 py-2 px-3 rounded-lg ${
@@ -120,8 +120,8 @@ export default function TransactionList() {
           </View>
         )}
         <View className="flex-col gap-3">
-          <View className="flex-row items-center gap-2">
-            <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3 border border-gray-100">
+          <View className="flex-row gap-2 items-center">
+            <View className="flex-row flex-1 gap-1 items-center px-3 bg-white rounded-lg border border-gray-100">
               <Search size={20} color="#6B7280" />
               <TextInput
                 placeholder="Buscar transacciones..."
@@ -132,7 +132,7 @@ export default function TransactionList() {
               />
             </View>
             <TouchableOpacity
-              className="flex-row items-center gap-1 bg-white rounded-lg px-4 py-2 border border-gray-100"
+              className="flex-row gap-1 items-center px-4 py-2 bg-white rounded-lg border border-gray-100"
               onPress={() => {
                 const newOrderBy =
                   orderBy === 'created_at' ? 'amount' : 'created_at';
@@ -170,9 +170,9 @@ export default function TransactionList() {
               />
             </TouchableOpacity>
           </View>
-          <View className="flex-row items-center gap-2">
+          <View className="flex-row gap-2 items-center">
             <TouchableOpacity
-              className="flex-row items-center gap-2 bg-white rounded-lg px-3 py-2 border border-gray-100 flex-1"
+              className="flex-row flex-1 gap-2 items-center px-3 py-2 bg-white rounded-lg border border-gray-100"
               onPress={() => setShowDatePicker('start')}
             >
               <Calendar size={16} color="#6B7280" />
@@ -199,7 +199,7 @@ export default function TransactionList() {
               )}
             </TouchableOpacity>
             <TouchableOpacity
-              className="flex-row items-center gap-2 bg-white rounded-lg px-3 py-2 border border-gray-100 flex-1"
+              className="flex-row flex-1 gap-2 items-center px-3 py-2 bg-white rounded-lg border border-gray-100"
               onPress={() => setShowDatePicker('end')}
             >
               <Calendar size={16} color="#6B7280" />
@@ -232,24 +232,24 @@ export default function TransactionList() {
           contentContainerClassName="sm:w-full"
           horizontal
         >
-          <View className="w-full bg-white rounded-xl p-4 border border-gray-100">
+          <View className="p-4 w-full bg-white rounded-xl border border-gray-100">
             <View className="flex-row px-4 pb-4 border-b border-gray-200">
-              <Text className="w-36 sm:flex-1 font-geist-medium text-gray-500">
+              <Text className="w-36 text-gray-500 sm:flex-1 font-geist-medium">
                 Fecha
               </Text>
-              <Text className="w-40 sm:flex-1 font-geist-medium text-gray-500">
+              <Text className="w-40 text-gray-500 sm:flex-1 font-geist-medium">
                 Cliente
               </Text>
-              <Text className="w-40 sm:flex-1 font-geist-medium text-gray-500 text-right">
+              <Text className="w-40 text-right text-gray-500 sm:flex-1 font-geist-medium">
                 Monto
               </Text>
-              <Text className="w-40 sm:flex-1 font-geist-medium text-gray-500 text-right">
+              <Text className="w-40 text-right text-gray-500 sm:flex-1 font-geist-medium">
                 Tipo
               </Text>
               <View className="w-16" />
             </View>
             {transactions.length === 0 ? (
-              <View className="py-8 items-center">
+              <View className="items-center py-8">
                 <Text className="text-gray-500">
                   No se encontraron transacciones
                 </Text>
@@ -270,19 +270,19 @@ export default function TransactionList() {
                       }
                       className="flex-row items-center px-4 py-3 border-b border-gray-100"
                     >
-                      <Text className="w-36 sm:flex-1 font-geist-regular text-gray-600">
+                      <Text className="w-36 text-gray-600 sm:flex-1 font-geist-regular">
                         {format({
                           date: new Date(transaction.created_at),
                           format: 'medium',
                           locale: 'es',
-                          tz: 'UTC',
+                          tz: 'America/Bogota',
                         })}
                       </Text>
                       <Text className="w-40 sm:flex-1 font-geist-medium">
                         {`${transaction.loan.client.name} ${transaction.loan.client.last_name}` ||
                           'Cliente desconocido'}
                       </Text>
-                      <View className="w-40 sm:flex-1 text-right flex-row items-center justify-end gap-1">
+                      <View className="flex-row gap-1 justify-end items-center w-40 text-right sm:flex-1">
                         <Text className="font-geist-semibold">
                           {formatCurrency(Number(transaction.amount))}
                         </Text>
@@ -300,7 +300,7 @@ export default function TransactionList() {
                           }
                         />
                       </View>
-                      <View className="w-40 sm:flex-1 items-end shrink-0">
+                      <View className="items-end w-40 sm:flex-1 shrink-0">
                         <Text
                           className={`px-3 py-1 rounded-full text-xs font-geist-medium ${getTransactionTypeStyle(
                             transaction.type
@@ -309,7 +309,7 @@ export default function TransactionList() {
                           {getTransactionTypeText(transaction.type)}
                         </Text>
                       </View>
-                      <View className="w-16 items-end">
+                      <View className="items-end w-16">
                         <ChevronRight size={20} color="#9CA3AF" />
                       </View>
                     </TouchableOpacity>
@@ -331,13 +331,13 @@ export default function TransactionList() {
                           : paymentStatus === 'overdue' && 'bg-red-50'
                       }`}
                     >
-                      <Text className="w-36 sm:flex-1 font-geist-regular text-gray-600">
+                      <Text className="w-36 text-gray-600 sm:flex-1 font-geist-regular">
                         {transaction.paymentDate}
                       </Text>
                       <Text className="w-40 sm:flex-1 font-geist-medium">
                         {transaction.clientName}
                       </Text>
-                      <View className="w-40 sm:flex-1 text-right flex-row items-center justify-end gap-1">
+                      <View className="flex-row gap-1 justify-end items-center w-40 text-right sm:flex-1">
                         <Text className="font-geist-semibold">
                           {formatCurrency(Number(transaction.amount))}
                         </Text>
@@ -347,7 +347,7 @@ export default function TransactionList() {
                           color={'#f59e42'}
                         />
                       </View>
-                      <View className="w-40 sm:flex-1 items-end shrink-0">
+                      <View className="items-end w-40 sm:flex-1 shrink-0">
                         <Text
                           className={`px-3 py-1 rounded-full text-xs font-geist-medium ${
                             paymentStatus === 'upcoming'
@@ -359,11 +359,11 @@ export default function TransactionList() {
                           {paymentStatus === 'upcoming'
                             ? 'Próximo'
                             : paymentStatus === 'overdue'
-                            ? 'Vencido'
-                            : 'Pendiente'}
+                              ? 'Vencido'
+                              : 'Pendiente'}
                         </Text>
                       </View>
-                      <View className="w-16 items-end">
+                      <View className="items-end w-16">
                         <ChevronRight size={20} color="#9CA3AF" />
                       </View>
                     </TouchableOpacity>

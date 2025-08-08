@@ -18,43 +18,50 @@ export default function ClientInfo({
   };
 }) {
   return (
-    <View className="flex-col gap-6 bg-white p-5 border border-gray-100 rounded-xl">
+    <View className="flex-col gap-6 p-5 bg-white rounded-xl border border-gray-100">
       <Text className="text-xl font-geist-bold">Información del cliente</Text>
-      <View className="flex-row items-center gap-3">
-        <View className="w-14 h-14 bg-gray-200 rounded-full items-center justify-center">
-          <Text className="font-geist-medium text-gray-600">
+      <View className="flex-row gap-3 items-center">
+        <View className="justify-center items-center w-14 h-14 bg-gray-200 rounded-full">
+          <Text className="text-gray-600 truncate break-all font-geist-medium text-balance wrap-break-word">
             {client?.name.charAt(0)}
             {client?.last_name.charAt(0)}
           </Text>
         </View>
-        <Text className="font-geist-bold text-lg">
-          {client?.name} {client?.last_name}
+        <Text
+          className="flex-1 text-lg truncate font-geist-semibold"
+          numberOfLines={1}
+        >
+          {client?.name ?? '-'} {client?.last_name ?? '-'}
         </Text>
       </View>
       <View className="flex-col gap-3">
-        <View className="flex-row items-center gap-2">
+        <View className="flex-row gap-2 items-center">
           <IdCard size={15} color="#6B7280" />
           <View className="flex-row">
-            <Text className="font-geist-medium text-lg capitalize">
+            <Text className="text-lg capitalize font-geist-medium">
               {client?.document_type}
             </Text>
-            <Text className="font-geist-medium text-lg">
+            <Text className="text-lg font-geist-medium">
               : {client?.document_number}
             </Text>
           </View>
         </View>
-        <View className="flex-row items-center gap-2">
+        <View className="flex-row gap-2 items-center">
           <Mail size={15} color="#6B7280" />
-          <Text className="font-geist-medium text-lg">{client?.email}</Text>
+          <Text className="text-lg font-geist-medium">
+            {client?.email ?? '-'}
+          </Text>
         </View>
-        <View className="flex-row items-center gap-2">
+        <View className="flex-row gap-2 items-center">
           <Phone size={15} color="#6B7280" />
-          <Text className="font-geist-medium text-lg">{client?.phone}</Text>
+          <Text className="text-lg font-geist-medium">
+            {client?.phone ?? '-'}
+          </Text>
         </View>
-        <View className="flex-row items-center gap-2">
+        <View className="flex-row gap-2 items-center">
           <Map size={15} color="#6B7280" />
-          <Text className="font-geist-medium text-lg">
-            {client?.address}
+          <Text className="text-lg font-geist-medium">
+            {client?.address ?? '-'}
             {client?.sub_address ? `, ${client?.sub_address}` : ''}
           </Text>
         </View>
@@ -64,7 +71,7 @@ export default function ClientInfo({
         className="p-4 bg-black rounded-lg"
         asChild
       >
-        <TouchableOpacity className="flex-row items-center justify-center gap-2">
+        <TouchableOpacity className="flex-row gap-2 justify-center items-center">
           <Text className="text-center text-white font-geist-bold">
             Ver perfil
           </Text>

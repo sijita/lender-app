@@ -68,7 +68,7 @@ export default function LoanPayments({ loanId }: { loanId: number }) {
               <Text className="text-gray-500">No hay pagos registrados</Text>
             </View>
           ) : (
-            loanPayments.map((payment) => (
+            loanPayments.map(payment => (
               <View
                 key={payment.id}
                 className="flex-row px-4 py-3 border-t border-gray-100"

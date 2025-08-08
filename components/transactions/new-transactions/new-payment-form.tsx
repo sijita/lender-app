@@ -236,7 +236,7 @@ const NewPaymentForm = () => {
                 className="border border-gray-200 rounded-lg p-3 h-24 text-base"
                 textAlignVertical="top"
                 value={formData.notes}
-                onChangeText={(text) => handleChange('notes', text)}
+                onChangeText={text => handleChange('notes', text)}
               />
             </View>
           </>

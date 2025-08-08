@@ -27,7 +27,7 @@ export default function TransactionTabs({
   return (
     <View className="w-full border-b border-gray-200">
       <View className="flex-row">
-        {tabs.map((tab) => (
+        {tabs.map(tab => (
           <TouchableOpacity
             key={tab.id}
             className={`flex-1 items-center px-5 py-4 ${
