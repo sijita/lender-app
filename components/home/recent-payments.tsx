@@ -12,7 +12,7 @@ export default function RecentPayments({
   payments: RecentPayment[];
 }) {
   const { refetch } = useFetchTransactions();
-  const setActiveTab = useTransactionTabs((state) => state.setActiveTab);
+  const setActiveTab = useTransactionTabs(state => state.setActiveTab);
 
   return (
     <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">

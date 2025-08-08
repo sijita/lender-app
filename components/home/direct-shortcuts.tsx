@@ -8,7 +8,7 @@ import {
 import { Text, TouchableOpacity, View } from 'react-native';
 
 export default function DirectShortcuts() {
-  const setActiveTab = useTransactionTabs((state) => state.setActiveTab);
+  const setActiveTab = useTransactionTabs(state => state.setActiveTab);
 
   return (
     <View className="flex-row gap-2">

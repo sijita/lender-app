@@ -3,9 +3,9 @@ import { TouchableOpacity, View } from 'react-native';
 import DynamicIcon from '@/components/ui/dynamic-icon';
 
 export default function ToggleButton() {
-  const isWeb = useSidebar((state) => state.isWeb);
-  const isOpen = useSidebar((state) => state.isOpen);
-  const toggleSidebar = useSidebar((state) => state.toggle);
+  const isWeb = useSidebar(state => state.isWeb);
+  const isOpen = useSidebar(state => state.isOpen);
+  const toggleSidebar = useSidebar(state => state.toggle);
 
   return (
     <>
