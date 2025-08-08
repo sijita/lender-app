@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import { format, addDay } from '@formkit/tempo';
 
 interface StatsData {
   totalOutstanding: number;
@@ -41,25 +42,25 @@ export default function useFetchStats() {
       const previousMonthYear =
         currentMonth === 0 ? currentYear - 1 : currentYear;
 
-      const firstDayOfMonth = new Date(
-        currentYear,
-        currentMonth,
-        1
-      ).toISOString();
-      const firstDayOfPreviousMonth = new Date(
-        previousMonthYear,
-        previousMonth,
-        1
-      ).toISOString();
-      const lastDayOfPreviousMonth = new Date(
-        currentYear,
-        currentMonth,
-        0
-      ).toISOString();
+      const firstDayOfMonth = format({
+        date: new Date(currentYear, currentMonth, 1),
+        format: 'YYYY-MM-DD HH:mm:ss',
+        tz: 'America/Bogota',
+      });
 
-      // Calculate one week from now for upcoming payments
-      const oneWeekFromNow = new Date();
-      oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
+      const firstDayOfPreviousMonth = format({
+        date: new Date(previousMonthYear, previousMonth, 1),
+        format: 'YYYY-MM-DD HH:mm:ss',
+        tz: 'America/Bogota',
+      });
+
+      const lastDayOfPreviousMonth = format({
+        date: new Date(currentYear, currentMonth, 0, 23, 59, 59),
+        format: 'YYYY-MM-DD HH:mm:ss',
+        tz: 'America/Bogota',
+      });
+
+      const oneWeekFromNow = addDay(now, 7);
 
       // 1. Get total outstanding amount from active loans
       const { data: loansData, error: loansError } = await supabase
@@ -115,14 +116,14 @@ export default function useFetchStats() {
 
       // Get unique client IDs with active loans
       const uniqueClientIds = [
-        ...new Set(activeClientsData.map((loan) => loan.client_id)),
+        ...new Set(activeClientsData.map(loan => loan.client_id)),
       ];
       const activeClients = uniqueClientIds.length;
 
       // Count new clients this month
-      const newClientsThisMonth = clientsData.filter((client) => {
-        const clientDate = new Date(client.created_at);
-        return clientDate >= new Date(firstDayOfMonth);
+      const newClientsThisMonth = clientsData.filter(client => {
+        // Compare dates as strings since both are in the same format now
+        return client.created_at >= firstDayOfMonth;
       }).length;
 
       // 3. Get upcoming payments count (due within the next 7 days)
@@ -135,7 +136,7 @@ export default function useFetchStats() {
       if (upcomingPaymentsError) throw upcomingPaymentsError;
 
       // Count loans with payments due in the next 7 days
-      const upcomingPayments = upcomingPaymentsData.filter((loan) => {
+      const upcomingPayments = upcomingPaymentsData.filter(loan => {
         const paymentDate = new Date(loan.payment_date);
         return paymentDate <= oneWeekFromNow && paymentDate >= now;
       }).length;

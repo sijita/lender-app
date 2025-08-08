@@ -62,13 +62,13 @@ export function useHandleNewLoans() {
   };
 
   const handleChange = (field: keyof Loan, value: any) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [field]: value,
     }));
 
     if (errors[field]) {
-      setErrors((prev) => {
+      setErrors(prev => {
         const newErrors = { ...prev };
         delete newErrors[field];
         return newErrors;
@@ -139,7 +139,7 @@ export function useHandleNewLoans() {
     } catch (error) {
       if (error instanceof ZodError) {
         const newErrors: Partial<Record<keyof Loan, string>> = {};
-        error.errors.forEach((err) => {
+        error.errors.forEach(err => {
           const path = err.path[0] as keyof Loan;
           newErrors[path] = err.message;
         });
@@ -151,7 +151,7 @@ export function useHandleNewLoans() {
 
   const handleClientSelect = (value: string) => {
     const selectedItem = searchResults.find(
-      (item) => item.id.toString() === value
+      item => item.id.toString() === value
     );
     if (selectedItem) {
       selectClient(selectedItem);
@@ -159,7 +159,7 @@ export function useHandleNewLoans() {
   };
 
   const selectClient = (client: any) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       clientId: client.id,
       name: client.name,
@@ -214,7 +214,7 @@ export function useHandleNewLoans() {
     }
   }, 500);
 
-  const formattedSearchResults = searchResults.map((item) => ({
+  const formattedSearchResults = searchResults.map(item => ({
     id: item?.id?.toString(),
     label: `${item?.name} ${item?.last_name || ''}`,
     documentNumber: item?.document_number,

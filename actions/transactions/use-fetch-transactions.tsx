@@ -25,8 +25,8 @@ export type TransactionParams = {
 
 export default function useFetchTransactions() {
   const router = useRouter();
-  const activeTab = useTransactionTabs((state) => state.activeTab);
-  const setActiveTab = useTransactionTabs((state) => state.setActiveTab);
+  const activeTab = useTransactionTabs(state => state.activeTab);
+  const setActiveTab = useTransactionTabs(state => state.setActiveTab);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
@@ -121,7 +121,7 @@ export default function useFetchTransactions() {
         if (clientError) throw clientError;
 
         if (clients && clients.length > 0) {
-          clientIds = clients.map((c) => c.id);
+          clientIds = clients.map(c => c.id);
         }
 
         if (clientIds.length > 0) {
@@ -213,13 +213,28 @@ export default function useFetchTransactions() {
     });
   }, [startDate, endDate, activeTab]);
 
+  // Efecto para refrescar cuando cambia la página o el tamaño de página
+  useEffect(() => {
+    fetchTransactions({
+      type: activeTab === 'loan' ? 'loan_disbursement' : 'payment',
+      searchQuery: debouncedSearchQuery,
+      orderBy,
+      orderDirection,
+      startDate,
+      endDate,
+      paymentStatus,
+      page,
+      pageSize,
+    });
+  }, [page, pageSize]);
+
   return {
     transactions:
       activeTab === 'payment' && paymentStatus === 'upcoming'
         ? upcomingPayments
         : activeTab === 'payment' && paymentStatus === 'overdue'
-        ? overduePayments
-        : transactions,
+          ? overduePayments
+          : transactions,
     loading,
     error,
     router,

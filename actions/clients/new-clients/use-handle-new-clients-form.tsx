@@ -24,13 +24,13 @@ export default function useHandleNewClientsForm() {
   });
 
   const handleChange = (field: keyof Client, value: string) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [field]: value,
     }));
 
     if (errors[field]) {
-      setErrors((prev) => {
+      setErrors(prev => {
         const newErrors = { ...prev };
         delete newErrors[field];
         return newErrors;
@@ -46,7 +46,7 @@ export default function useHandleNewClientsForm() {
     } catch (error) {
       if (error instanceof ZodError) {
         const newErrors: Partial<Record<keyof Client, string>> = {};
-        error.errors.forEach((err) => {
+        error.errors.forEach(err => {
           const path = err.path[0] as keyof Client;
           newErrors[path] = err.message;
         });

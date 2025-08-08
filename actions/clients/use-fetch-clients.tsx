@@ -64,7 +64,7 @@ export default function useFetchClients() {
       setTotalClients(count ?? 0);
 
       const clientsWithLoans = await Promise.all(
-        clientsData.map(async (client) => {
+        clientsData.map(async client => {
           const { data: loans, error: loansError } = await supabase
             .from('loans')
             .select('status, outstanding')
@@ -78,17 +78,17 @@ export default function useFetchClients() {
           );
 
           const hasActiveLoansWithoutDefaulted = loans.some(
-            (loan) => loan.status === 'active'
+            loan => loan.status === 'active'
           );
           const hasActiveLoansWithDefaulted = loans.some(
-            (loan) => loan.status === 'defaulted'
+            loan => loan.status === 'defaulted'
           );
 
           const clientStatus = hasActiveLoansWithoutDefaulted
             ? 'pending'
             : hasActiveLoansWithDefaulted
-            ? 'defaulted'
-            : 'completed';
+              ? 'defaulted'
+              : 'completed';
 
           return {
             ...client,
@@ -101,12 +101,12 @@ export default function useFetchClients() {
       let filteredClients = clientsWithLoans;
       if (status && status !== 'all') {
         filteredClients = clientsWithLoans.filter(
-          (client) => client.status === status
+          client => client.status === status
         );
       }
 
       setClients(
-        filteredClients.map((client) => ({
+        filteredClients.map(client => ({
           id: client.id,
           name: client.name,
           lastName: client.last_name,

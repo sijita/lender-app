@@ -112,7 +112,7 @@ export default function useFetchOverduePayments(
 
       const todayFormatted = formatDateToString(new Date());
 
-      const formattedPayments = loans.map((loan) => {
+      const formattedPayments = loans.map(loan => {
         const paymentDateFormatted = formatDateToString(loan.payment_date);
 
         // Calcular días de vencimiento usando fechas normalizadas
@@ -124,7 +124,8 @@ export default function useFetchOverduePayments(
         const formattedDueDate = formatDueDate(daysOverdue, loan.payment_date);
 
         // Construir el nombre completo del cliente
-        const clientName = loan.clients
+
+        const clientName = loan.clients //@ts-ignore
           ? `${loan.clients?.name} ${loan.clients?.last_name}`
           : 'Cliente desconocido';
 

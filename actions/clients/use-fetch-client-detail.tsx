@@ -84,7 +84,7 @@ export default function useFetchClientDetail(clientId: number) {
       if (loansError) throw loansError;
 
       // 3. Obtener pagos relacionados con los préstamos del cliente
-      const loanIds = loansData.map((loan) => loan.id);
+      const loanIds = loansData.map(loan => loan.id);
       const { data: paymentsData, error: paymentsError } = await supabase
         .from('payments')
         .select('*')
@@ -95,7 +95,7 @@ export default function useFetchClientDetail(clientId: number) {
 
       // Calcular resumen financiero
       const activeLoans = loansData.filter(
-        (loan) => loan.status === 'active' || loan.status === 'defaulted'
+        loan => loan.status === 'active' || loan.status === 'defaulted'
       );
 
       const totalAmount = loansData.reduce(
@@ -111,7 +111,7 @@ export default function useFetchClientDetail(clientId: number) {
       // Encontrar el próximo pago
       const today = new Date();
       const upcomingPayments = activeLoans
-        .filter((loan) => new Date(loan.due_date) > today)
+        .filter(loan => new Date(loan.due_date) > today)
         .sort(
           (a, b) =>
             new Date(a.due_date).getTime() - new Date(b.due_date).getTime()
@@ -128,13 +128,13 @@ export default function useFetchClientDetail(clientId: number) {
       // Calcular estadísticas de pagos
       const totalPayments = paymentsData.length;
       const onTimePayments = paymentsData.filter(
-        (payment) => payment.status === 'completed'
+        payment => payment.status === 'completed'
       ).length;
       const latePayments = paymentsData.filter(
-        (payment) => payment.status === 'late'
+        payment => payment.status === 'late'
       ).length;
       const missedPayments = paymentsData.filter(
-        (payment) => payment.status === 'missed'
+        payment => payment.status === 'missed'
       ).length;
 
       // Calcular porcentajes
@@ -152,7 +152,7 @@ export default function useFetchClientDetail(clientId: number) {
           : 0;
 
       // Formatear historial de pagos
-      const paymentHistory = paymentsData.map((payment) => ({
+      const paymentHistory = paymentsData.map(payment => ({
         id: payment.id,
         date: payment.created_at,
         amount: parseFloat(payment.amount),
@@ -163,15 +163,15 @@ export default function useFetchClientDetail(clientId: number) {
 
       // Formatear historial de actividades (combinando transacciones y pagos)
       const activityHistory = [
-        ...paymentsData.map((payment) => ({
+        ...paymentsData.map(payment => ({
           id: payment.id + 10000, // Evitar colisiones de ID
           type: 'payment',
           description: `Pago ${
             payment.status === 'completed'
               ? 'completado'
               : payment.status === 'late'
-              ? 'con retraso'
-              : 'pendiente'
+                ? 'con retraso'
+                : 'pendiente'
           }`,
           date: payment.created_at,
           amount: parseFloat(payment.amount),

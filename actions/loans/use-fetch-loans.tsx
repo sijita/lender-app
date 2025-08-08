@@ -31,7 +31,7 @@ export default function useFetchLoans() {
       if (loansError) throw loansError;
 
       // Transform the data to match your schema
-      const transformedLoans = loansData.map((loan) => ({
+      const transformedLoans = loansData.map(loan => ({
         id: loan.id,
         clientId: loan.client_id,
         amount: loan.amount.toString(),
@@ -58,7 +58,11 @@ export default function useFetchLoans() {
           : null,
       }));
 
-      setLoans(transformedLoans as (LoanWithCalculatedFields & { client: Client | null })[]);
+      setLoans(
+        transformedLoans as (LoanWithCalculatedFields & {
+          client: Client | null;
+        })[]
+      );
     } catch (err: any) {
       console.error('Error fetching loans:', err);
       setError(err.message);

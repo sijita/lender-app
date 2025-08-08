@@ -93,13 +93,13 @@ export default function useHandleEditLoan(loanId: number) {
   };
 
   const handleChange = (field: string, value: any) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [field]: value,
     }));
 
     if (errors[field]) {
-      setErrors((prev) => {
+      setErrors(prev => {
         const newErrors = { ...prev };
         delete newErrors[field];
         return newErrors;
@@ -173,7 +173,7 @@ export default function useHandleEditLoan(loanId: number) {
     } catch (error) {
       if (error instanceof ZodError) {
         const newErrors: Partial<Record<keyof Loan, string>> = {};
-        error.errors.forEach((err) => {
+        error.errors.forEach(err => {
           const path = err.path[0] as keyof Loan;
           newErrors[path] = err.message;
         });

@@ -127,7 +127,7 @@ export default function useFetchUpcomingPayments(
       oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
 
       // Filtrar préstamos con pagos próximos (dentro de los próximos 7 días)
-      const upcomingLoans = loans.filter((loan) => {
+      const upcomingLoans = loans.filter(loan => {
         const paymentDateFormatted = formatDateToString(loan.payment_date);
         const daysUntilPayment = calculateDaysDifference(
           paymentDateFormatted,
@@ -138,7 +138,7 @@ export default function useFetchUpcomingPayments(
         return daysUntilPayment <= 7;
       });
 
-      const formattedPayments = upcomingLoans.map((loan) => {
+      const formattedPayments = upcomingLoans.map(loan => {
         const paymentDateFormatted = formatDateToString(loan.payment_date);
         const todayFormatted = formatDateToString(new Date());
 
@@ -157,7 +157,7 @@ export default function useFetchUpcomingPayments(
         );
 
         // Construir el nombre completo del cliente
-        const clientName = loan.clients
+        const clientName = loan.clients //@ts-ignore
           ? `${loan.clients?.name} ${loan.clients?.last_name}`
           : 'Cliente desconocido';
 

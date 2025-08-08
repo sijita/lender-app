@@ -63,10 +63,10 @@ export default function useHandleNewPayments() {
   };
 
   const handleChange = (field: keyof Payment, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
 
     if (errors[field]) {
-      setErrors((prev) => {
+      setErrors(prev => {
         const newErrors = { ...prev };
         delete newErrors[field];
         return newErrors;
@@ -83,7 +83,7 @@ export default function useHandleNewPayments() {
 
   const handleClientSelect = (value: string) => {
     const selectedItem = searchResults.find(
-      (item) => item.id.toString() === value
+      item => item.id.toString() === value
     );
     if (selectedItem) {
       selectClient(selectedItem.client, selectedItem);
@@ -91,7 +91,7 @@ export default function useHandleNewPayments() {
   };
 
   const selectClient = (client: any, loan: any) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       clientId: client.id,
       name: client.name,
@@ -160,7 +160,7 @@ export default function useHandleNewPayments() {
     }
   }, 500);
 
-  const formattedSearchResults = searchResults.map((item) => ({
+  const formattedSearchResults = searchResults.map(item => ({
     id: item?.id?.toString(),
     label: `${item?.client?.name} ${item?.client?.last_name || ''}`,
     metadata: {
@@ -216,7 +216,7 @@ export default function useHandleNewPayments() {
       console.log('error:', error);
       if (error instanceof ZodError) {
         const newErrors: Partial<Record<keyof Payment, string>> = {};
-        error.errors.forEach((err) => {
+        error.errors.forEach(err => {
           const path = err.path[0] as keyof Payment;
           newErrors[path] = err.message;
         });
@@ -289,7 +289,7 @@ export default function useHandleNewPayments() {
         message:
           error.code === '23502'
             ? 'Falta un campo requerido en el pago'
-            : error.message ?? 'Error al registrar el pago',
+            : (error.message ?? 'Error al registrar el pago'),
       });
     } finally {
       setIsSubmitting(false);
