@@ -5,7 +5,7 @@ interface TransactionTabsState {
   setActiveTab: (tab: 'loan' | 'payment') => void;
 }
 
-const useTransactionTabs = create<TransactionTabsState>((set) => ({
+const useTransactionTabs = create<TransactionTabsState>(set => ({
   activeTab: 'loan',
   setActiveTab: (tab: 'loan' | 'payment') => set({ activeTab: tab }),
 }));

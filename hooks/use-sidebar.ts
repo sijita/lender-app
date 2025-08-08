@@ -11,10 +11,10 @@ interface SidebarState {
   close: () => void;
 }
 
-export const useSidebar = create<SidebarState>((set) => ({
+export const useSidebar = create<SidebarState>(set => ({
   isWeb,
   isOpen: false,
-  toggle: () => set((state) => ({ isOpen: !state.isOpen })),
+  toggle: () => set(state => ({ isOpen: !state.isOpen })),
   open: () => set({ isOpen: true }),
   close: () => set({ isOpen: false }),
 }));
