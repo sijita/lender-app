@@ -11,7 +11,7 @@ import ToggleButton from '@/components/home/toggle-button';
 const Reports = () => {
   const { loading, reportData, handlePeriodChange, handleDownloadReport } =
     useReports();
-  const isOpen = useSidebar((state) => state.isOpen);
+  const isOpen = useSidebar(state => state.isOpen);
 
   return (
     <CustomSafeScreen>

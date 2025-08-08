@@ -10,8 +10,8 @@ import CustomSafeScreen from '@/components/ui/custom-safe-screen';
 export type TabType = 'new-loan' | 'receive-payment';
 
 export default function NewTransaction() {
-  const activeTab = useTransactionTabs((state) => state.activeTab);
-  const setActiveTab = useTransactionTabs((state) => state.setActiveTab);
+  const activeTab = useTransactionTabs(state => state.activeTab);
+  const setActiveTab = useTransactionTabs(state => state.setActiveTab);
 
   return (
     <CustomSafeScreen>

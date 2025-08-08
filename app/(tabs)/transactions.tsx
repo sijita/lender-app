@@ -8,7 +8,7 @@ import ToggleButton from '@/components/home/toggle-button';
 
 export default function Transactions() {
   const router = useRouter();
-  const isOpen = useSidebar((state) => state.isOpen);
+  const isOpen = useSidebar(state => state.isOpen);
 
   return (
     <CustomSafeScreen>

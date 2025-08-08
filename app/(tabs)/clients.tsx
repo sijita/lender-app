@@ -8,7 +8,7 @@ import { useSidebar } from '@/hooks/use-sidebar';
 
 export default function Clients() {
   const router = useRouter();
-  const isOpen = useSidebar((state) => state.isOpen);
+  const isOpen = useSidebar(state => state.isOpen);
 
   return (
     <CustomSafeScreen>

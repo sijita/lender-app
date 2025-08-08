@@ -6,16 +6,16 @@ import ToggleButton from '@/components/home/toggle-button';
 
 const _layout = () => {
   const pathname = usePathname();
-  const isWeb = useSidebar((state) => state.isWeb);
-  const sidebarVisible = useSidebar((state) => state.isOpen);
-  const toggleSidebar = useSidebar((state) => state.toggle);
+  const isWeb = useSidebar(state => state.isWeb);
+  const sidebarVisible = useSidebar(state => state.isOpen);
+  const toggleSidebar = useSidebar(state => state.toggle);
 
   return (
     <View style={{ flex: 1, flexDirection: isWeb ? 'row' : 'column' }}>
       {isWeb && sidebarVisible && (
         <View className="flex-col gap-5 w-[250px] h-full bg-white p-3 pt-5 border-r border-gray-200">
           <ToggleButton />
-          {['index', 'clients', 'transactions', 'reports'].map((screen) => (
+          {['index', 'clients', 'transactions', 'reports'].map(screen => (
             <Link
               key={screen}
               href={`/${screen === 'index' ? '' : screen}`}
