@@ -61,7 +61,7 @@ export default function SummaryCard({
         </View>
       ) : null}
       <TouchableOpacity
-        className="flex-row items-center gap-2 justify-center bg-black py-3 rounded-lg"
+        className="flex-row items-center gap-2 justify-center bg-black py-3 rounded-xl"
         onPress={handleDownloadReport}
       >
         <Text className="font-geist-medium text-white">

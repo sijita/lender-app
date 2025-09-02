@@ -17,7 +17,7 @@ const TabIcon = ({
     return (
       <View
         className={`flex-row gap-3 items-center w-full h-full p-3 ${
-          focused ? 'bg-black rounded-lg' : ''
+          focused ? 'bg-black rounded-xl' : ''
         }`}
       >
         <DynamicIcon name={icon} size={20} color={focused ? '#fff' : '#000'} />

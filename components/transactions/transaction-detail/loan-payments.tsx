@@ -41,7 +41,7 @@ export default function LoanPayments({ loanId }: { loanId: number }) {
     <View>
       <TouchableOpacity
         onPress={togglePaymentsView}
-        className="p-4 border border-gray-200 rounded-lg flex-row items-center justify-center gap-2"
+        className="p-4 border border-gray-200 rounded-xl flex-row items-center justify-center gap-2"
       >
         <DynamicIcon
           name={showPayments ? 'ChevronUp' : 'ChevronDown'}
@@ -53,7 +53,7 @@ export default function LoanPayments({ loanId }: { loanId: number }) {
         </Text>
       </TouchableOpacity>
       {showPayments && (
-        <View className="mt-4 border border-gray-200 rounded-lg overflow-hidden">
+        <View className="mt-4 border border-gray-200 rounded-xl overflow-hidden">
           <View className="flex-row bg-gray-100 px-4 py-3">
             <Text className="flex-1 font-geist-medium">Fecha</Text>
             <Text className="flex-1 font-geist-medium text-right">Monto</Text>

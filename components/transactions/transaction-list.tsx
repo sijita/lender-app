@@ -89,11 +89,11 @@ export default function TransactionList() {
           refetch={refetch}
         />
         {activeTab === 'payment' && (
-          <View className="flex-row justify-between items-center p-1 bg-gray-50 rounded-lg">
+          <View className="flex-row justify-between items-center p-1 bg-gray-50 rounded-xl">
             {['completed', 'upcoming', 'overdue'].map(status => (
               <TouchableOpacity
                 key={status}
-                className={`w-full flex-1 py-2 px-3 rounded-lg ${
+                className={`w-full flex-1 py-2 px-3 rounded-xl ${
                   paymentStatus === status ? 'bg-white shadow-sm' : ''
                 }`}
                 onPress={() => {
@@ -121,7 +121,7 @@ export default function TransactionList() {
         )}
         <View className="flex-col gap-3">
           <View className="flex-row gap-2 items-center">
-            <View className="flex-row flex-1 gap-1 items-center px-3 bg-white rounded-lg border border-gray-100">
+            <View className="flex-row flex-1 gap-1 items-center px-3 bg-white rounded-xl border border-gray-100">
               <Search size={20} color="#6B7280" />
               <TextInput
                 placeholder="Buscar transacciones..."
@@ -132,7 +132,7 @@ export default function TransactionList() {
               />
             </View>
             <TouchableOpacity
-              className="flex-row gap-1 items-center px-4 py-2 bg-white rounded-lg border border-gray-100"
+              className="flex-row gap-1 items-center px-4 py-2 bg-white rounded-xl border border-gray-100"
               onPress={() => {
                 const newOrderBy =
                   orderBy === 'created_at' ? 'amount' : 'created_at';
@@ -151,7 +151,7 @@ export default function TransactionList() {
               <ChevronDown size={16} color="#000" />
             </TouchableOpacity>
             <TouchableOpacity
-              className="bg-white rounded-lg px-[8px] py-[8px] border border-gray-100"
+              className="bg-white rounded-xl px-[8px] py-[8px] border border-gray-100"
               onPress={() => {
                 const newDirection = orderDirection === 'desc' ? 'asc' : 'desc';
                 setOrderDirection(newDirection);
@@ -172,7 +172,7 @@ export default function TransactionList() {
           </View>
           <View className="flex-row gap-2 items-center">
             <TouchableOpacity
-              className="flex-row flex-1 gap-2 items-center px-3 py-2 bg-white rounded-lg border border-gray-100"
+              className="flex-row flex-1 gap-2 items-center px-3 py-2 bg-white rounded-xl border border-gray-100"
               onPress={() => setShowDatePicker('start')}
             >
               <Calendar size={16} color="#6B7280" />
@@ -199,7 +199,7 @@ export default function TransactionList() {
               )}
             </TouchableOpacity>
             <TouchableOpacity
-              className="flex-row flex-1 gap-2 items-center px-3 py-2 bg-white rounded-lg border border-gray-100"
+              className="flex-row flex-1 gap-2 items-center px-3 py-2 bg-white rounded-xl border border-gray-100"
               onPress={() => setShowDatePicker('end')}
             >
               <Calendar size={16} color="#6B7280" />

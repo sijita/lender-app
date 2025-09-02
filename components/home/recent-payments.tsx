@@ -15,7 +15,7 @@ export default function RecentPayments({
   const setActiveTab = useTransactionTabs(state => state.setActiveTab);
 
   return (
-    <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
+    <View className="flex-col gap-6 p-5 bg-white rounded-xl border border-gray-100">
       <View className="flex-col">
         <Text className="text-xl font-geist-bold">Pagos recientes</Text>
         <Text className="text-gray-500 font-geist-regular">
@@ -24,7 +24,7 @@ export default function RecentPayments({
       </View>
       <View className="flex-col gap-3">
         {payments?.length === 0 && (
-          <View className="items-center justify-center py-5">
+          <View className="justify-center items-center py-5">
             <Text className="text-gray-500">No hay pagos recientes</Text>
           </View>
         )}
@@ -32,34 +32,35 @@ export default function RecentPayments({
           <Link
             href={`/transaction/${payment.id}`}
             key={index}
-            className="border border-gray-100 rounded-lg"
+            className="rounded-xl border border-green-100"
             asChild
           >
-            <View
-              key={index}
-              className="flex-row justify-between items-start p-3 rounded-lg bg-green-50/50 active:bg-green-100"
-            >
-              <View className="flex-1">
-                <Text className="font-geist-semibold text-gray-800">
-                  {payment.name}
-                </Text>
-                <Text className="font-geist-regular text-gray-500">
-                  Recibido:{' '}
-                  <Text className="font-geist-medium text-black">
-                    {payment.date}
+            <View className="p-3 rounded-xl bg-sky-50/50 active:bg-sky-100">
+              <View className="flex-row justify-between items-start">
+                <View className="flex-1">
+                  <Text className="text-gray-800 font-geist-semibold">
+                    {payment.name}
                   </Text>
-                </Text>
-              </View>
-              <View className="items-end">
-                <View className="flex-row items-center gap-2">
+                </View>
+                <View className="flex-row gap-2 items-center">
                   <Text className="text-lg font-geist-semibold">
                     {formatCurrency(payment.amount)}
                   </Text>
                   <CheckCircle size={16} color="#22c55e" />
                 </View>
-                <Text className="text-green-500 font-geist-regular text-sm">
-                  Completado
+              </View>
+              <View className="flex-row justify-between items-center">
+                <Text className="text-gray-500 font-geist-regular">
+                  Recibido:{' '}
+                  <Text className="text-black font-geist-medium">
+                    {payment.date}
+                  </Text>
                 </Text>
+                <View className="items-end">
+                  <Text className="text-sm text-green-500 font-geist-regular">
+                    Completado
+                  </Text>
+                </View>
               </View>
             </View>
           </Link>
@@ -67,7 +68,7 @@ export default function RecentPayments({
       </View>
       <Link
         href="/(tabs)/transactions"
-        className="p-4 bg-black rounded-lg mt-auto"
+        className="p-4 mt-auto bg-black rounded-xl"
         asChild
       >
         <TouchableOpacity
@@ -75,9 +76,9 @@ export default function RecentPayments({
             setActiveTab('payment');
             refetch({ type: 'payment' });
           }}
-          className="flex-row items-center justify-center gap-2"
+          className="flex-row gap-2 justify-center items-center"
         >
-          <Text className="text-center font-geist-bold text-white">
+          <Text className="text-center text-white font-geist-bold">
             Ver todos
           </Text>
           <ArrowRight size={18} color="#fff" />

@@ -34,7 +34,7 @@ export default function ReportCard({
       )}
 
       <TouchableOpacity
-        className="bg-black p-4 rounded-lg flex-row items-center justify-center gap-2"
+        className="bg-black p-4 rounded-xl flex-row items-center justify-center gap-2"
         onPress={onDownload}
       >
         <Text className="text-white font-geist-medium">Descargar</Text>

@@ -68,7 +68,7 @@ export default function ClientInfo({
       </View>
       <Link
         href={`/client/${client.id}`}
-        className="p-4 bg-black rounded-lg"
+        className="p-4 bg-black rounded-xl"
         asChild
       >
         <TouchableOpacity className="flex-row gap-2 justify-center items-center">

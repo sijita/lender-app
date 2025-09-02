@@ -15,7 +15,7 @@ export default function OverduePayments({
   const setActiveTab = useTransactionTabs(state => state.setActiveTab);
 
   return (
-    <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
+    <View className="flex-col gap-6 p-5 bg-white rounded-xl border border-gray-100">
       <View className="flex-col">
         <Text className="text-xl font-geist-bold">Pagos vencidos</Text>
         <Text className="text-gray-500 font-geist-regular">
@@ -24,7 +24,7 @@ export default function OverduePayments({
       </View>
       <View className="flex-col gap-3">
         {payments?.length === 0 && (
-          <View className="items-center justify-center py-5">
+          <View className="justify-center items-center py-5">
             <Text className="text-gray-500">
               No hay pagos vencidos recientes
             </Text>
@@ -34,32 +34,33 @@ export default function OverduePayments({
           <Link
             href={`/transaction/${payment.transactionId}`}
             key={index}
-            className="border border-gray-100 rounded-lg"
+            className="rounded-xl border border-red-100"
             asChild
           >
-            <View
-              key={index}
-              className="flex-row justify-between items-start p-3 rounded-lg bg-red-50/50 active:bg-red-100"
-            >
-              <View className="flex-1">
-                <Text className="font-geist-semibold text-gray-800">
-                  {payment.clientName}
-                </Text>
-                <Text className="font-geist-regular text-gray-500">
+            <View className="p-3 rounded-xl bg-red-50/50 active:bg-red-100">
+              <View className="flex-row justify-between items-start">
+                <View className="flex-1">
+                  <Text className="text-gray-800 font-geist-semibold">
+                    {payment.clientName}
+                  </Text>
+                </View>
+                <View className="items-end">
+                  <View className="flex-row gap-2 items-center">
+                    <Text className="text-lg font-geist-semibold">
+                      {formatCurrency(payment.amount)}
+                    </Text>
+                    <Bell size={16} color="#ef4444" />
+                  </View>
+                </View>
+              </View>
+              <View className="flex-row justify-between items-center">
+                <Text className="text-gray-500 font-geist-regular">
                   Vencido:{' '}
-                  <Text className="font-geist-medium text-black">
+                  <Text className="text-black font-geist-medium">
                     {payment.paymentDate}
                   </Text>
                 </Text>
-              </View>
-              <View className="items-end">
-                <View className="flex-row items-center gap-2">
-                  <Text className="text-lg font-geist-semibold">
-                    {formatCurrency(payment.amount)}
-                  </Text>
-                  <Bell size={16} color="#ef4444" />
-                </View>
-                <Text className="text-red-500 font-geist-regular text-sm">
+                <Text className="text-sm text-red-500 font-geist-regular">
                   Vencido
                 </Text>
               </View>
@@ -69,7 +70,7 @@ export default function OverduePayments({
       </View>
       <Link
         href="/(tabs)/transactions"
-        className="p-4 bg-black rounded-lg mt-auto"
+        className="p-4 mt-auto bg-black rounded-xl"
         asChild
       >
         <TouchableOpacity
@@ -77,9 +78,9 @@ export default function OverduePayments({
             setActiveTab('payment');
             refetch({ type: 'payment' });
           }}
-          className="flex-row items-center justify-center gap-2"
+          className="flex-row gap-2 justify-center items-center"
         >
-          <Text className="text-center font-geist-bold text-white">
+          <Text className="text-center text-white font-geist-bold">
             Ver todos
           </Text>
           <ArrowRight size={18} color="#fff" />

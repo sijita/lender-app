@@ -64,7 +64,7 @@ export const Toast: React.FC<ToastProps> = ({
       }}
       className={`absolute top-10 left-5 right-5 ${getBackgroundColor(
         type
-      )} rounded-lg shadow-lg p-4 z-50 flex-row items-center`}
+      )} rounded-xl shadow-lg p-4 z-50 flex-row items-center`}
     >
       <DynamicIcon name={getIconName(type)} size={24} color="white" />
       <Text className="flex-1 text-white font-geist-medium ml-3">

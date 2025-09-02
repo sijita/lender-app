@@ -12,7 +12,7 @@ export default function ToggleButton() {
       {isWeb && (
         <View className="w-10 justify-center items-start">
           <TouchableOpacity
-            className="bg-gray-100 rounded-lg p-2"
+            className="bg-gray-100 rounded-xl p-2"
             onPress={toggleSidebar}
           >
             {isOpen ? (

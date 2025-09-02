@@ -19,7 +19,7 @@ const _layout = () => {
             <Link
               key={screen}
               href={`/${screen === 'index' ? '' : screen}`}
-              className="hover:bg-gray-100 rounded-lg"
+              className="rounded-xl hover:bg-gray-100"
               asChild
             >
               <TouchableOpacity

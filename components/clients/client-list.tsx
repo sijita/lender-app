@@ -56,7 +56,7 @@ export default function ClientList() {
         }}
       />
       <View className="flex-row items-center gap-2">
-        <View className="flex-row items-center gap-1 flex-1 bg-white rounded-lg px-3 border border-gray-100">
+        <View className="flex-row items-center gap-1 flex-1 bg-white rounded-xl px-3 border border-gray-100">
           <Search size={20} color="#6B7280" />
           <TextInput
             placeholder="Buscar cliente..."
@@ -67,7 +67,7 @@ export default function ClientList() {
           />
         </View>
         <TouchableOpacity
-          className="flex-row items-center gap-1 bg-white rounded-lg px-4 py-2 border border-gray-100"
+          className="flex-row items-center gap-1 bg-white rounded-xl px-4 py-2 border border-gray-100"
           onPress={() => {
             const newOrderBy = orderBy === 'name' ? 'document_number' : 'name';
             setOrderBy(newOrderBy);
@@ -85,7 +85,7 @@ export default function ClientList() {
           <ChevronDown size={16} color="#000" />
         </TouchableOpacity>
         <TouchableOpacity
-          className="bg-white rounded-lg px-[8px] py-[8px] border border-gray-100"
+          className="bg-white rounded-xl px-[8px] py-[8px] border border-gray-100"
           onPress={() => {
             const newDirection = orderDirection === 'desc' ? 'asc' : 'desc';
             setOrderDirection(newDirection);

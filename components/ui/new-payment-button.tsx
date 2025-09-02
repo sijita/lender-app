@@ -9,14 +9,14 @@ export default function NewPaymentButton() {
   return (
     <Link
       href="/new-transaction"
-      className="px-3 py-4 bg-black rounded-lg w-full flex-1"
+      className="flex-1 px-3 py-4 w-full bg-green-500 rounded-xl"
       asChild
     >
       <TouchableOpacity
         onPress={() => setActiveTab('payment')}
-        className="flex-row items-center justify-center gap-2"
+        className="flex-row gap-2 justify-center items-center"
       >
-        <Text className="text-white text-center font-geist-medium">
+        <Text className="text-center text-white font-geist-medium">
           Nuevo pago
         </Text>
         <BanknoteArrowDown size={15} color="#fff" />

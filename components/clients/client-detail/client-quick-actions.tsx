@@ -11,7 +11,7 @@ export default function ClientQuickActions() {
         <NewLoanButton />
         <NewPaymentButton />
       </View>
-      <TouchableOpacity className="flex-row items-center justify-center gap-2 bg-red-500 py-4 rounded-lg">
+      <TouchableOpacity className="flex-row items-center justify-center gap-2 bg-red-500 py-4 rounded-xl">
         <Text className="text-white text-center font-geist-medium">
           Eliminar cliente
         </Text>

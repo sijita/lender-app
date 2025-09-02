@@ -47,32 +47,36 @@ export default function ClientDetailInfo({
           <IdCard size={15} color="#6B7280" />
           <View className="flex-row">
             <Text className="text-lg capitalize font-geist-medium">
-              {client?.document_type}
+              {client?.document_type ?? '-'}
             </Text>
             <Text className="text-lg font-geist-medium">
-              : {client?.document_number}
+              : {client?.document_number ?? '-'}
             </Text>
           </View>
         </View>
         <View className="flex-row gap-2 items-center">
           <Mail size={15} color="#6B7280" />
-          <Text className="text-lg font-geist-medium">{client?.email}</Text>
+          <Text className="text-lg font-geist-medium">
+            {client?.email ?? '-'}
+          </Text>
         </View>
         <View className="flex-row gap-2 items-center">
           <Phone size={15} color="#6B7280" />
-          <Text className="text-lg font-geist-medium">{client?.phone}</Text>
+          <Text className="text-lg font-geist-medium">
+            {client?.phone ?? '-'}
+          </Text>
         </View>
         <View className="flex-row gap-2 items-center">
           <Map size={15} color="#6B7280" />
           <Text className="text-lg font-geist-medium">
-            {client?.address}
+            {client?.address ?? '-'}
             {client?.sub_address ? `, ${client?.sub_address}` : ''}
           </Text>
         </View>
       </View>
       <Link
         href={`/edit-client/${client?.id}`}
-        className="py-4 bg-gray-800 rounded-lg"
+        className="py-4 bg-amber-500 rounded-xl"
         asChild
       >
         <TouchableOpacity className="flex-row gap-2 justify-center items-center">

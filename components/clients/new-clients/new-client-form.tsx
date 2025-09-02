@@ -19,7 +19,7 @@ const NewClientForm = () => {
   return (
     <View className="flex-col gap-6 p-5 sm:w-[800px] sm:m-auto">
       <Text className="text-xl font-geist-bold">Información del cliente</Text>
-      <View className="bg-white flex-col gap-6 p-5 rounded-lg border border-gray-100">
+      <View className="bg-white flex-col gap-6 p-5 rounded-xl border border-gray-100">
         <View className="flex-col gap-6 sm:flex-row">
           <Select
             label="Tipo de Documento"
@@ -38,7 +38,7 @@ const NewClientForm = () => {
               placeholder="12345678"
               className={`border ${
                 errors.documentNumber ? 'border-red-500' : 'border-gray-200'
-              } rounded-lg p-3`}
+              } rounded-xl p-3`}
               value={formData.documentNumber.toString() ?? ''}
               onChangeText={text => handleChange('documentNumber', text)}
               keyboardType="number-pad"
@@ -60,7 +60,7 @@ const NewClientForm = () => {
               placeholder="Nombre del cliente"
               className={`border ${
                 errors.name ? 'border-red-500' : 'border-gray-200'
-              } rounded-lg p-3`}
+              } rounded-xl p-3`}
               value={formData.name}
               onChangeText={text => handleChange('name', text)}
             />
@@ -76,7 +76,7 @@ const NewClientForm = () => {
               placeholder="Apellido del cliente"
               className={`border ${
                 errors.lastName ? 'border-red-500' : 'border-gray-200'
-              } rounded-lg p-3`}
+              } rounded-xl p-3`}
               value={formData.lastName}
               onChangeText={text => handleChange('lastName', text)}
             />
@@ -94,7 +94,7 @@ const NewClientForm = () => {
             keyboardType="email-address"
             className={`border ${
               errors.email ? 'border-red-500' : 'border-gray-200'
-            } rounded-lg p-3`}
+            } rounded-xl p-3`}
             value={formData.email}
             onChangeText={text => handleChange('email', text)}
             autoCapitalize="none"
@@ -112,7 +112,7 @@ const NewClientForm = () => {
             keyboardType="phone-pad"
             className={`border ${
               errors.phone ? 'border-red-500' : 'border-gray-200'
-            } rounded-lg p-3`}
+            } rounded-xl p-3`}
             value={formData.phone}
             onChangeText={text => handleChange('phone', text)}
             maxLength={10}
@@ -123,7 +123,7 @@ const NewClientForm = () => {
         </View>
       </View>
       <Text className="text-xl font-geist-bold mt-2">Dirección</Text>
-      <View className="bg-white flex-col gap-6 p-5 rounded-lg">
+      <View className="bg-white flex-col gap-6 p-5 rounded-xl">
         <View className="flex-col gap-6 sm:flex-row">
           <View className="flex-col gap-2 flex-1">
             <Text className="font-geist-medium">
@@ -133,7 +133,7 @@ const NewClientForm = () => {
               placeholder="Calle 01 #1A - 11"
               className={`border ${
                 errors.address ? 'border-red-500' : 'border-gray-200'
-              } rounded-lg p-3`}
+              } rounded-xl p-3`}
               value={formData.address}
               onChangeText={text => handleChange('address', text)}
             />
@@ -145,7 +145,7 @@ const NewClientForm = () => {
             <Text className="font-geist-medium">Secundaria</Text>
             <TextInput
               placeholder="Calle 01 #1A - 11"
-              className="border border-gray-200 rounded-lg p-3"
+              className="border border-gray-200 rounded-xl p-3"
               value={formData.subAddress}
               onChangeText={text => handleChange('subAddress', text)}
             />
@@ -157,7 +157,7 @@ const NewClientForm = () => {
             placeholder="Añadir cualquier detalle adicional sobre este cliente..."
             multiline
             numberOfLines={4}
-            className="border border-gray-200 rounded-lg p-3 h-24 text-base"
+            className="border border-gray-200 rounded-xl p-3 h-24 text-base"
             textAlignVertical="top"
             value={formData.notes}
             onChangeText={text => handleChange('notes', text)}

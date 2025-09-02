@@ -51,7 +51,7 @@ const NewPaymentForm = () => {
   return (
     <View className="flex-col gap-6 sm:w-[800px] sm:m-auto mt-5">
       <Text className="text-xl font-geist-bold">Registrar pago</Text>
-      <View className="flex-col gap-6 bg-white rounded-lg p-5 border border-gray-200">
+      <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-200">
         <View className="flex-col gap-2">
           <SearchableSelect
             label="Cliente"
@@ -69,7 +69,7 @@ const NewPaymentForm = () => {
             required
           />
           {formData?.clientId && (
-            <View className="flex-col items-center justify-between mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <View className="flex-col items-center justify-between mt-2 p-3 bg-gray-50 rounded-xl border border-gray-200">
               <Text className="font-geist-medium text-lg">
                 {formData?.name} {formData?.lastName}
               </Text>
@@ -99,7 +99,7 @@ const NewPaymentForm = () => {
                 Monto del pago<Text className="text-red-500">*</Text>
               </Text>
               <View className="flex-row gap-3 items-center">
-                <View className="flex-1 border border-gray-200 rounded-lg flex-row items-center">
+                <View className="flex-1 border border-gray-200 rounded-xl flex-row items-center">
                   <Text className="text-gray-500 pl-3 pr-1">$</Text>
                   <TextInput
                     placeholder="0"
@@ -111,7 +111,7 @@ const NewPaymentForm = () => {
                 </View>
                 {formData.clientId && (
                   <TouchableOpacity
-                    className="bg-black py-3 px-4 rounded-lg"
+                    className="bg-black py-3 px-4 rounded-xl"
                     onPress={() => {
                       if (formData.outstanding) {
                         handleAmountChange(formData.outstanding.toString());
@@ -159,7 +159,7 @@ const NewPaymentForm = () => {
             <View className="flex-col gap-2">
               <Text className="font-geist-medium">Fecha</Text>
               <TouchableOpacity
-                className="border border-gray-200 rounded-lg p-3 flex-row justify-between items-center"
+                className="border border-gray-200 rounded-xl p-3 flex-row justify-between items-center"
                 onPress={() => setShowDatePicker(true)}
               >
                 <Text
@@ -233,7 +233,7 @@ const NewPaymentForm = () => {
                 placeholder="Añadir cualquier detalle adicional sobre este pago..."
                 multiline
                 numberOfLines={4}
-                className="border border-gray-200 rounded-lg p-3 h-24 text-base"
+                className="border border-gray-200 rounded-xl p-3 h-24 text-base"
                 textAlignVertical="top"
                 value={formData.notes}
                 onChangeText={text => handleChange('notes', text)}

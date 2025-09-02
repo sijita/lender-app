@@ -53,7 +53,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
               {loan.clients?.name} {loan.clients?.last_name}
             </Text>
           </View>
-          <View className="flex-col gap-6 bg-white rounded-lg p-5 border border-gray-100">
+          <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
             <View className="flex-col gap-2">
               <Text className="font-geist-medium">
                 Fecha de inicio<Text className="text-red-500">*</Text>
@@ -61,7 +61,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
               <TouchableOpacity
                 className={`border ${
                   errors.startDate ? 'border-red-500' : 'border-gray-200'
-                } rounded-lg p-3 flex-row justify-between items-center`}
+                } rounded-xl p-3 flex-row justify-between items-center`}
                 onPress={() => setShowDatePicker('start')}
               >
                 <Text
@@ -83,7 +83,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
               <Text className="font-geist-medium">
                 Monto del préstamo<Text className="text-red-500">*</Text>
               </Text>
-              <View className="border border-gray-200 rounded-lg flex-row items-center">
+              <View className="border border-gray-200 rounded-xl flex-row items-center">
                 <Text className="text-gray-500 pl-3 pr-1">$</Text>
                 <TextInput
                   placeholder="0"
@@ -101,7 +101,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
               <Text className="font-geist-medium">
                 Plazo<Text className="text-red-500">*</Text>
               </Text>
-              <View className="border border-gray-200 rounded-lg flex-row items-center">
+              <View className="border border-gray-200 rounded-xl flex-row items-center">
                 <TextInput
                   placeholder="12"
                   keyboardType="number-pad"
@@ -159,7 +159,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                 placeholder="5"
                 className={`border ${
                   errors.interestRate ? 'border-red-500' : 'border-gray-200'
-                } rounded-lg p-3`}
+                } rounded-xl p-3`}
                 value={formData.interestRate}
                 onChangeText={text => handleChange('interestRate', text)}
                 keyboardType="numeric"
@@ -183,7 +183,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
               required
             />
             {Number(formData.amount) > 0 && Number(formData.term) > 0 && (
-              <View className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <View className="bg-gray-50 p-4 rounded-xl border border-gray-200">
                 <Text className="font-geist-medium mb-2">
                   Resumen del préstamo
                 </Text>
@@ -224,7 +224,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
               <TouchableOpacity
                 className={`border ${
                   errors.paymentDate ? 'border-red-500' : 'border-gray-200'
-                } rounded-lg p-3 flex-row justify-between items-center`}
+                } rounded-xl p-3 flex-row justify-between items-center`}
                 onPress={() => setShowDatePicker('payment')}
               >
                 <Text
@@ -250,7 +250,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                 placeholder="Añadir cualquier detalle adicional sobre este préstamo..."
                 multiline
                 numberOfLines={4}
-                className="border border-gray-200 rounded-lg p-3 h-24 text-base"
+                className="border border-gray-200 rounded-xl p-3 h-24 text-base"
                 textAlignVertical="top"
                 value={formData.notes}
                 onChangeText={text => handleChange('notes', text)}

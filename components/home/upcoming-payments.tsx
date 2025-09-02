@@ -33,12 +33,12 @@ export default function UpcomingPayments({
           <Link
             href={`/transaction/${payment.transactionId}`}
             key={index}
-            className="border border-gray-100 rounded-lg"
+            className="border border-gray-100 rounded-xl"
             asChild
           >
             <View
               key={index}
-              className="flex-row justify-between items-start p-3 rounded-lg bg-gray-50/50 active:bg-gray-100"
+              className="flex-row justify-between items-start p-3 rounded-xl bg-gray-50/50 active:bg-gray-100"
             >
               <View className="flex-1">
                 <Text className="font-geist-semibold text-gray-800">
@@ -75,7 +75,7 @@ export default function UpcomingPayments({
       </View>
       <Link
         href="/(tabs)/transactions"
-        className="p-4 bg-black rounded-lg mt-auto"
+        className="p-4 bg-black rounded-xl mt-auto"
         asChild
       >
         <TouchableOpacity

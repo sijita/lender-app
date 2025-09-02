@@ -9,7 +9,7 @@ export default function NewLoanButton() {
   return (
     <Link
       href="/new-transaction"
-      className="px-3 py-4 border border-gray-200 rounded-lg w-full flex-1"
+      className="px-3 py-4 border border-gray-200 rounded-xl w-full flex-1"
       asChild
     >
       <TouchableOpacity

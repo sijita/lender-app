@@ -110,7 +110,7 @@ const SearchableSelect = ({
       <TouchableOpacity
         className={`border ${
           error ? 'border-red-500' : 'border-gray-200'
-        } rounded-lg p-3 flex-row justify-between items-center ${
+        } rounded-xl p-3 flex-row justify-between items-center ${
           disabled ? 'opacity-50' : ''
         }`}
         onPress={toggleOptions}
@@ -138,14 +138,14 @@ const SearchableSelect = ({
           activeOpacity={1}
           onPress={() => setShowOptions(false)}
         >
-          <View className="bg-white rounded-lg mx-4 shadow-lg overflow-hidden">
+          <View className="bg-white rounded-xl mx-4 shadow-lg overflow-hidden">
             <View className="border-b border-gray-100 py-3 px-4">
               <Text className="font-geist-medium text-lg">
                 {label || 'Seleccionar opción'}
               </Text>
             </View>
             <View className="px-4 py-2 border-b border-gray-100">
-              <View className="border border-gray-200 rounded-lg flex-row items-center">
+              <View className="border border-gray-200 rounded-xl flex-row items-center">
                 {showSearchIcon && (
                   <Search
                     size={20}

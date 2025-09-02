@@ -21,7 +21,7 @@ export default function RecentTransactions({
   const setActiveTab = useTransactionTabs(state => state.setActiveTab);
 
   return (
-    <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
+    <View className="flex-col gap-6 p-5 bg-white rounded-xl border border-gray-100">
       <View className="flex-col">
         <Text className="text-xl font-geist-bold">Préstamos recientes</Text>
         <Text className="text-gray-500 font-geist-regular">
@@ -30,7 +30,7 @@ export default function RecentTransactions({
       </View>
       <View className="flex-col gap-3">
         {transactions?.length === 0 && (
-          <View className="items-center justify-center py-5">
+          <View className="justify-center items-center py-5">
             <Text className="text-gray-500">No hay transacciones</Text>
           </View>
         )}
@@ -38,22 +38,17 @@ export default function RecentTransactions({
           <Link
             href={`/transaction/${transaction.id}`}
             key={index}
-            className="border border-gray-100 rounded-lg"
+            className="rounded-xl border border-sky-100"
             asChild
           >
-            <View className="flex-row justify-between items-start p-3 rounded-lg bg-gray-50/50 active:bg-gray-100">
-              <View className="flex-1">
-                <Text className="font-geist-semibold text-gray-800">
-                  {transaction.name}
-                </Text>
-                <Text className="text-gray-500 font-geist-regular">
-                  {transaction.type === 'payment_received'
-                    ? 'Pago recibido'
-                    : 'Nuevo préstamo'}
-                </Text>
-              </View>
-              <View className="items-end">
-                <View className="flex-row items-center gap-2">
+            <View className="p-3 rounded-xl bg-sky-50/50 active:bg-sky-100">
+              <View className="flex-row justify-between items-start">
+                <View className="flex-1">
+                  <Text className="text-gray-800 font-geist-semibold">
+                    {transaction.name}
+                  </Text>
+                </View>
+                <View className="flex-row gap-2 items-center">
                   <Text className="text-lg font-geist-semibold">
                     {formatCurrency(transaction.amount)}
                   </Text>
@@ -71,9 +66,18 @@ export default function RecentTransactions({
                     }
                   />
                 </View>
-                <Text className="text-gray-500 text-sm font-geist-regular">
-                  {transaction.date}
+              </View>
+              <View className="flex-row justify-between items-center">
+                <Text className="text-gray-500 font-geist-regular">
+                  {transaction.type === 'payment_received'
+                    ? 'Pago recibido'
+                    : 'Nuevo préstamo'}
                 </Text>
+                <View className="items-end">
+                  <Text className="text-sm text-gray-500 font-geist-regular">
+                    {transaction.date}
+                  </Text>
+                </View>
               </View>
             </View>
           </Link>
@@ -81,7 +85,7 @@ export default function RecentTransactions({
       </View>
       <Link
         href="/(tabs)/transactions"
-        className="p-4 bg-black rounded-lg mt-auto"
+        className="p-4 mt-auto bg-black rounded-xl"
         asChild
       >
         <TouchableOpacity
@@ -89,9 +93,9 @@ export default function RecentTransactions({
             setActiveTab('loan');
             refetch({ type: 'loan_disbursement' });
           }}
-          className="flex-row items-center justify-center gap-2"
+          className="flex-row gap-2 justify-center items-center"
         >
-          <Text className="text-center font-geist-bold text-white">
+          <Text className="text-center text-white font-geist-bold">
             Ver todos
           </Text>
           <ArrowRight size={18} color="#fff" />

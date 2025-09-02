@@ -14,11 +14,11 @@ export default function DirectShortcuts() {
     <View className="flex-row gap-2">
       <Link
         href="/new-client"
-        className="px-4 py-5 bg-black rounded-xl flex-1"
+        className="flex-1 px-4 py-5 bg-black rounded-2xl"
         asChild
       >
-        <TouchableOpacity className="flex-col-reverse items-center justify-center gap-2">
-          <Text className="text-white font-geist-medium text-center">
+        <TouchableOpacity className="flex-col-reverse gap-2 justify-center items-center">
+          <Text className="text-center text-white font-geist-medium">
             Nuevo cliente
           </Text>
           <UserRoundPlus size={18} color="white" />
@@ -26,14 +26,14 @@ export default function DirectShortcuts() {
       </Link>
       <Link
         href="/new-transaction"
-        className="px-4 py-5 bg-black rounded-xl flex-1"
+        className="flex-1 px-4 py-5 bg-black rounded-xl"
         asChild
       >
         <TouchableOpacity
           onPress={() => setActiveTab('loan')}
-          className="flex-col-reverse items-center justify-center gap-2"
+          className="flex-col-reverse gap-2 justify-center items-center"
         >
-          <Text className="text-white font-geist-medium text-center">
+          <Text className="text-center text-white font-geist-medium">
             Nuevo préstamo
           </Text>
           <BanknoteArrowUp size={18} color="white" />
@@ -41,14 +41,14 @@ export default function DirectShortcuts() {
       </Link>
       <Link
         href="/new-transaction"
-        className="px-4 py-5 bg-black rounded-xl flex-1"
+        className="flex-1 px-4 py-5 bg-black rounded-xl"
         asChild
       >
         <TouchableOpacity
           onPress={() => setActiveTab('payment')}
-          className="flex-col-reverse items-center justify-center gap-2"
+          className="flex-col-reverse gap-2 justify-center items-center"
         >
-          <Text className="text-white font-geist-medium text-center">
+          <Text className="text-center text-white font-geist-medium">
             Nuevo pago
           </Text>
           <BanknoteArrowDown size={18} color="white" />

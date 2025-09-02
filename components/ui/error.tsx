@@ -23,7 +23,7 @@ export default function Error({
         <Text className="font-geist-semibold text-lg text-center">{error}</Text>
       </View>
       <TouchableOpacity
-        className="bg-red-500 py-3 px-6 rounded-lg flex-row items-center gap-2 shadow-sm"
+        className="bg-red-500 py-3 px-6 rounded-xl flex-row items-center gap-2 shadow-sm"
         onPress={refetch}
       >
         <Text className="text-white font-geist-medium text-base">

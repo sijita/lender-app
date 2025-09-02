@@ -18,14 +18,14 @@ const ActionButtons = ({
   return (
     <View className="flex-row justify-between mt-4">
       <TouchableOpacity
-        className="bg-white py-3 px-6 border border-gray-200 rounded-lg"
+        className="bg-white py-3 px-6 border border-gray-200 rounded-xl"
         onPress={onCancel}
         disabled={isSubmitting}
       >
         <Text className="font-geist-medium">Cancelar</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        className={`py-3 px-6 rounded-lg ${
+        className={`py-3 px-6 rounded-xl ${
           isSubmitting ? 'bg-gray-400' : 'bg-black'
         }`}
         onPress={onSubmit}

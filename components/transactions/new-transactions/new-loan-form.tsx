@@ -49,7 +49,7 @@ const NewLoanForm = () => {
   return (
     <View className="flex-col gap-6 sm:w-[800px] sm:m-auto">
       <Text className="text-xl font-geist-bold">Registrar nuevo préstamo</Text>
-      <View className="flex-col gap-6 bg-white rounded-lg p-5 border border-gray-100">
+      <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
         <View className="flex-col gap-2">
           <Text className="font-geist-medium">
             Fecha de inicio<Text className="text-red-500">*</Text>
@@ -57,7 +57,7 @@ const NewLoanForm = () => {
           <TouchableOpacity
             className={`border ${
               errors.startDate ? 'border-red-500' : 'border-gray-200'
-            } rounded-lg p-3 flex-row justify-between items-center`}
+            } rounded-xl p-3 flex-row justify-between items-center`}
             onPress={() => setShowDatePicker('start')}
           >
             <Text
@@ -90,7 +90,7 @@ const NewLoanForm = () => {
             required
           />
           {formData?.clientId && (
-            <View className="flex-col items-center justify-between mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <View className="flex-col items-center justify-between mt-2 p-3 bg-gray-50 rounded-xl border border-gray-200">
               <Text className="font-geist-medium text-lg">
                 {formData?.name} {formData?.lastName}
               </Text>
@@ -104,7 +104,7 @@ const NewLoanForm = () => {
           <Text className="font-geist-medium">
             Monto del préstamo<Text className="text-red-500">*</Text>
           </Text>
-          <View className="border border-gray-200 rounded-lg flex-row items-center">
+          <View className="border border-gray-200 rounded-xl flex-row items-center">
             <Text className="text-gray-500 pl-3 pr-1">$</Text>
             <TextInput
               placeholder="0"
@@ -127,7 +127,7 @@ const NewLoanForm = () => {
             keyboardType="decimal-pad"
             className={`border ${
               errors.interestRate ? 'border-red-500' : 'border-gray-200'
-            } rounded-lg p-3`}
+            } rounded-xl p-3`}
             value={formData.interestRate}
             onChangeText={text => handleChange('interestRate', text)}
           />
@@ -163,7 +163,7 @@ const NewLoanForm = () => {
           <View
             className={`border ${
               errors.term ? 'border-red-500' : 'border-gray-200'
-            } rounded-lg flex-row items-center`}
+            } rounded-xl flex-row items-center`}
           >
             <TextInput
               placeholder="12"
@@ -208,7 +208,7 @@ const NewLoanForm = () => {
           <TouchableOpacity
             className={`border ${
               errors.paymentDate ? 'border-red-500' : 'border-gray-200'
-            } rounded-lg p-3 flex-row justify-between items-center`}
+            } rounded-xl p-3 flex-row justify-between items-center`}
             onPress={() => setShowDatePicker('payment')}
           >
             <Text
@@ -225,7 +225,7 @@ const NewLoanForm = () => {
           )}
         </View>
         {Number(formData.amount) > 0 && Number(formData.term) > 0 && (
-          <View className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <View className="bg-gray-50 p-4 rounded-xl border border-gray-200">
             <Text className="font-geist-medium mb-2">Resumen del préstamo</Text>
             <View className="flex-row justify-between mb-1">
               <Text className="text-gray-600">
@@ -263,7 +263,7 @@ const NewLoanForm = () => {
             placeholder="Añadir cualquier detalle adicional sobre este préstamo..."
             multiline
             numberOfLines={4}
-            className="border border-gray-200 rounded-lg p-3 h-24 text-base"
+            className="border border-gray-200 rounded-xl p-3 h-24 text-base"
             textAlignVertical="top"
             value={formData.notes}
             onChangeText={text => handleChange('notes', text)}
