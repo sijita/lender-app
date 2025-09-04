@@ -5,6 +5,8 @@ type ClientParams = {
   orderBy: string;
   orderDirection: 'desc' | 'asc';
   status: 'all' | 'pending' | 'defaulted' | 'completed';
+  page?: number;
+  pageSize?: number;
 };
 
 export default function ClientTypeTabs({
@@ -12,6 +14,7 @@ export default function ClientTypeTabs({
   setStatusFilter,
   refetch,
   clientParams,
+  setPage,
 }: {
   statusFilter: string;
   setStatusFilter: React.Dispatch<
@@ -19,6 +22,7 @@ export default function ClientTypeTabs({
   >;
   refetch: (queryParams?: ClientParams) => Promise<void>;
   clientParams: ClientParams;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const tabs = [
     { id: 'all', label: 'Todos' },
@@ -39,9 +43,11 @@ export default function ClientTypeTabs({
             key={tab.id}
             onPress={() => {
               setStatusFilter(tab.id as any);
+              setPage(1); // Reset pagination when changing tabs
               refetch({
                 ...clientParams,
                 status: tab.id as any,
+                page: 1,
               });
             }}
             className={`px-5 py-4 ${

@@ -43,20 +43,23 @@ export default function ClientList() {
   }
 
   return (
-    <View className="p-5 flex-col gap-5">
+    <View className="flex-col gap-5 p-5">
       <ClientTypeTabs
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
         refetch={refetch}
+        setPage={setPage}
         clientParams={{
           searchQuery,
           orderBy,
           orderDirection,
           status: statusFilter,
+          page,
+          pageSize,
         }}
       />
-      <View className="flex-row items-center gap-2">
-        <View className="flex-row items-center gap-1 flex-1 bg-white rounded-xl px-3 border border-gray-100">
+      <View className="flex-row gap-2 items-center">
+        <View className="flex-row flex-1 gap-1 items-center px-3 bg-white rounded-xl border border-gray-100">
           <Search size={20} color="#6B7280" />
           <TextInput
             placeholder="Buscar cliente..."
@@ -67,7 +70,7 @@ export default function ClientList() {
           />
         </View>
         <TouchableOpacity
-          className="flex-row items-center gap-1 bg-white rounded-xl px-4 py-2 border border-gray-100"
+          className="flex-row gap-1 items-center px-4 py-2 bg-white rounded-xl border border-gray-100"
           onPress={() => {
             const newOrderBy = orderBy === 'name' ? 'document_number' : 'name';
             setOrderBy(newOrderBy);
@@ -109,27 +112,27 @@ export default function ClientList() {
         contentContainerClassName="sm:w-full"
         horizontal
       >
-        <View className="w-full bg-white rounded-xl p-4 border border-gray-100">
+        <View className="p-4 w-full bg-white rounded-xl border border-gray-100">
           <View className="flex-row px-4 pb-4 border-b border-gray-200">
-            <Text className="w-36 sm:flex-1 font-geist-medium text-gray-500">
+            <Text className="w-36 text-gray-500 sm:flex-1 font-geist-medium">
               Cédula
             </Text>
-            <Text className="w-40 sm:flex-1 font-geist-medium text-gray-500">
+            <Text className="w-40 text-gray-500 sm:flex-1 font-geist-medium">
               Nombre
             </Text>
-            <Text className="w-52 sm:flex-1 font-geist-medium text-gray-500">
+            <Text className="w-52 text-gray-500 sm:flex-1 font-geist-medium">
               Contacto
             </Text>
-            <Text className="w-40 sm:flex-1 font-geist-medium text-gray-500 text-right">
+            <Text className="w-40 text-right text-gray-500 sm:flex-1 font-geist-medium">
               Pendiente
             </Text>
-            <Text className="w-40 sm:flex-1 font-geist-medium text-gray-500 text-right">
+            <Text className="w-40 text-right text-gray-500 sm:flex-1 font-geist-medium">
               Estado
             </Text>
             <View className="w-16" />
           </View>
           {clients.length === 0 ? (
-            <View className="py-8 items-center">
+            <View className="items-center py-8">
               <Text className="text-gray-500">No se encontraron clientes</Text>
             </View>
           ) : (
@@ -146,14 +149,14 @@ export default function ClientList() {
                     <Text className="text-gray-600 font-geist-regular">
                       {client.email}
                     </Text>
-                    <Text className="text-gray-500 text-sm font-geist-regular">
+                    <Text className="text-sm text-gray-500 font-geist-regular">
                       {client.phone}
                     </Text>
                   </View>
-                  <Text className="w-40 sm:flex-1 font-geist-semibold text-right">
+                  <Text className="w-40 text-right sm:flex-1 font-geist-semibold">
                     ${(client as any).outstanding?.toLocaleString() ?? '0'}
                   </Text>
-                  <View className="w-40 sm:flex-1 items-end shrink-0">
+                  <View className="items-end w-40 sm:flex-1 shrink-0">
                     <Text
                       className={`px-2 py-1 rounded-full text-xs font-geist-medium ${
                         (client as any).status === 'completed'
@@ -170,7 +173,7 @@ export default function ClientList() {
                           : 'Libre'}
                     </Text>
                   </View>
-                  <View className="w-16 items-end">
+                  <View className="items-end w-16">
                     <ChevronRight size={20} color="#9CA3AF" />
                   </View>
                 </TouchableOpacity>

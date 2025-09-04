@@ -18,6 +18,11 @@ export default function useFetchClients() {
   const [pageSize, setPageSize] = useState(10);
   const [totalClients, setTotalClients] = useState(0);
 
+  // Reset pagination when status filter changes
+  useEffect(() => {
+    setPage(1);
+  }, [statusFilter]);
+
   const fetchClients = async (queryParams?: {
     searchQuery?: string;
     orderBy?: string;
@@ -35,36 +40,17 @@ export default function useFetchClients() {
       const currentPage = activeParams.page ?? page;
       const currentPageSize = activeParams.pageSize ?? pageSize;
 
-      let query = supabase.from('clients').select('*', { count: 'exact' });
+      // All filtering, sorting, and pagination is now handled after getting loan data
 
-      if (searchQuery && searchQuery.trim() !== '') {
-        const isNumeric = /^\d+$/.test(searchQuery);
+      // Get all clients with their loan data first (without pagination for filtering)
+      const { data: allClientsData, error: allClientsError } = await supabase
+        .from('clients')
+        .select('*');
 
-        if (isNumeric) {
-          query = query.or(`document_number.eq.${searchQuery}`);
-        } else {
-          query = query.or(
-            `name.ilike.%${searchQuery}%,last_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,phone.ilike.%${searchQuery}%`
-          );
-        }
-      }
-
-      if (orderBy) {
-        query = query.order(orderBy, { ascending: orderDirection === 'asc' });
-      }
-
-      // Paginación
-      const from = (currentPage - 1) * currentPageSize;
-      const to = from + currentPageSize - 1;
-      query = query.range(from, to);
-
-      const { data: clientsData, error: clientsError, count } = await query;
-
-      if (clientsError) throw clientsError;
-      setTotalClients(count ?? 0);
+      if (allClientsError) throw allClientsError;
 
       const clientsWithLoans = await Promise.all(
-        clientsData.map(async client => {
+        allClientsData.map(async client => {
           const { data: loans, error: loansError } = await supabase
             .from('loans')
             .select('status, outstanding')
@@ -98,6 +84,7 @@ export default function useFetchClients() {
         })
       );
 
+      // Filter by status first
       let filteredClients = clientsWithLoans;
       if (status && status !== 'all') {
         filteredClients = clientsWithLoans.filter(
@@ -105,8 +92,48 @@ export default function useFetchClients() {
         );
       }
 
+      // Apply search filter if provided
+      if (searchQuery && searchQuery.trim() !== '') {
+        const isNumeric = /^\d+$/.test(searchQuery);
+        filteredClients = filteredClients.filter(client => {
+          if (isNumeric) {
+            return client.document_number === searchQuery;
+          } else {
+            const searchLower = searchQuery.toLowerCase();
+            return (
+              client.name.toLowerCase().includes(searchLower) ||
+              client.last_name.toLowerCase().includes(searchLower) ||
+              client.email.toLowerCase().includes(searchLower) ||
+              client.phone.toLowerCase().includes(searchLower)
+            );
+          }
+        });
+      }
+
+      // Apply sorting
+      if (orderBy) {
+        filteredClients.sort((a, b) => {
+          const aValue = orderBy === 'name' ? a.name : a.document_number;
+          const bValue = orderBy === 'name' ? b.name : b.document_number;
+
+          if (orderDirection === 'asc') {
+            return aValue.localeCompare(bValue);
+          } else {
+            return bValue.localeCompare(aValue);
+          }
+        });
+      }
+
+      // Set total count after filtering
+      setTotalClients(filteredClients.length);
+
+      // Apply pagination
+      const from = (currentPage - 1) * currentPageSize;
+      const to = from + currentPageSize;
+      const paginatedClients = filteredClients.slice(from, to);
+
       setClients(
-        filteredClients.map(client => ({
+        paginatedClients.map(client => ({
           id: client.id,
           name: client.name,
           lastName: client.last_name,
@@ -130,14 +157,22 @@ export default function useFetchClients() {
   };
 
   useEffect(() => {
-    fetchClients({ page, pageSize });
-  }, [page, pageSize]);
-
-  useEffect(() => {
     fetchClients({
       searchQuery: debouncedSearchQuery,
+      orderBy,
+      orderDirection,
+      status: statusFilter,
+      page,
+      pageSize,
     });
-  }, [debouncedSearchQuery]);
+  }, [
+    page,
+    pageSize,
+    debouncedSearchQuery,
+    orderBy,
+    orderDirection,
+    statusFilter,
+  ]);
 
   return {
     clients,
