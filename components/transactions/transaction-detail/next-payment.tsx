@@ -19,20 +19,20 @@ export default function NextPayment({
         </View>
       </View>
       <Text className="text-xl font-geist-bold">{formatCurrency(amount)}</Text>
-      <Text className="text-gray-700 font-geist-medium">
-        {nextPaymentDate
-          ? format({
-              date: new Date(
-                nextPaymentDate?.includes('T')
-                  ? nextPaymentDate
-                  : nextPaymentDate + 'T00:00:00-05:00'
-              ),
-              format: 'full',
-              tz: 'America/Bogota',
-              locale: 'es',
-            })
-          : ''}
-      </Text>
+      {nextPaymentDate && (
+        <Text className="text-gray-700 font-geist-medium">
+          {format({
+            date: new Date(
+              nextPaymentDate?.includes('T')
+                ? nextPaymentDate
+                : nextPaymentDate + 'T00:00:00-05:00'
+            ),
+            format: 'full',
+            tz: 'America/Bogota',
+            locale: 'es',
+          })}
+        </Text>
+      )}
     </View>
   );
 }
