@@ -126,7 +126,7 @@ const SearchableSelect = ({
           color="#6B7280"
         />
       </TouchableOpacity>
-      {error && <Text className="text-red-500 text-sm">{error}</Text>}
+      {error && <Text className="text-sm text-red-500">{error}</Text>}
       <Modal
         visible={showOptions}
         transparent
@@ -138,14 +138,14 @@ const SearchableSelect = ({
           activeOpacity={1}
           onPress={() => setShowOptions(false)}
         >
-          <View className="bg-white rounded-xl mx-4 shadow-lg overflow-hidden">
-            <View className="border-b border-gray-100 py-3 px-4">
-              <Text className="font-geist-medium text-lg">
+          <View className="overflow-hidden mx-4 bg-white rounded-xl shadow-lg">
+            <View className="px-4 py-3 border-b border-gray-100">
+              <Text className="text-lg font-geist-medium">
                 {label || 'Seleccionar opción'}
               </Text>
             </View>
             <View className="px-4 py-2 border-b border-gray-100">
-              <View className="border border-gray-200 rounded-xl flex-row items-center">
+              <View className="flex-row items-center rounded-xl border border-gray-200">
                 {showSearchIcon && (
                   <Search
                     size={20}
@@ -163,7 +163,7 @@ const SearchableSelect = ({
               </View>
             </View>
             {isSearching && (
-              <View className="py-4 flex-row items-center justify-center">
+              <View className="flex-row justify-center items-center py-4">
                 <ActivityIndicator size="small" color="#000" />
                 <Text className="ml-2 text-gray-500">Buscando...</Text>
               </View>
@@ -201,17 +201,19 @@ const SearchableSelect = ({
                 }
                 style={{ maxHeight }}
                 ListEmptyComponent={
-                  <View className="py-4 items-center justify-center">
-                    <Text className="text-gray-500">
-                      No se encontraron resultados
-                    </Text>
-                  </View>
+                  !value ? null : (
+                    <View className="justify-center items-center py-4">
+                      <Text className="text-gray-500">
+                        No se encontraron resultados
+                      </Text>
+                    </View>
+                  )
                 }
               />
             )}
-            <View className="border-t border-gray-100 p-2">
+            <View className="p-2 border-t border-gray-100">
               <TouchableOpacity
-                className="py-2 items-center"
+                className="items-center py-2"
                 onPress={() => setShowOptions(false)}
               >
                 <Text className="text-gray-600 font-geist-medium">

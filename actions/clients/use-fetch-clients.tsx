@@ -101,10 +101,10 @@ export default function useFetchClients() {
           } else {
             const searchLower = searchQuery.toLowerCase();
             return (
-              client.name.toLowerCase().includes(searchLower) ||
-              client.last_name.toLowerCase().includes(searchLower) ||
-              client.email.toLowerCase().includes(searchLower) ||
-              client.phone.toLowerCase().includes(searchLower)
+              (client.name?.toLowerCase() || '').includes(searchLower) ||
+              (client.last_name?.toLowerCase() || '').includes(searchLower) ||
+              (client.email?.toLowerCase() || '').includes(searchLower) ||
+              (client.phone?.toLowerCase() || '').includes(searchLower)
             );
           }
         });

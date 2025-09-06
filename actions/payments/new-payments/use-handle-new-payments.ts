@@ -117,14 +117,31 @@ export default function useHandleNewPayments() {
 
       const isNumeric = /^\d+$/.test(query);
 
-      let queryFilter;
+      let queryFilter = '';
       if (isNumeric) {
         queryFilter = `document_number.eq.${query}`;
       } else {
-        queryFilter = `name.ilike.%${query}%,last_name.ilike.%${query}%`;
+        const terms = query
+          .trim()
+          .split(' ')
+          .filter(term => term.length > 0);
+
+        if (terms.length === 1) {
+          // Single term: search in both name and last_name
+          queryFilter = `name.ilike.%${terms[0]}%,last_name.ilike.%${terms[0]}%`;
+        } else if (terms.length === 2) {
+          // Two terms: exact match - first term in name AND second term in last_name
+          queryFilter = `and(name.ilike.%${terms[0]}%,last_name.ilike.%${terms[1]}%)`;
+        } else if (terms.length > 2) {
+          // More than two terms: treat as full name search
+          const firstName = terms[0];
+          const lastName = terms.slice(1).join(' ');
+          queryFilter = `and(name.ilike.%${firstName}%,last_name.ilike.%${lastName}%)`;
+        }
       }
 
-      const { data, error } = await supabase
+      // First get loans with active or defaulted status
+      const { data: loans, error: loansError } = await supabase
         .from('loans')
         .select(
           `
@@ -135,24 +152,54 @@ export default function useHandleNewPayments() {
           quota,
           partial_quota,
           status,
-          client:client_id (
-            id,
-            name,
-            last_name,
-            document_number
-          )
+          client_id
         `
         )
-        .or('status.eq.active,status.eq.defaulted')
-        .or(queryFilter, {
-          referencedTable: 'client',
+        .in('status', ['active', 'defaulted'])
+        .not('client_id', 'is', null)
+        .not('outstanding', 'eq', 0)
+        .order('created_at', { ascending: false });
+
+      if (loansError) throw loansError;
+
+      if (!loans || loans.length === 0) {
+        setSearchResults([]);
+        return;
+      }
+
+      // Get unique client IDs from loans
+      const clientIds = [...new Set(loans.map(loan => loan.client_id))];
+
+      // Search clients that match the query and are in the clientIds
+      const { data: clients, error: clientError } = await supabase
+        .from('clients')
+        .select('id, name, last_name, document_number')
+        .in('id', clientIds)
+        .or(queryFilter);
+
+      if (clientError) throw clientError;
+
+      // Combine loans with their corresponding clients
+      const loansWithClients = loans
+        .map(loan => {
+          const client = clients?.find(c => c.id === loan.client_id);
+          return client
+            ? {
+                ...loan,
+                client: {
+                  id: client.id,
+                  name: client.name,
+                  last_name: client.last_name,
+                  document_number: client.document_number,
+                },
+              }
+            : null;
         })
-        .order('created_at', { ascending: false })
-        .limit(5);
+        .filter(Boolean);
 
-      if (error) throw error;
+      console.log('loansWithClients:', loansWithClients);
 
-      setSearchResults(data || []);
+      setSearchResults(loansWithClients || []);
     } catch (error) {
       console.error('Error searching clients:', error);
     } finally {
