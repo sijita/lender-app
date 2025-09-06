@@ -18,7 +18,6 @@ export default function useFetchClients() {
   const [pageSize, setPageSize] = useState(10);
   const [totalClients, setTotalClients] = useState(0);
 
-  // Reset pagination when status filter changes
   useEffect(() => {
     setPage(1);
   }, [statusFilter]);
@@ -40,39 +39,77 @@ export default function useFetchClients() {
       const currentPage = activeParams.page ?? page;
       const currentPageSize = activeParams.pageSize ?? pageSize;
 
-      // All filtering, sorting, and pagination is now handled after getting loan data
+      const applySearchFilters = (query: any) => {
+        if (searchQuery && searchQuery.trim() !== '') {
+          const isNumeric = /^\d+$/.test(searchQuery);
+          if (isNumeric) {
+            return query.eq('document_number', searchQuery);
+          } else {
+            const terms = searchQuery
+              .trim()
+              .split(' ')
+              .filter(term => term.length > 0);
 
-      // Get all clients with their loan data first (without pagination for filtering)
-      const { data: allClientsData, error: allClientsError } = await supabase
-        .from('clients')
-        .select('*');
+            if (terms.length === 1) {
+              return query.or(
+                `name.ilike.%${terms[0]}%,last_name.ilike.%${terms[0]}%,email.ilike.%${terms[0]}%,phone.ilike.%${terms[0]}%`
+              );
+            } else if (terms.length === 2) {
+              return query
+                .ilike('name', `%${terms[0]}%`)
+                .ilike('last_name', `%${terms[1]}%`);
+            } else if (terms.length > 2) {
+              const firstName = terms[0];
+              const lastName = terms.slice(1).join(' ');
+              return query
+                .ilike('name', `%${firstName}%`)
+                .ilike('last_name', `%${lastName}%`);
+            }
+          }
+        }
+        return query;
+      };
 
-      if (allClientsError) throw allClientsError;
+      if (status && status !== 'all') {
+        let allClientsQuery = supabase.from('clients').select(`
+            *,
+            loans(
+              status,
+              outstanding
+            )
+          `);
 
-      const clientsWithLoans = await Promise.all(
-        allClientsData.map(async client => {
-          const { data: loans, error: loansError } = await supabase
-            .from('loans')
-            .select('status, outstanding')
-            .eq('client_id', client.id);
+        allClientsQuery = applySearchFilters(allClientsQuery);
 
-          if (loansError) throw loansError;
+        // Apply sorting
+        if (orderBy) {
+          const column = orderBy === 'name' ? 'name' : 'document_number';
+          allClientsQuery = allClientsQuery.order(column, {
+            ascending: orderDirection === 'asc',
+          });
+        }
 
+        const { data: allClientsData, error: allClientsError } =
+          await allClientsQuery;
+        if (allClientsError) throw allClientsError;
+
+        // Process all clients and filter by status
+        const allProcessedClients = allClientsData.map(client => {
+          const loans = client.loans || [];
           const outstanding = loans.reduce(
-            (total, loan) => total + parseFloat(loan.outstanding),
+            (total: number, loan: any) =>
+              total + parseFloat(loan.outstanding || 0),
             0
           );
-
-          const hasActiveLoansWithoutDefaulted = loans.some(
-            loan => loan.status === 'active'
+          const hasActiveLoans = loans.some(
+            (loan: any) => loan.status === 'active'
           );
-          const hasActiveLoansWithDefaulted = loans.some(
-            loan => loan.status === 'defaulted'
+          const hasDefaultedLoans = loans.some(
+            (loan: any) => loan.status === 'defaulted'
           );
-
-          const clientStatus = hasActiveLoansWithoutDefaulted
+          const clientStatus = hasActiveLoans
             ? 'pending'
-            : hasActiveLoansWithDefaulted
+            : hasDefaultedLoans
               ? 'defaulted'
               : 'completed';
 
@@ -81,59 +118,107 @@ export default function useFetchClients() {
             outstanding,
             status: clientStatus,
           };
-        })
-      );
+        });
 
-      // Filter by status first
-      let filteredClients = clientsWithLoans;
-      if (status && status !== 'all') {
-        filteredClients = clientsWithLoans.filter(
+        const filteredByStatus = allProcessedClients.filter(
           client => client.status === status
         );
+
+        // Set total count
+        setTotalClients(filteredByStatus.length);
+
+        // Apply pagination to filtered results
+        const from = (currentPage - 1) * currentPageSize;
+        const paginatedClients = filteredByStatus.slice(
+          from,
+          from + currentPageSize
+        );
+
+        setClients(
+          paginatedClients.map(client => ({
+            id: client.id,
+            name: client.name,
+            lastName: client.last_name,
+            email: client.email,
+            phone: client.phone,
+            address: client.address,
+            subAddress: client.sub_address,
+            documentType: client.document_type,
+            documentNumber: client.document_number,
+            notes: client.notes,
+            outstanding: client.outstanding,
+            status: client.status,
+          }))
+        );
+
+        return; // Exit early for status filtering
       }
 
-      // Apply search filter if provided
-      if (searchQuery && searchQuery.trim() !== '') {
-        const isNumeric = /^\d+$/.test(searchQuery);
-        filteredClients = filteredClients.filter(client => {
-          if (isNumeric) {
-            return client.document_number === searchQuery;
-          } else {
-            const searchLower = searchQuery.toLowerCase();
-            return (
-              (client.name?.toLowerCase() || '').includes(searchLower) ||
-              (client.last_name?.toLowerCase() || '').includes(searchLower) ||
-              (client.email?.toLowerCase() || '').includes(searchLower) ||
-              (client.phone?.toLowerCase() || '').includes(searchLower)
-            );
-          }
-        });
-      }
+      // For 'all' status or no status filter, use optimized pagination
+      let query = supabase.from('clients').select(`
+          *,
+          loans(
+            status,
+            outstanding
+          )
+        `);
 
-      // Apply sorting
+      query = applySearchFilters(query);
+
+      // Apply sorting at database level
       if (orderBy) {
-        filteredClients.sort((a, b) => {
-          const aValue = orderBy === 'name' ? a.name : a.document_number;
-          const bValue = orderBy === 'name' ? b.name : b.document_number;
-
-          if (orderDirection === 'asc') {
-            return aValue.localeCompare(bValue);
-          } else {
-            return bValue.localeCompare(aValue);
-          }
-        });
+        const column = orderBy === 'name' ? 'name' : 'document_number';
+        query = query.order(column, { ascending: orderDirection === 'asc' });
       }
 
-      // Set total count after filtering
-      setTotalClients(filteredClients.length);
+      // Get total count for pagination
+      let countQuery = supabase
+        .from('clients')
+        .select('*', { count: 'exact', head: true });
+      countQuery = applySearchFilters(countQuery);
+      const { count, error: countError } = await countQuery;
+      if (countError) throw countError;
 
-      // Apply pagination
+      // Apply pagination at database level
       const from = (currentPage - 1) * currentPageSize;
-      const to = from + currentPageSize;
-      const paginatedClients = filteredClients.slice(from, to);
+      query = query.range(from, from + currentPageSize - 1);
 
+      const { data: clientsData, error: clientsError } = await query;
+      if (clientsError) throw clientsError;
+
+      // Process clients with their loan data
+      const processedClients = clientsData.map(client => {
+        const loans = client.loans || [];
+
+        const outstanding = loans.reduce(
+          (total: number, loan: any) =>
+            total + parseFloat(loan.outstanding || 0),
+          0
+        );
+
+        const hasActiveLoans = loans.some(
+          (loan: any) => loan.status === 'active'
+        );
+        const hasDefaultedLoans = loans.some(
+          (loan: any) => loan.status === 'defaulted'
+        );
+
+        const clientStatus = hasActiveLoans
+          ? 'pending'
+          : hasDefaultedLoans
+            ? 'defaulted'
+            : 'completed';
+
+        return {
+          ...client,
+          outstanding,
+          status: clientStatus,
+        };
+      });
+
+      setTotalClients(count || 0);
       setClients(
-        paginatedClients.map(client => ({
+        processedClients.map(client => ({
           id: client.id,
           name: client.name,
           lastName: client.last_name,
