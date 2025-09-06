@@ -163,6 +163,13 @@ export default function useFetchClientDetail(clientId: number) {
 
       // Formatear historial de actividades (combinando transacciones y pagos)
       const activityHistory = [
+        ...loansData.map(loan => ({
+          id: loan.id + 10000, // Evitar colisiones de ID
+          type: 'loan',
+          description: 'Préstamo',
+          date: loan.created_at,
+          amount: parseFloat(loan.total_amount),
+        })),
         ...paymentsData.map(payment => ({
           id: payment.id + 10000, // Evitar colisiones de ID
           type: 'payment',

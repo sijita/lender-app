@@ -25,11 +25,11 @@ export default function LoanInfo({
 }) {
   const progressPercentage =
     loan?.total_amount && loan?.paid_amount
-      ? Math.round((loan.paid_amount / loan.total_amount) * 100)
+      ? Math.min(Math.round((loan.paid_amount / loan.total_amount) * 100), 100)
       : 0;
 
   return (
-    <View className="sm:flex-1 flex-col gap-8 bg-white p-5 border border-gray-100 rounded-xl">
+    <View className="flex-col gap-8 p-5 bg-white rounded-xl border border-gray-100 sm:flex-1">
       <View className="flex-row justify-between items-center">
         <Text className="text-xl font-geist-bold">Detalles del préstamo</Text>
         <View className="flex items-end shrink-0">
@@ -51,62 +51,62 @@ export default function LoanInfo({
         </View>
       </View>
       <View className="flex-row justify-between items-center">
-        <Text className="text-gray-500 font-geist-medium text-lg">
+        <Text className="text-lg text-gray-500 font-geist-medium">
           Total a Pagar
         </Text>
-        <Text className="font-geist-bold text-xl">
+        <Text className="text-xl font-geist-bold">
           {formatCurrency(loan?.total_amount)}
         </Text>
       </View>
-      <View className="flex-row gap-1 justify-between items-center flex-wrap">
+      <View className="flex-row flex-wrap gap-1 justify-between items-center">
         <View className="flex-col gap-6 items-start">
           <View className="flex-col gap-1 items-start">
-            <Text className="text-gray-500 font-geist-medium text-lg">
+            <Text className="text-lg text-gray-500 font-geist-medium">
               Monto del Préstamo
             </Text>
-            <Text className="font-geist-bold text-xl">
+            <Text className="text-xl font-geist-bold">
               {formatCurrency(loan?.amount)}
             </Text>
           </View>
-          <View className="flex-col items-start gap-1">
-            <Text className="text-gray-500 font-geist-medium text-lg">
+          <View className="flex-col gap-1 items-start">
+            <Text className="text-lg text-gray-500 font-geist-medium">
               Plazo
             </Text>
-            <Text className="font-geist-medium text-lg">
+            <Text className="text-lg font-geist-medium">
               {loan?.term} Cuotas
             </Text>
           </View>
-          <View className="flex-col items-start gap-1">
-            <Text className="text-gray-500 font-geist-medium text-lg">
+          <View className="flex-col gap-1 items-start">
+            <Text className="text-lg text-gray-500 font-geist-medium">
               Cuotas pendientes
             </Text>
-            <Text className="font-geist-medium text-lg">
+            <Text className="text-lg font-geist-medium">
               {loan?.pending_quotas}
             </Text>
           </View>
         </View>
         <View className="flex-col gap-6 items-start">
           <View className="flex-col gap-1 items-start">
-            <Text className="text-gray-500 font-geist-medium text-lg">
+            <Text className="text-lg text-gray-500 font-geist-medium">
               Tasa de Interés
             </Text>
-            <Text className="font-geist-bold text-xl">
+            <Text className="text-xl font-geist-bold">
               {loan?.interest_rate}%
             </Text>
           </View>
           <View className="flex-col items-start">
-            <Text className="text-gray-500 font-geist-medium text-lg">
+            <Text className="text-lg text-gray-500 font-geist-medium">
               Frecuencia
             </Text>
-            <Text className="font-geist-medium text-lg">
+            <Text className="text-lg font-geist-medium">
               {getPaymentFrequencyText(loan?.payment_frequency)}
             </Text>
           </View>
           <View className="flex-col items-start">
-            <Text className="text-gray-500 font-geist-medium text-lg">
+            <Text className="text-lg text-gray-500 font-geist-medium">
               Cuotas pagadas
             </Text>
-            <Text className="font-geist-medium text-lg">
+            <Text className="text-lg font-geist-medium">
               {loan?.term - loan?.pending_quotas}
             </Text>
           </View>
@@ -115,14 +115,14 @@ export default function LoanInfo({
       <View className="flex-col gap-3">
         <View className="flex-col gap-2">
           <View className="flex-row justify-between items-center">
-            <Text className="text-gray-500 font-geist-medium text-lg">
+            <Text className="text-lg text-gray-500 font-geist-medium">
               Progreso del Préstamo
             </Text>
-            <Text className="font-geist-bold text-xl">
+            <Text className="text-xl font-geist-bold">
               {progressPercentage}%
             </Text>
           </View>
-          <View className="h-3 w-full bg-gray-200 rounded-full overflow-hidden">
+          <View className="overflow-hidden w-full h-3 bg-gray-200 rounded-full">
             <View
               className="h-full bg-green-500 rounded-full"
               style={{
@@ -131,20 +131,20 @@ export default function LoanInfo({
             />
           </View>
         </View>
-        <View className="flex-row gap-1 items-center justify-between flex-wrap">
+        <View className="flex-row flex-wrap gap-1 justify-between items-center">
           <View className="flex-col justify-between items-start">
-            <Text className="text-gray-500 font-geist-medium text-lg">
+            <Text className="text-lg text-gray-500 font-geist-medium">
               Saldo Pendiente
             </Text>
-            <Text className="font-geist-bold text-red-600 text-xl">
+            <Text className="text-xl text-red-600 font-geist-bold">
               {formatCurrency(loan?.outstanding)}
             </Text>
           </View>
           <View className="flex-col justify-between items-end">
-            <Text className="text-gray-500 font-geist-medium text-lg">
+            <Text className="text-lg text-gray-500 font-geist-medium">
               Pagado
             </Text>
-            <Text className="font-geist-bold text-green-600 text-xl">
+            <Text className="text-xl text-green-600 font-geist-bold">
               {formatCurrency(loan?.paid_amount)}
             </Text>
           </View>

@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Payment, paymentSchema } from '@/schemas/payments/payment-schema';
 import { ZodError } from 'zod';
 import { useToast } from '@/components/ui/toast-context';
@@ -9,6 +9,7 @@ import { formatCurrency } from '@/utils';
 
 export default function useHandleNewPayments() {
   const { showToast } = useToast();
+  const { clientId } = useLocalSearchParams<{ clientId?: string }>();
   const [formData, setFormData] = useState<
     Partial<Payment> & {
       name: string;
@@ -77,9 +78,51 @@ export default function useHandleNewPayments() {
   const handleDateSelect = (event: any, selectedDate?: Date) => {
     setShowDatePicker(false);
     if (selectedDate) {
-      handleChange('date', selectedDate);
-    }
+        handleChange('date', selectedDate);
+      }
   };
+
+  // Preselect client if clientId is provided in query params
+  useEffect(() => {
+    if (clientId) {
+      const fetchClientAndLoan = async () => {
+        try {
+          // First get the client data
+          const { data: client, error: clientError } = await supabase
+            .from('clients')
+            .select('id, name, last_name, document_number')
+            .eq('id', clientId)
+            .single();
+
+          if (clientError) throw clientError;
+
+          // Then get the active loan for this client
+          const { data: loan, error: loanError } = await supabase
+            .from('loans')
+            .select('id, amount, outstanding, pending_quotas, quota, partial_quota, status')
+            .eq('client_id', clientId)
+            .in('status', ['active', 'defaulted'])
+            .not('outstanding', 'eq', 0)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+
+          if (loanError) {
+            console.error('No active loan found for client:', loanError);
+            return;
+          }
+
+          if (client && loan) {
+            selectClient(client, loan);
+          }
+        } catch (error) {
+          console.error('Error fetching client and loan:', error);
+        }
+      };
+
+      fetchClientAndLoan();
+    }
+  }, [clientId]);
 
   const handleClientSelect = (value: string) => {
     const selectedItem = searchResults.find(

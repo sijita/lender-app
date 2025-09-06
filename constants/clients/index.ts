@@ -1,6 +1,6 @@
 export const documentTypes = [
-  { id: 'cedula', label: 'Cédula' },
-  { id: 'passport', label: 'Pasaporte' },
-  { id: 'license', label: 'Licencia de Conducir' },
-  { id: 'other', label: 'Otro' },
+  { id: 'CC', label: 'Cédula' },
+  { id: 'PP', label: 'Pasaporte' },
+  { id: 'LC', label: 'Licencia de Conducir' },
+  { id: 'OT', label: 'Otro' },
 ];

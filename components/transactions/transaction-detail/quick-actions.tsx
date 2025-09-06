@@ -4,7 +4,13 @@ import { SquarePen } from 'lucide-react-native';
 import NewLoanButton from '@/components/ui/new-loan-button';
 import NewPaymentButton from '@/components/ui/new-payment-button';
 
-export default function QuickActions({ loanId }: { loanId: number }) {
+export default function QuickActions({
+  loanId,
+  clientId,
+}: {
+  loanId: number;
+  clientId?: string;
+}) {
   return (
     <View className="flex-col gap-6 p-5 bg-white rounded-xl border border-gray-100">
       <Text className="text-xl font-geist-bold">Acciones rápidas</Text>
@@ -21,8 +27,8 @@ export default function QuickActions({ loanId }: { loanId: number }) {
         </TouchableOpacity>
       </Link>
       <View className="flex-row gap-3">
-        <NewLoanButton />
-        <NewPaymentButton />
+        <NewLoanButton clientId={clientId} />
+        <NewPaymentButton clientId={clientId} />
       </View>
     </View>
   );

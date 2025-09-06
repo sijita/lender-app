@@ -3,12 +3,16 @@ import { Link } from 'expo-router';
 import { BanknoteArrowDown } from 'lucide-react-native';
 import { TouchableOpacity, Text } from 'react-native';
 
-export default function NewPaymentButton() {
+export default function NewPaymentButton({ clientId }: { clientId?: string }) {
   const setActiveTab = useTransactionTabs(state => state.setActiveTab);
 
   return (
     <Link
-      href="/new-transaction"
+      href={
+        clientId
+          ? { pathname: '/new-transaction', params: { clientId } }
+          : '/new-transaction'
+      }
       className="flex-1 px-3 py-4 w-full bg-green-500 rounded-xl"
       asChild
     >

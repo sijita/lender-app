@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { router } from 'expo-router';
+import { useMemo, useState, useEffect } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
 import { ZodError } from 'zod';
 import { loanSchema, Loan } from '@/schemas/loans/loan-schema';
 import { supabase } from '@/lib/supabase';
@@ -11,6 +11,7 @@ import { format } from '@formkit/tempo';
 export function useHandleNewLoans() {
   const { showToast } = useToast();
   const { dueDate } = useCalculateDueDate();
+  const { clientId } = useLocalSearchParams<{ clientId?: string }>();
   const [formData, setFormData] = useState<
     Partial<Loan> & {
       name?: string;
@@ -47,6 +48,31 @@ export function useHandleNewLoans() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
+
+  // Preselect client if clientId is provided in query params
+  useEffect(() => {
+    if (clientId) {
+      const fetchClient = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('clients')
+            .select('id, name, last_name, document_number')
+            .eq('id', clientId)
+            .single();
+
+          if (error) throw error;
+
+          if (data) {
+            selectClient(data);
+          }
+        } catch (error) {
+          console.error('Error fetching client:', error);
+        }
+      };
+
+      fetchClient();
+    }
+  }, [clientId]);
 
   const handleAmountChange = (text: string) => {
     const numericValue = text.replace(/\D/g, '');

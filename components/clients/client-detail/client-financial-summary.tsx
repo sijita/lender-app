@@ -9,66 +9,66 @@ export default function ClientFinancialSummary({
   client: ClientDetail;
 }) {
   return (
-    <View className="h-full flex-col gap-6">
+    <View className="flex-col gap-6 h-full">
       <Text className="text-xl font-geist-bold">Resumen financiero</Text>
       <View className="flex-col gap-4">
         <View className="flex-row justify-between items-center">
-          <Text className="text-gray-500 font-geist-medium text-lg">
+          <Text className="text-lg text-gray-500 font-geist-medium">
             Pagos a tiempo
           </Text>
-          <Text className="font-geist-bold text-green-600 text-xl">
+          <Text className="text-xl text-green-600 font-geist-bold">
             {client?.profile?.on_time_payments}%
           </Text>
         </View>
         <View className="flex-row justify-between items-center">
-          <Text className="text-gray-500 font-geist-medium text-lg">
+          <Text className="text-lg text-gray-500 font-geist-medium">
             Pagos con retraso
           </Text>
-          <Text className="font-geist-bold text-yellow-600 text-xl">
+          <Text className="text-xl text-yellow-600 font-geist-bold">
             {client?.profile?.late_payments}%
           </Text>
         </View>
         <View className="flex-row justify-between items-center">
-          <Text className="text-gray-500 font-geist-medium text-lg">
+          <Text className="text-lg text-gray-500 font-geist-medium">
             Pagos no realizados
           </Text>
-          <Text className="font-geist-bold text-red-600 text-xl">
+          <Text className="text-xl text-red-600 font-geist-bold">
             {client?.profile?.missed_payments}%
           </Text>
         </View>
       </View>
       <View className="flex-row justify-between items-center">
         <View className="flex-col gap-1">
-          <Text className="text-gray-500 font-geist-medium text-lg">
+          <Text className="text-lg text-gray-500 font-geist-medium">
             Préstamos activos
           </Text>
-          <Text className="font-geist-bold text-xl">
-            {client.financial_summary.total_loans}
+          <Text className="text-xl font-geist-bold">
+            {client.financial_summary.active_loans}
           </Text>
         </View>
         <View className="flex-col gap-1 items-start">
-          <Text className="text-gray-500 font-geist-medium text-lg">
+          <Text className="text-lg text-gray-500 font-geist-medium">
             Total préstamos
           </Text>
-          <Text className="font-geist-bold text-xl">
-            {client.financial_summary.active_loans}
+          <Text className="text-xl font-geist-bold">
+            {client.financial_summary.total_loans}
           </Text>
         </View>
       </View>
       <View className="flex-row justify-between items-center">
         <View className="flex-col gap-1">
-          <Text className="text-gray-500 font-geist-medium text-lg">
+          <Text className="text-lg text-gray-500 font-geist-medium">
             Saldo pendiente
           </Text>
-          <Text className="font-geist-bold text-xl text-red-600">
+          <Text className="text-xl text-red-600 font-geist-bold">
             {formatCurrency(client.financial_summary.pending_amount)}
           </Text>
         </View>
         <View className="flex-col gap-1 items-start">
-          <Text className="text-gray-500 font-geist-medium text-lg">
+          <Text className="text-lg text-gray-500 font-geist-medium">
             Total préstamos
           </Text>
-          <Text className="font-geist-bold text-xl">
+          <Text className="text-xl font-geist-bold">
             {formatCurrency(client.financial_summary.total_amount)}
           </Text>
         </View>

@@ -30,11 +30,11 @@ export default function TransactionDetail() {
   if (!loading && !transaction) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-50">
-        <Text className="text-lg font-geist-medium text-gray-800">
+        <Text className="text-lg text-gray-800 font-geist-medium">
           Transacción no encontrada
         </Text>
         <TouchableOpacity
-          className="mt-4 flex-row items-center gap-2 bg-black px-4 py-2 rounded-full"
+          className="flex-row gap-2 items-center px-4 py-2 mt-4 bg-black rounded-full"
           onPress={() => router.back()}
         >
           <ArrowLeft size={16} color="white" />
@@ -52,9 +52,9 @@ export default function TransactionDetail() {
     <CustomSafeScreen>
       <Stack.Screen options={{ headerShown: false }} />
       <BackButton title={`Transacción #${transaction?.id}`} />
-      <View className="p-5 flex-col gap-5">
+      <View className="flex-col gap-5 p-5">
         <View className="p-5 border-b border-gray-200">
-          <Text className="text-gray-500 font-geist-medium text-lg">
+          <Text className="text-lg text-gray-500 font-geist-medium">
             {formattedDate}
           </Text>
         </View>
@@ -64,12 +64,18 @@ export default function TransactionDetail() {
               <ClientInfo client={transaction.loan.client} />
               <TransactionInfo transaction={transaction} />
               {Platform.OS === 'web' && (
-                <QuickActions loanId={transaction.loan.id} />
+                <QuickActions
+                  loanId={transaction.loan.id}
+                  clientId={transaction.loan.client.id.toString()}
+                />
               )}
             </View>
             <LoanInfo loan={transaction.loan} />
             {Platform.OS !== 'web' && (
-              <QuickActions loanId={transaction.loan.id} />
+              <QuickActions
+                loanId={transaction.loan.id}
+                clientId={transaction.loan.client.id.toString()}
+              />
             )}
           </View>
         )}

@@ -27,11 +27,11 @@ export default function ClientDetail() {
   if (!client) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-50">
-        <Text className="text-lg font-geist-medium text-gray-800">
+        <Text className="text-lg text-gray-800 font-geist-medium">
           Cliente no encontrado
         </Text>
         <TouchableOpacity
-          className="mt-4 flex-row items-center gap-2 bg-black px-4 py-2 rounded-full"
+          className="flex-row gap-2 items-center px-4 py-2 mt-4 bg-black rounded-full"
           onPress={() => router.back()}
         >
           <ArrowLeft size={16} color="white" />
@@ -45,14 +45,14 @@ export default function ClientDetail() {
     <CustomSafeScreen>
       <Stack.Screen options={{ headerShown: false }} />
       <BackButton title={`Cliente #${client?.id}`} />
-      <View className="p-5 flex-col sm:flex-row gap-5">
+      <View className="flex-col gap-5 p-5 sm:flex-row">
         <View className="flex-col gap-5">
           <ClientDetailInfo client={client} />
-          {Platform.OS === 'web' && <ClientQuickActions />}
+          {Platform.OS === 'web' && <ClientQuickActions clientId={id} />}
         </View>
         <ClientDetailTabs client={client} />
         <ClientActivityHistory activities={client?.activity_history} />
-        {Platform.OS !== 'web' && <ClientQuickActions />}
+        {Platform.OS !== 'web' && <ClientQuickActions clientId={id} />}
       </View>
     </CustomSafeScreen>
   );
