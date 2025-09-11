@@ -11,6 +11,7 @@ import Select from '@/components/ui/select';
 import { formatCurrency } from '@/utils';
 import { frequencyOptions } from '@/constants/loans';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Platform } from 'react-native';
 import { format, parse } from '@formkit/tempo';
 import { Calendar, ChevronDown, ChevronUp } from 'lucide-react-native';
 import Loading from '@/components/ui/loading';
@@ -46,45 +47,71 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
       {loan && (
         <View className="flex-col gap-6">
           <View className="flex-col items-center mb-5">
-            <Text className="text-gray-500 font-geist-medium text-lg">
+            <Text className="text-lg text-gray-500 font-geist-medium">
               Cliente:
             </Text>
-            <Text className="font-geist-bold text-xl">
+            <Text className="text-xl font-geist-bold">
               {loan.clients?.name} {loan.clients?.last_name}
             </Text>
           </View>
-          <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
+          <View className="flex-col gap-6 p-5 bg-white rounded-xl border border-gray-100">
             <View className="flex-col gap-2">
               <Text className="font-geist-medium">
                 Fecha de inicio<Text className="text-red-500">*</Text>
               </Text>
-              <TouchableOpacity
-                className={`border ${
-                  errors.startDate ? 'border-red-500' : 'border-gray-200'
-                } rounded-xl p-3 flex-row justify-between items-center`}
-                onPress={() => setShowDatePicker('start')}
-              >
-                <Text
-                  className={
-                    formData.startDate ? 'text-black' : 'text-gray-500'
+              {Platform.OS === 'web' ? (
+                <input
+                  type="date"
+                  value={
+                    formData.startDate
+                      ? format(formData.startDate, 'YYYY-MM-DD')
+                      : ''
                   }
+                  onChange={e => {
+                    const [year, month, day] = e.target.value
+                      .split('-')
+                      .map(Number);
+                    const selectedDate = new Date(year, month - 1, day);
+                    handleChange('startDate', selectedDate);
+                  }}
+                  className={`border ${
+                    errors.startDate ? 'border-red-500' : 'border-gray-200'
+                  } rounded-xl p-3 w-full`}
+                  style={{
+                    fontFamily: 'GeistMedium',
+                    fontSize: 16,
+                    outline: 'none',
+                  }}
+                />
+              ) : (
+                <TouchableOpacity
+                  className={`border ${
+                    errors.startDate ? 'border-red-500' : 'border-gray-200'
+                  } rounded-xl p-3 flex-row justify-between items-center`}
+                  onPress={() => setShowDatePicker('start')}
                 >
-                  {formData.startDate
-                    ? format(formData.startDate, 'DD/MM/YYYY')
-                    : 'dd / mm / aaaa'}
-                </Text>
-                <Calendar size={20} color="#6B7280" />
-              </TouchableOpacity>
+                  <Text
+                    className={
+                      formData.startDate ? 'text-black' : 'text-gray-500'
+                    }
+                  >
+                    {formData.startDate
+                      ? format(formData.startDate, 'DD/MM/YYYY')
+                      : 'dd / mm / aaaa'}
+                  </Text>
+                  <Calendar size={20} color="#6B7280" />
+                </TouchableOpacity>
+              )}
               {errors.startDate && (
-                <Text className="text-red-500 text-sm">{errors.startDate}</Text>
+                <Text className="text-sm text-red-500">{errors.startDate}</Text>
               )}
             </View>
             <View className="flex-col gap-2">
               <Text className="font-geist-medium">
                 Monto del préstamo<Text className="text-red-500">*</Text>
               </Text>
-              <View className="border border-gray-200 rounded-xl flex-row items-center">
-                <Text className="text-gray-500 pl-3 pr-1">$</Text>
+              <View className="flex-row items-center rounded-xl border border-gray-200">
+                <Text className="pr-1 pl-3 text-gray-500">$</Text>
                 <TextInput
                   placeholder="0"
                   keyboardType="decimal-pad"
@@ -94,14 +121,14 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                 />
               </View>
               {errors.amount && (
-                <Text className="text-red-500 text-sm">{errors.amount}</Text>
+                <Text className="text-sm text-red-500">{errors.amount}</Text>
               )}
             </View>
             <View className="flex-col gap-2">
               <Text className="font-geist-medium">
                 Plazo<Text className="text-red-500">*</Text>
               </Text>
-              <View className="border border-gray-200 rounded-xl flex-row items-center">
+              <View className="flex-row items-center rounded-xl border border-gray-200">
                 <TextInput
                   placeholder="12"
                   keyboardType="number-pad"
@@ -135,7 +162,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                 </View>
               </View>
               {errors.term && (
-                <Text className="text-red-500 text-sm">{errors.term}</Text>
+                <Text className="text-sm text-red-500">{errors.term}</Text>
               )}
             </View>
             <View className="flex-col gap-2">
@@ -165,7 +192,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                 keyboardType="numeric"
               />
               {errors.interestRate && (
-                <Text className="text-red-500 text-sm">
+                <Text className="text-sm text-red-500">
                   {errors.interestRate}
                 </Text>
               )}
@@ -183,8 +210,8 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
               required
             />
             {Number(formData.amount) > 0 && Number(formData.term) > 0 && (
-              <View className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <Text className="font-geist-medium mb-2">
+              <View className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <Text className="mb-2 font-geist-medium">
                   Resumen del préstamo
                 </Text>
                 <View className="flex-row justify-between mb-1">
@@ -221,25 +248,51 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
               <Text className="font-geist-medium">
                 Fecha de pago<Text className="text-red-500">*</Text>
               </Text>
-              <TouchableOpacity
-                className={`border ${
-                  errors.paymentDate ? 'border-red-500' : 'border-gray-200'
-                } rounded-xl p-3 flex-row justify-between items-center`}
-                onPress={() => setShowDatePicker('payment')}
-              >
-                <Text
-                  className={
-                    formData.paymentDate ? 'text-black' : 'text-gray-500'
+              {Platform.OS === 'web' ? (
+                <input
+                  type="date"
+                  value={
+                    formData.paymentDate
+                      ? format(formData.paymentDate, 'YYYY-MM-DD')
+                      : ''
                   }
+                  onChange={e => {
+                    const [year, month, day] = e.target.value
+                      .split('-')
+                      .map(Number);
+                    const selectedDate = new Date(year, month - 1, day);
+                    handleChange('paymentDate', selectedDate);
+                  }}
+                  className={`border ${
+                    errors.paymentDate ? 'border-red-500' : 'border-gray-200'
+                  } rounded-xl p-3 w-full`}
+                  style={{
+                    fontFamily: 'GeistMedium',
+                    fontSize: 16,
+                    outline: 'none',
+                  }}
+                />
+              ) : (
+                <TouchableOpacity
+                  className={`border ${
+                    errors.paymentDate ? 'border-red-500' : 'border-gray-200'
+                  } rounded-xl p-3 flex-row justify-between items-center`}
+                  onPress={() => setShowDatePicker('payment')}
                 >
-                  {formData.paymentDate
-                    ? format(formData.paymentDate, 'DD/MM/YYYY')
-                    : 'dd / mm / aaaa'}
-                </Text>
-                <Calendar size={20} color="#6B7280" />
-              </TouchableOpacity>
+                  <Text
+                    className={
+                      formData.paymentDate ? 'text-black' : 'text-gray-500'
+                    }
+                  >
+                    {formData.paymentDate
+                      ? format(formData.paymentDate, 'DD/MM/YYYY')
+                      : 'dd / mm / aaaa'}
+                  </Text>
+                  <Calendar size={20} color="#6B7280" />
+                </TouchableOpacity>
+              )}
               {errors.paymentDate && (
-                <Text className="text-red-500 text-sm">
+                <Text className="text-sm text-red-500">
                   {errors.paymentDate}
                 </Text>
               )}
@@ -250,7 +303,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
                 placeholder="Añadir cualquier detalle adicional sobre este préstamo..."
                 multiline
                 numberOfLines={4}
-                className="border border-gray-200 rounded-xl p-3 h-24 text-base"
+                className="p-3 h-24 text-base rounded-xl border border-gray-200"
                 textAlignVertical="top"
                 value={formData.notes}
                 onChangeText={text => handleChange('notes', text)}
@@ -265,7 +318,7 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
         onCancel={() => router.back()}
         isSubmitting={isSubmitting}
       />
-      {showDatePicker && (
+      {Platform.OS !== 'web' && showDatePicker && (
         <DateTimePicker
           value={
             showDatePicker === 'start' && formData.startDate
@@ -279,9 +332,8 @@ const EditLoanForm = ({ loanId }: EditLoanFormProps) => {
           onChange={(event, selectedDate) => {
             if (event.type === 'set' && selectedDate) {
               handleDateSelect(selectedDate, showDatePicker);
-            } else {
-              setShowDatePicker(null);
             }
+            setShowDatePicker(null);
           }}
         />
       )}

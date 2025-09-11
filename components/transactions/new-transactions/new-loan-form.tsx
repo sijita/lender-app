@@ -1,4 +1,4 @@
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 import { useHandleNewLoans } from '@/actions/loans/new-loans/use-handle-new-loans';
 import Select from '@/components/ui/select';
@@ -32,7 +32,7 @@ const NewLoanForm = () => {
   const renderOptionItem = ({ item }: { item: any }) => {
     if (!item.documentNumber) {
       return (
-        <View className="py-4 items-center justify-center">
+        <View className="justify-center items-center py-4">
           <Text className="text-gray-500">No se encontraron resultados</Text>
         </View>
       );
@@ -49,28 +49,54 @@ const NewLoanForm = () => {
   return (
     <View className="flex-col gap-6 sm:w-[800px] sm:m-auto">
       <Text className="text-xl font-geist-bold">Registrar nuevo préstamo</Text>
-      <View className="flex-col gap-6 bg-white rounded-xl p-5 border border-gray-100">
+      <View className="flex-col gap-6 p-5 bg-white rounded-xl border border-gray-100">
         <View className="flex-col gap-2">
           <Text className="font-geist-medium">
             Fecha de inicio<Text className="text-red-500">*</Text>
           </Text>
-          <TouchableOpacity
-            className={`border ${
-              errors.startDate ? 'border-red-500' : 'border-gray-200'
-            } rounded-xl p-3 flex-row justify-between items-center`}
-            onPress={() => setShowDatePicker('start')}
-          >
-            <Text
-              className={formData.startDate ? 'text-black' : 'text-gray-500'}
+          {Platform.OS === 'web' ? (
+            <input
+              type="date"
+              value={
+                formData.startDate
+                  ? format(formData.startDate, 'YYYY-MM-DD')
+                  : ''
+              }
+              onChange={e => {
+                const [year, month, day] = e.target.value
+                  .split('-')
+                  .map(Number);
+                const selectedDate = new Date(year, month - 1, day);
+                handleChange('startDate', selectedDate);
+              }}
+              className={`border ${
+                errors.startDate ? 'border-red-500' : 'border-gray-200'
+              } rounded-xl p-3 w-full`}
+              style={{
+                fontFamily: 'GeistMedium',
+                fontSize: 16,
+                outline: 'none',
+              }}
+            />
+          ) : (
+            <TouchableOpacity
+              className={`border ${
+                errors.startDate ? 'border-red-500' : 'border-gray-200'
+              } rounded-xl p-3 flex-row justify-between items-center`}
+              onPress={() => setShowDatePicker('start')}
             >
-              {formData.startDate
-                ? format(formData.startDate, 'DD/MM/YYYY')
-                : 'dd / mm / aaaa'}
-            </Text>
-            <Calendar size={20} color="#6B7280" />
-          </TouchableOpacity>
+              <Text
+                className={formData.startDate ? 'text-black' : 'text-gray-500'}
+              >
+                {formData.startDate
+                  ? format(formData.startDate, 'DD/MM/YYYY')
+                  : 'dd / mm / aaaa'}
+              </Text>
+              <Calendar size={20} color="#6B7280" />
+            </TouchableOpacity>
+          )}
           {errors.startDate && (
-            <Text className="text-red-500 text-sm">{errors.startDate}</Text>
+            <Text className="text-sm text-red-500">{errors.startDate}</Text>
           )}
         </View>
         <View className="flex-col gap-2">
@@ -90,8 +116,8 @@ const NewLoanForm = () => {
             required
           />
           {formData?.clientId && (
-            <View className="flex-col items-center justify-between mt-2 p-3 bg-gray-50 rounded-xl border border-gray-200">
-              <Text className="font-geist-medium text-lg">
+            <View className="flex-col justify-between items-center p-3 mt-2 bg-gray-50 rounded-xl border border-gray-200">
+              <Text className="text-lg font-geist-medium">
                 {formData?.name} {formData?.lastName}
               </Text>
               <Text className="text-gray-600 font-geist-regular">
@@ -104,8 +130,8 @@ const NewLoanForm = () => {
           <Text className="font-geist-medium">
             Monto del préstamo<Text className="text-red-500">*</Text>
           </Text>
-          <View className="border border-gray-200 rounded-xl flex-row items-center">
-            <Text className="text-gray-500 pl-3 pr-1">$</Text>
+          <View className="flex-row items-center rounded-xl border border-gray-200">
+            <Text className="pr-1 pl-3 text-gray-500">$</Text>
             <TextInput
               placeholder="0"
               keyboardType="decimal-pad"
@@ -115,7 +141,7 @@ const NewLoanForm = () => {
             />
           </View>
           {errors.amount && (
-            <Text className="text-red-500 text-sm">{errors.amount}</Text>
+            <Text className="text-sm text-red-500">{errors.amount}</Text>
           )}
         </View>
         <View className="flex-col gap-2">
@@ -132,7 +158,7 @@ const NewLoanForm = () => {
             onChangeText={text => handleChange('interestRate', text)}
           />
           {errors.interestRate && (
-            <Text className="text-red-500 text-sm">{errors.interestRate}</Text>
+            <Text className="text-sm text-red-500">{errors.interestRate}</Text>
           )}
         </View>
         <View className="flex-col gap-2">
@@ -198,7 +224,7 @@ const NewLoanForm = () => {
             </View>
           </View>
           {errors.term && (
-            <Text className="text-red-500 text-sm">{errors.term}</Text>
+            <Text className="text-sm text-red-500">{errors.term}</Text>
           )}
         </View>
         <View className="flex-col gap-2">
@@ -221,12 +247,12 @@ const NewLoanForm = () => {
             <Calendar size={20} color="#6B7280" />
           </TouchableOpacity>
           {errors.paymentDate && (
-            <Text className="text-red-500 text-sm">{errors.paymentDate}</Text>
+            <Text className="text-sm text-red-500">{errors.paymentDate}</Text>
           )}
         </View>
         {Number(formData.amount) > 0 && Number(formData.term) > 0 && (
-          <View className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-            <Text className="font-geist-medium mb-2">Resumen del préstamo</Text>
+          <View className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <Text className="mb-2 font-geist-medium">Resumen del préstamo</Text>
             <View className="flex-row justify-between mb-1">
               <Text className="text-gray-600">
                 Cuota{' '}
@@ -263,7 +289,7 @@ const NewLoanForm = () => {
             placeholder="Añadir cualquier detalle adicional sobre este préstamo..."
             multiline
             numberOfLines={4}
-            className="border border-gray-200 rounded-xl p-3 h-24 text-base"
+            className="p-3 h-24 text-base rounded-xl border border-gray-200"
             textAlignVertical="top"
             value={formData.notes}
             onChangeText={text => handleChange('notes', text)}

@@ -27,6 +27,7 @@ import DynamicIcon from '@/components/ui/dynamic-icon';
 import Loading from '@/components/ui/loading';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import PaginationButtons from '../ui/pagination-buttons';
+import { Platform } from 'react-native';
 
 export default function TransactionList() {
   const {
@@ -171,33 +172,65 @@ export default function TransactionList() {
             </TouchableOpacity>
           </View>
           <View className="flex-row gap-2 items-center">
-            <TouchableOpacity
-              className="flex-row flex-1 gap-2 items-center px-3 py-2 bg-white rounded-xl border border-gray-100"
-              onPress={() => setShowDatePicker('start')}
-            >
-              <Calendar size={16} color="#6B7280" />
-              <Text className={startDate ? 'text-black' : 'text-gray-500'}>
-                {startDate ? format(startDate, 'short', 'es') : 'Fecha inicial'}
-              </Text>
-              {startDate && (
-                <TouchableOpacity
-                  className="ml-auto"
-                  onPress={() => {
-                    setStartDate(null);
-                    refetch({
-                      type: transactionType,
-                      searchQuery,
-                      orderBy,
-                      orderDirection,
-                      paymentStatus:
-                        activeTab === 'payment' ? paymentStatus : undefined,
-                    });
-                  }}
-                >
-                  <X size={16} color="#6B7280" />
-                </TouchableOpacity>
-              )}
-            </TouchableOpacity>
+            {Platform.OS === 'web' ? (
+              <input
+                type="date"
+                value={
+                  showDatePicker === 'start'
+                    ? format(startDate || new Date(), 'YYYY-MM-DD')
+                    : format(endDate || new Date(), 'YYYY-MM-DD')
+                }
+                onChange={e => {
+                  const [year, month, day] = e.target.value
+                    .split('-')
+                    .map(Number);
+                  const selectedDate = new Date(year, month - 1, day);
+                  if (selectedDate) {
+                    if (showDatePicker === 'start') {
+                      setStartDate(selectedDate);
+                    } else {
+                      setEndDate(selectedDate);
+                    }
+                  }
+                }}
+                className={`p-3 w-full rounded-xl border border-gray-200`}
+                style={{
+                  fontFamily: 'GeistMedium',
+                  fontSize: 16,
+                  outline: 'none',
+                }}
+              />
+            ) : (
+              <TouchableOpacity
+                className="flex-row flex-1 gap-2 items-center px-3 py-2 bg-white rounded-xl border border-gray-100"
+                onPress={() => setShowDatePicker('start')}
+              >
+                <Calendar size={16} color="#6B7280" />
+                <Text className={startDate ? 'text-black' : 'text-gray-500'}>
+                  {startDate
+                    ? format(startDate, 'short', 'es')
+                    : 'Fecha inicial'}
+                </Text>
+                {startDate && (
+                  <TouchableOpacity
+                    className="ml-auto"
+                    onPress={() => {
+                      setStartDate(null);
+                      refetch({
+                        type: transactionType,
+                        searchQuery,
+                        orderBy,
+                        orderDirection,
+                        paymentStatus:
+                          activeTab === 'payment' ? paymentStatus : undefined,
+                      });
+                    }}
+                  >
+                    <X size={16} color="#6B7280" />
+                  </TouchableOpacity>
+                )}
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               className="flex-row flex-1 gap-2 items-center px-3 py-2 bg-white rounded-xl border border-gray-100"
               onPress={() => setShowDatePicker('end')}

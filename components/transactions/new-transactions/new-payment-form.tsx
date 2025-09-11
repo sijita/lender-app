@@ -1,4 +1,10 @@
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { router } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import useHandleNewPayments from '@/actions/payments/new-payments/use-handle-new-payments';
@@ -158,19 +164,43 @@ const NewPaymentForm = () => {
             </View>
             <View className="flex-col gap-2">
               <Text className="font-geist-medium">Fecha</Text>
-              <TouchableOpacity
-                className="flex-row justify-between items-center p-3 rounded-xl border border-gray-200"
-                onPress={() => setShowDatePicker(true)}
-              >
-                <Text
-                  className={formData.date ? 'text-black' : 'text-gray-500'}
+              {Platform.OS === 'web' ? (
+                <input
+                  type="date"
+                  value={
+                    formData.date ? format(formData.date, 'YYYY-MM-DD') : ''
+                  }
+                  onChange={e => {
+                    const [year, month, day] = e.target.value
+                      .split('-')
+                      .map(Number);
+                    const selectedDate = new Date(year, month - 1, day);
+                    handleChange('date', selectedDate);
+                  }}
+                  className={`border ${
+                    errors.date ? 'border-red-500' : 'border-gray-200'
+                  } rounded-xl p-3 w-full`}
+                  style={{
+                    fontFamily: 'GeistMedium',
+                    fontSize: 16,
+                    outline: 'none',
+                  }}
+                />
+              ) : (
+                <TouchableOpacity
+                  className="flex-row justify-between items-center p-3 rounded-xl border border-gray-200"
+                  onPress={() => setShowDatePicker(true)}
                 >
-                  {formData.date
-                    ? format(formData.date, 'DD/MM/YYYY', 'es')
-                    : 'dd / mm / aaaa'}
-                </Text>
-                <Calendar size={20} color="#6B7280" />
-              </TouchableOpacity>
+                  <Text
+                    className={formData.date ? 'text-black' : 'text-gray-500'}
+                  >
+                    {formData.date
+                      ? format(formData.date, 'DD/MM/YYYY', 'es')
+                      : 'dd / mm / aaaa'}
+                  </Text>
+                  <Calendar size={20} color="#6B7280" />
+                </TouchableOpacity>
+              )}
               {showDatePicker && (
                 <DateTimePicker
                   value={formData?.date ?? new Date()}
