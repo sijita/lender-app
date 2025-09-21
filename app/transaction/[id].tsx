@@ -67,6 +67,8 @@ export default function TransactionDetail() {
                 <QuickActions
                   loanId={transaction.loan.id}
                   clientId={transaction.loan.client.id.toString()}
+                  transactionId={transaction.id}
+                  paymentId={transaction.payment_id || undefined}
                 />
               )}
             </View>
@@ -75,6 +77,8 @@ export default function TransactionDetail() {
               <QuickActions
                 loanId={transaction.loan.id}
                 clientId={transaction.loan.client.id.toString()}
+                transactionId={transaction.id}
+                paymentId={transaction.payment_id || undefined}
               />
             )}
           </View>

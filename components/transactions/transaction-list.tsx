@@ -22,12 +22,15 @@ import {
   ChevronRight,
   Search,
   X,
+  Receipt,
 } from 'lucide-react-native';
 import DynamicIcon from '@/components/ui/dynamic-icon';
 import Loading from '@/components/ui/loading';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import PaginationButtons from '../ui/pagination-buttons';
 import { Platform } from 'react-native';
+import usePaymentReceipt from '@/hooks/use-payment-receipt';
+import PaymentReceipt from './payment-receipt';
 
 export default function TransactionList() {
   const {
@@ -57,6 +60,13 @@ export default function TransactionList() {
     pageSize,
     totalTransactions,
   } = useFetchTransactions();
+
+  const {
+    showReceipt,
+    receiptData,
+    generateReceiptFromPaymentId,
+    closeReceipt,
+  } = usePaymentReceipt();
 
   const transactionType =
     activeTab === 'loan' ? 'loan_disbursement' : 'payment';
@@ -193,7 +203,7 @@ export default function TransactionList() {
                     }
                   }
                 }}
-                className={`p-3 w-full rounded-xl border border-gray-200`}
+                className={`flex-1 p-3 rounded-xl border border-gray-200`}
                 style={{
                   fontFamily: 'GeistMedium',
                   fontSize: 16,
@@ -231,33 +241,63 @@ export default function TransactionList() {
                 )}
               </TouchableOpacity>
             )}
-            <TouchableOpacity
-              className="flex-row flex-1 gap-2 items-center px-3 py-2 bg-white rounded-xl border border-gray-100"
-              onPress={() => setShowDatePicker('end')}
-            >
-              <Calendar size={16} color="#6B7280" />
-              <Text className={endDate ? 'text-black' : 'text-gray-500'}>
-                {endDate ? format(endDate, 'short', 'es') : 'Fecha final'}
-              </Text>
-              {endDate && (
-                <TouchableOpacity
-                  className="ml-auto"
-                  onPress={() => {
-                    setEndDate(null);
-                    refetch({
-                      type: transactionType,
-                      searchQuery,
-                      orderBy,
-                      orderDirection,
-                      paymentStatus:
-                        activeTab === 'payment' ? paymentStatus : undefined,
-                    });
-                  }}
-                >
-                  <X size={16} color="#6B7280" />
-                </TouchableOpacity>
-              )}
-            </TouchableOpacity>
+            {Platform.OS === 'web' ? (
+              <input
+                type="date"
+                value={
+                  showDatePicker === 'end'
+                    ? format(endDate || new Date(), 'YYYY-MM-DD')
+                    : format(startDate || new Date(), 'YYYY-MM-DD')
+                }
+                onChange={e => {
+                  const [year, month, day] = e.target.value
+                    .split('-')
+                    .map(Number);
+                  const selectedDate = new Date(year, month - 1, day);
+                  if (selectedDate) {
+                    if (showDatePicker === 'end') {
+                      setEndDate(selectedDate);
+                    } else {
+                      setStartDate(selectedDate);
+                    }
+                  }
+                }}
+                className={`flex-1 p-3 rounded-xl border border-gray-200`}
+                style={{
+                  fontFamily: 'GeistMedium',
+                  fontSize: 16,
+                  outline: 'none',
+                }}
+              />
+            ) : (
+              <TouchableOpacity
+                className="flex-row flex-1 gap-2 items-center px-3 py-2 bg-white rounded-xl border border-gray-100"
+                onPress={() => setShowDatePicker('end')}
+              >
+                <Calendar size={16} color="#6B7280" />
+                <Text className={endDate ? 'text-black' : 'text-gray-500'}>
+                  {endDate ? format(endDate, 'short', 'es') : 'Fecha final'}
+                </Text>
+                {endDate && (
+                  <TouchableOpacity
+                    className="ml-auto"
+                    onPress={() => {
+                      setEndDate(null);
+                      refetch({
+                        type: transactionType,
+                        searchQuery,
+                        orderBy,
+                        orderDirection,
+                        paymentStatus:
+                          activeTab === 'payment' ? paymentStatus : undefined,
+                      });
+                    }}
+                  >
+                    <X size={16} color="#6B7280" />
+                  </TouchableOpacity>
+                )}
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         <ScrollView
@@ -279,6 +319,11 @@ export default function TransactionList() {
               <Text className="w-40 text-right text-gray-500 sm:flex-1 font-geist-medium">
                 Tipo
               </Text>
+              {activeTab === 'payment' && (
+                <Text className="w-20 text-center text-gray-500 font-geist-medium">
+                  Recibo
+                </Text>
+              )}
               <View className="w-16" />
             </View>
             {transactions.length === 0 ? (
@@ -342,6 +387,23 @@ export default function TransactionList() {
                           {getTransactionTypeText(transaction.type)}
                         </Text>
                       </View>
+                      {activeTab === 'payment' &&
+                        transaction.type === 'payment' && (
+                          <TouchableOpacity
+                            className="w-20 items-center"
+                            onPress={e => {
+                              e.stopPropagation();
+                              // Solo generar recibo si existe payment_id
+                              if (transaction.payment_id) {
+                                generateReceiptFromPaymentId(
+                                  transaction.payment_id
+                                );
+                              }
+                            }}
+                          >
+                            <Receipt size={16} color="#3B82F6" />
+                          </TouchableOpacity>
+                        )}
                       <View className="items-end w-16">
                         <ChevronRight size={20} color="#9CA3AF" />
                       </View>
@@ -396,6 +458,25 @@ export default function TransactionList() {
                               : 'Pendiente'}
                         </Text>
                       </View>
+                      {paymentStatus === 'completed' && (
+                        <TouchableOpacity
+                          className="w-20 items-center"
+                          onPress={e => {
+                            e.stopPropagation();
+                            // Solo generar recibo si existe transactionId (que es el payment_id en este contexto)
+                            if (transaction.transactionId) {
+                              generateReceiptFromPaymentId(
+                                transaction.transactionId
+                              );
+                            }
+                          }}
+                        >
+                          <Receipt size={16} color="#3B82F6" />
+                        </TouchableOpacity>
+                      )}
+                      {paymentStatus !== 'completed' && (
+                        <View className="w-20" />
+                      )}
                       <View className="items-end w-16">
                         <ChevronRight size={20} color="#9CA3AF" />
                       </View>
@@ -414,6 +495,9 @@ export default function TransactionList() {
           pageSize={pageSize}
         />
       </View>
+      {showReceipt && receiptData && (
+        <PaymentReceipt receiptData={receiptData} onClose={closeReceipt} />
+      )}
       {showDatePicker && (
         <DateTimePicker
           value={

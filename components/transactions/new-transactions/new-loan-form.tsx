@@ -1,4 +1,10 @@
-import { Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { router } from 'expo-router';
 import { useHandleNewLoans } from '@/actions/loans/new-loans/use-handle-new-loans';
 import Select from '@/components/ui/select';
@@ -231,21 +237,49 @@ const NewLoanForm = () => {
           <Text className="font-geist-medium">
             Fecha de pago<Text className="text-red-500">*</Text>
           </Text>
-          <TouchableOpacity
-            className={`border ${
-              errors.paymentDate ? 'border-red-500' : 'border-gray-200'
-            } rounded-xl p-3 flex-row justify-between items-center`}
-            onPress={() => setShowDatePicker('payment')}
-          >
-            <Text
-              className={formData.paymentDate ? 'text-black' : 'text-gray-500'}
+          {Platform.OS === 'web' ? (
+            <input
+              type="date"
+              value={
+                formData.paymentDate
+                  ? format(formData.paymentDate, 'YYYY-MM-DD')
+                  : ''
+              }
+              onChange={e => {
+                const [year, month, day] = e.target.value
+                  .split('-')
+                  .map(Number);
+                const selectedDate = new Date(year, month - 1, day);
+                handleChange('paymentDate', selectedDate);
+              }}
+              className={`border ${
+                errors.paymentDate ? 'border-red-500' : 'border-gray-200'
+              } rounded-xl p-3 w-full`}
+              style={{
+                fontFamily: 'GeistMedium',
+                fontSize: 16,
+                outline: 'none',
+              }}
+            />
+          ) : (
+            <TouchableOpacity
+              className={`border ${
+                errors.paymentDate ? 'border-red-500' : 'border-gray-200'
+              } rounded-xl p-3 flex-row justify-between items-center`}
+              onPress={() => setShowDatePicker('payment')}
             >
-              {formData.paymentDate
-                ? format(formData.paymentDate, 'DD/MM/YYYY', 'es')
-                : 'dd / mm / aaaa'}
-            </Text>
-            <Calendar size={20} color="#6B7280" />
-          </TouchableOpacity>
+              <Text
+                className={
+                  formData.paymentDate ? 'text-black' : 'text-gray-500'
+                }
+              >
+                {formData.paymentDate
+                  ? format(formData.paymentDate, 'DD/MM/YYYY', 'es')
+                  : 'dd / mm / aaaa'}
+              </Text>
+              <Calendar size={20} color="#6B7280" />
+            </TouchableOpacity>
+          )}
           {errors.paymentDate && (
             <Text className="text-sm text-red-500">{errors.paymentDate}</Text>
           )}

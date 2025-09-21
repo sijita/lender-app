@@ -50,6 +50,10 @@ export default function useHandleNewPayments() {
       : ''
   );
 
+  // Estados para el recibo
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [receiptData, setReceiptData] = useState<any>(null);
+
   const handleAmountChange = (text: string) => {
     const numericValue = text.replace(/\D/g, '');
 
@@ -78,8 +82,8 @@ export default function useHandleNewPayments() {
   const handleDateSelect = (event: any, selectedDate?: Date) => {
     setShowDatePicker(false);
     if (selectedDate) {
-        handleChange('date', selectedDate);
-      }
+      handleChange('date', selectedDate);
+    }
   };
 
   // Preselect client if clientId is provided in query params
@@ -99,7 +103,9 @@ export default function useHandleNewPayments() {
           // Then get the active loan for this client
           const { data: loan, error: loanError } = await supabase
             .from('loans')
-            .select('id, amount, outstanding, pending_quotas, quota, partial_quota, status')
+            .select(
+              'id, amount, outstanding, pending_quotas, quota, partial_quota, status'
+            )
             .eq('client_id', clientId)
             .in('status', ['active', 'defaulted'])
             .not('outstanding', 'eq', 0)
@@ -318,7 +324,7 @@ export default function useHandleNewPayments() {
 
   const savePayment = async () => {
     if (!validateForm()) {
-      return;
+      return { success: false };
     }
 
     try {
@@ -341,13 +347,53 @@ export default function useHandleNewPayments() {
 
       console.log('paymentData:', paymentData);
 
-      const { error: paymentError } = await supabase
+      const { data: paymentResult, error: paymentError } = await supabase
         .from('payments')
         .insert(paymentData)
         .select()
         .single();
 
       if (paymentError) throw paymentError;
+
+      // Obtener datos del cliente para el recibo
+      const { data: clientData, error: clientError } = await supabase
+        .from('clients')
+        .select('email, phone')
+        .eq('id', formData.clientId)
+        .single();
+
+      if (clientError) {
+        console.warn('Error fetching client contact data:', clientError);
+      }
+
+      // Generar datos del recibo
+      const paymentReceiptData = {
+        transactionId: paymentResult?.id || `PAY-${Date.now()}`,
+        amount: Number(formData.amount),
+        date: formData.date || new Date(),
+        method: formData.method,
+        notes: formData.notes,
+        status: paymentStatus,
+        quotasCovered: quotasCovered,
+        client: {
+          name: formData.name,
+          lastName: formData.lastName,
+          documentNumber: formData.documentNumber,
+          email: clientData?.email || '',
+          phone: clientData?.phone || '',
+        },
+        loan: {
+          id: formData.loanId,
+          previousBalance: formData.outstanding + Number(formData.amount),
+          currentBalance: formData.outstanding,
+          quota: formData.quota,
+          partialQuota: formData.partialQuota,
+        },
+      };
+
+      // Configurar el recibo para mostrar
+      setReceiptData(paymentReceiptData);
+      setShowReceipt(true);
 
       setFormData({
         clientId: undefined,
@@ -371,7 +417,13 @@ export default function useHandleNewPayments() {
         message: 'Pago registrado correctamente',
       });
 
-      router.push('/(tabs)/transactions');
+      // Retornar datos para el recibo
+      return {
+        success: true,
+        paymentId: paymentResult?.id,
+        clientEmail: clientData?.email || '',
+        clientPhone: clientData?.phone || '',
+      };
     } catch (error: any) {
       console.error('Error saving payment:', error);
       showToast({
@@ -381,9 +433,16 @@ export default function useHandleNewPayments() {
             ? 'Falta un campo requerido en el pago'
             : (error.message ?? 'Error al registrar el pago'),
       });
+      return { success: false };
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const closeReceipt = () => {
+    setShowReceipt(false);
+    setReceiptData(null);
+    router.push('/(tabs)/transactions');
   };
 
   return {
@@ -405,5 +464,9 @@ export default function useHandleNewPayments() {
     handleAmountChange,
     getPaymentStatus,
     getQuotasCovered,
+    // Estados y funciones del recibo
+    showReceipt,
+    receiptData,
+    closeReceipt,
   };
 }

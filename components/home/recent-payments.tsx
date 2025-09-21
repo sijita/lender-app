@@ -35,7 +35,7 @@ export default function RecentPayments({
             className="rounded-xl border border-green-100"
             asChild
           >
-            <View className="p-3 rounded-xl bg-sky-50/50 active:bg-sky-100">
+            <View className="p-3 rounded-xl bg-green-50/50 active:bg-green-100">
               <View className="flex-row justify-between items-start">
                 <View className="flex-1">
                   <Text className="text-gray-800 font-geist-semibold">
