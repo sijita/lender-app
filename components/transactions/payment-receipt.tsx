@@ -103,7 +103,7 @@ export default function PaymentReceipt({
   const loanData = isNewFormat ? receiptData.loanData : receiptData.loan;
 
   const currentDate = new Date();
-  const receiptNumber = `${'paymentData' in receiptData ? receiptData.paymentData.id || 'REC-' + Date.now() : 'REC-' + Date.now()}`;
+  const receiptNumber = `${'paymentData' in receiptData ? receiptData.paymentData.id : receiptData.transactionId}`;
 
   const hasContactInfo = clientData.email || clientData.phone;
 
