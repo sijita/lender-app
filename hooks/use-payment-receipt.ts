@@ -23,6 +23,8 @@ export interface PaymentReceiptData {
     currentBalance: number;
     quota: number;
     partialQuota?: number;
+    pending_quotas?: number;
+    term?: number;
   };
 }
 
@@ -59,6 +61,8 @@ export default function usePaymentReceipt() {
             term,
             paid_amount,
             partial_quota,
+            pending_quotas,
+            term,
             client_id,
             clients!inner (
               id,
@@ -126,6 +130,8 @@ export default function usePaymentReceipt() {
           currentBalance: currentBalance,
           quota: paymentData.loans.quota,
           partialQuota: paymentData.loans.partial_quota,
+          pending_quotas: paymentData.loans.pending_quotas,
+          term: paymentData.loans.term,
         },
       };
 

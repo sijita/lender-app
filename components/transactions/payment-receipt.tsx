@@ -50,6 +50,8 @@ export interface PaymentReceiptProps {
     currentBalance: number;
     quota: number;
     partialQuota?: number;
+    pending_quotas?: number;
+    term?: number;
   };
 }
 
@@ -83,6 +85,8 @@ export default function PaymentReceipt({
           outstanding: number;
           previousOutstanding: number;
           quota: number;
+          pending_quotas?: number;
+          term?: number;
         };
       };
   onClose: () => void;
@@ -505,6 +509,23 @@ export default function PaymentReceipt({
                 )}
               </Text>
             </View>
+            {((isNewFormat &&
+              loanData.pending_quotas !== undefined &&
+              loanData.term !== undefined) ||
+              (!isNewFormat &&
+                'pending_quotas' in loanData &&
+                'term' in loanData &&
+                loanData.pending_quotas !== undefined &&
+                loanData.term !== undefined)) && (
+              <View className="flex-row justify-between items-center">
+                <Text className="text-gray-600">Cuotas restantes:</Text>
+                <Text className="text-gray-800 font-geist-medium">
+                  {isNewFormat
+                    ? `${loanData.pending_quotas} de ${loanData.term}`
+                    : `${loanData.pending_quotas} de ${loanData.term}`}
+                </Text>
+              </View>
+            )}
           </View>
         </View>
         {paymentData.notes && (
