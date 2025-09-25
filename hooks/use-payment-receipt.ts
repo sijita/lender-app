@@ -54,7 +54,10 @@ export default function usePaymentReceipt() {
           loans!inner (
             id,
             outstanding,
+            amount,
             quota,
+            term,
+            paid_amount,
             partial_quota,
             client_id,
             clients!inner (
@@ -75,10 +78,31 @@ export default function usePaymentReceipt() {
         throw new Error('No se pudo encontrar el pago');
       }
 
-      // Calcular el saldo anterior (saldo actual + monto del pago)
-    
+      // Calcular el saldo anterior de capital (antes de este pago)
+      // Primero calculamos el capital pagado antes de este pago
+      const paidAmountBeforeThisPayment =
+        (paymentData.loans?.paid_amount || 0) - paymentData.amount;
+      const quotasPaidBefore =
+        paidAmountBeforeThisPayment / (paymentData.loans?.quota || 1);
+      const capitalPerQuotaBefore =
+        (paymentData.loans?.amount || 0) / (paymentData.loans?.term || 1);
+      const capitalPaidBefore = quotasPaidBefore * capitalPerQuotaBefore;
+
       const previousBalance =
-        paymentData.loans?.outstanding + paymentData.amount;
+        (paymentData.loans?.amount || 0) - capitalPaidBefore;
+
+      // Calcular el saldo actual de capital
+      // amount = capital total del préstamo
+      // paid_amount = total pagado (incluye intereses)
+      // amount/term = cuota de capital por período (sin intereses)
+      // Para obtener el capital pagado: (paid_amount / quota) * (amount / term)
+      const quotasPaid =
+        (paymentData.loans?.paid_amount || 0) / (paymentData.loans?.quota || 1);
+      const capitalPerQuota =
+        (paymentData.loans?.amount || 0) / (paymentData.loans?.term || 1);
+      const capitalPaid = quotasPaid * capitalPerQuota;
+
+      const currentBalance = (paymentData.loans?.amount || 0) - capitalPaid;
 
       // Generar datos del recibo
       const receipt: PaymentReceiptData = {
@@ -99,7 +123,7 @@ export default function usePaymentReceipt() {
         loan: {
           id: paymentData.loans.id,
           previousBalance: previousBalance,
-          currentBalance: paymentData.loans.outstanding,
+          currentBalance: currentBalance,
           quota: paymentData.loans.quota,
           partialQuota: paymentData.loans.partial_quota,
         },

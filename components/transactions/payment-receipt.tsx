@@ -7,7 +7,6 @@ import {
   Linking,
   Alert,
   Share,
-  ScrollView,
 } from 'react-native';
 import { format } from '@formkit/tempo';
 import { formatCurrency } from '@/utils';
@@ -25,7 +24,6 @@ import {
 } from 'lucide-react-native';
 import { getLoanStatusText, getPaymentMethodText } from '@/utils/loans';
 import ViewShot, { captureRef } from 'react-native-view-shot';
-import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import CustomSafeScreen from '../ui/custom-safe-screen';
